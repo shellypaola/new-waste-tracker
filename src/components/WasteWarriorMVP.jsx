@@ -1074,3 +1074,5 @@ export default function WasteWarriorMVP() {
     </div>
   );
 }
+
+export default WasteWarriorMVP;

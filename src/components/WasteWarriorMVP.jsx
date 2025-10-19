@@ -38,7 +38,7 @@ const expiredItems = [
 ];
 
 function WasteWarriorMVP() {
-  const [activeScreen, setActiveScreen] = useState('rewards');
+  const [activeScreen, setActiveScreen] = useState('home');
   const [inventory, setInventory] = useState(initialInventory);
   const [expired, setExpired] = useState(expiredItems);
   const [activeCategory, setActiveCategory] = useState('all');

@@ -1,0 +1,982 @@
+# Gamification Module - User Stories
+
+## Epic: Engaging Behavior Change Through Gamification
+*As a user, I want a fun and rewarding experience while reducing food waste so that I stay motivated to maintain good habits over time.*
+
+---
+
+## Theme 1: Achievements & Badges
+
+### Story 1.1: Unlock Achievements
+**As a** user  
+**I want to** unlock achievements for my accomplishments  
+**So that I can** feel recognized for my waste reduction efforts  
+
+**Acceptance Criteria:**
+- Achievements unlock automatically when I meet criteria
+- I see a celebration notification when achievement unlocks
+- Achievement appears in my profile immediately
+- I earn points for each achievement
+- Achievement progress is tracked before unlock
+
+**Priority:** HIGH  
+**Story Points:** 8
+
+---
+
+### Story 1.2: View Achievement Progress
+**As a** user  
+**I want to** see my progress toward locked achievements  
+**So that I know** what to work toward next  
+
+**Acceptance Criteria:**
+- I can see all achievements (unlocked and locked)
+- Locked achievements show progress percentage
+- Progress updates in real-time as I take actions
+- I can filter by category (milestone, performance, savings, consistency)
+- Clear indication of what I need to do to unlock
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 1.3: Share Achievements
+**As a** user  
+**I want to** share my achievements on social media  
+**So that I can** celebrate with friends and inspire others  
+
+**Acceptance Criteria:**
+- I can tap "Share" on any unlocked achievement
+- Pre-written message with my stats is generated
+- I can choose platform: Twitter, Facebook, Instagram
+- Share includes attractive visual/image
+- I earn bonus points for sharing
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+### Story 1.4: Achievement Categories
+**As a** user  
+**I want** achievements organized by category  
+**So that I can** focus on specific types of goals  
+
+**Acceptance Criteria:**
+- Categories: Milestone, Performance, Consistency, Special
+- I can filter achievements by category
+- Each category has distinct visual treatment
+- Progress shown for each category
+- Category completion percentage displayed
+
+**Category Definitions:**
+- **Milestone:** Usage duration achievements (First Week, 30 Days)
+- **Performance:** Waste reduction success (Zero Waste Day, Perfect Week)
+- **Consistency:** Streaks and habits (Week Streak, Month Streak)
+- **Special:** Seasonal/event-based achievements (Easter, Thanksgiving, Earth Day)
+
+**Priority:** MEDIUM  
+**Story Points:** 3
+
+---
+
+### Story 1.5: Rare & Legendary Achievements
+**As a** user  
+**I want** to unlock rare achievements for exceptional performance  
+**So that I can** earn special recognition  
+
+**Acceptance Criteria:**
+- Achievements have rarity: Common, Rare, Epic, Legendary
+- Rarer achievements give more points
+- Visual treatment reflects rarity (colors, effects)
+- Special celebration for legendary achievements
+- Rarity displayed on achievement card
+
+**Priority:** LOW  
+**Story Points:** 3
+
+---
+
+## Theme 2: Progression & Levels
+
+### Story 2.1: Track Points & Level
+**As a** user  
+**I want to** earn points and level up  
+**So that I can** see my overall progress  
+
+**Acceptance Criteria:**
+- I earn points for all positive actions (consuming items, streaks, challenges)
+- Points accumulate toward level progression
+- Levels: Bronze → Silver → Gold → Platinum
+- Current level and total points displayed on profile
+- Points awarded are shown in real-time
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 2.2: Level Up Rewards
+**As a** user  
+**I want to** receive rewards when I level up  
+**So that** leveling feels meaningful  
+
+**Acceptance Criteria:**
+- I get celebration notification when leveling up
+- Each level has visual badge/indicator
+- Level progression bar shows progress to next level
+- Points required for next level is clear
+- Level-specific features or benefits unlock (if applicable)
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+### Story 2.3: View Points Breakdown
+**As a** user  
+**I want to** see how I earned my points  
+**So that I can** understand the point system  
+
+**Acceptance Criteria:**
+- I can view point history/activity log
+- Each action shows points earned
+- Breakdown by source (items consumed, streaks, challenges, etc.)
+- Running total displayed
+- Filter by date range
+
+**Priority:** LOW  
+**Story Points:** 5
+
+---
+
+## Theme 3: Streaks & Consistency
+
+### Story 3.1: Track Zero Waste Streaks
+**As a** user  
+**I want to** track consecutive zero-waste days  
+**So that I can** build consistent habits  
+
+**Acceptance Criteria:**
+- Current streak displayed prominently
+- Streak increments automatically for zero-waste days
+- Streak breaks if I have waste on any day
+- Longest streak is recorded
+- Visual streak counter (🔥 fire emoji with number)
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 3.2: Streak Calendar View
+**As a** user  
+**I want to** see a calendar of my zero-waste days  
+**So that I can** visualize my consistency  
+
+**Acceptance Criteria:**
+- Calendar shows last 30 days
+- Zero-waste days are highlighted/colored differently
+- Days with waste shown in different color
+- Tap day to see details (waste rate, items saved)
+- Visual streak indicator on calendar
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+### Story 3.3: Streak Recovery & Motivation
+**As a** user  
+**I want** encouragement when my streak breaks  
+**So that I don't** feel discouraged  
+
+**Acceptance Criteria:**
+- Supportive message when streak breaks
+- Reminder of longest streak achievement
+- Encouragement to start new streak
+- No harsh penalties for broken streaks
+- Option to see what caused the break
+
+**Priority:** MEDIUM  
+**Story Points:** 3
+
+---
+
+### Story 3.4: Streak Milestones
+**As a** user  
+**I want** special recognition for streak milestones  
+**So that** maintaining streaks feels rewarding  
+
+**Acceptance Criteria:**
+- Milestones at 7, 30, 60, 100 days
+- Special badges for streak milestones
+- Bonus points for milestone achievements
+- Celebration notification for milestones
+- Milestone progress shown in streak view
+
+**Priority:** LOW  
+**Story Points:** 3
+
+---
+
+## Theme 4: Challenges
+
+### Story 4.1: View Available Challenges
+**As a** user  
+**I want to** see challenges I can join  
+**So that I can** set goals and compete  
+
+**Acceptance Criteria:**
+- I see list of active and upcoming challenges
+- Challenge types: Personal, Community, Seasonal
+- Details include: goal, duration, rewards, participants
+- I can filter by type
+- Start/end dates are clear
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 4.2: Join Community Challenges
+**As a** user  
+**I want to** join community challenges  
+**So that I can** work toward collective goals  
+
+**Acceptance Criteria:**
+- I can tap to join any active challenge
+- I see participant count
+- My progress contributes to community goal
+- I can see community's collective progress
+- I earn points for joining
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 4.3: Create Personal Challenges
+**As a** user  
+**I want to** create my own custom challenges  
+**So that I can** set personalized goals  
+
+**Acceptance Criteria:**
+- I can set custom goal (waste rate, savings, streak)
+- I can choose duration (days, weeks)
+- I can set my own reward points
+- Challenge tracks automatically
+- I can edit or cancel personal challenges
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+### Story 4.4: Track Challenge Progress
+**As a** user  
+**I want to** monitor my challenge progress  
+**So that I know** how close I am to completion  
+
+**Acceptance Criteria:**
+- Progress bar shows completion percentage
+- Current value vs target is displayed
+- Days remaining shown clearly
+- Progress updates in real-time
+- Notifications for milestones (25%, 50%, 75%)
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 4.5: Complete Challenges & Earn Rewards
+**As a** user  
+**I want to** receive rewards when completing challenges  
+**So that** challenges feel worthwhile  
+
+**Acceptance Criteria:**
+- Celebration notification when challenge completes
+- Points awarded automatically
+- Special badge unlocked (if applicable)
+- Challenge moved to "completed" section
+- I can share completion on social media
+
+**Priority:** HIGH  
+**Story Points:** 3
+
+---
+
+### Story 4.6: Seasonal Challenges
+**As a** user  
+**I want** special seasonal challenges throughout the year  
+**So that** the app stays fresh and engaging  
+
+**Acceptance Criteria:**
+- New Year challenge (January): "Zero Waste 2025" - 30 days
+- Easter challenge (April): "Easter Egg-cellent" - 1 week  
+- Earth Day challenge (April): Community environmental goal - 2 weeks
+- Summer challenge (June-Aug): Seasonal produce focus - 3 months
+- Thanksgiving challenge (November): Holiday meal waste reduction - 10 days
+- Holiday challenge (December): Festive season sustainability - 1 month
+- Limited-time badges for seasonal challenges
+- Seasonal themes and visuals
+- Automatic activation on scheduled dates
+
+**Priority:** MEDIUM  
+**Story Points:** 8
+
+---
+
+## Theme 5: Social & Community Features
+
+### Story 5.1: View Leaderboards
+**As a** user  
+**I want to** see how I rank against others  
+**So that I can** feel competitive and motivated  
+
+**Acceptance Criteria:**
+- Global leaderboard showing top users
+- Friends leaderboard for people I follow
+- Local leaderboard for my area (optional)
+- Rankings by: Total points, Waste rate, Savings
+- My current rank is highlighted
+- Filter by time period (week, month, all-time)
+
+**Priority:** MEDIUM  
+**Story Points:** 8
+
+---
+
+### Story 5.2: Friend System
+**As a** user  
+**I want to** connect with friends  
+**So that I can** compete and collaborate  
+
+**Acceptance Criteria:**
+- I can invite friends via email or link
+- I can see friends' progress (if they allow)
+- Friends appear in friend leaderboard
+- I can challenge friends directly
+- Privacy settings for what friends can see
+
+**Priority:** LOW  
+**Story Points:** 8
+
+---
+
+### Story 5.3: Community Goals
+**As a** user  
+**I want to** contribute to community-wide goals  
+**So that I can** be part of something bigger  
+
+**Acceptance Criteria:**
+- I can see total community impact (e.g., "1M lbs saved")
+- My actions contribute to community totals
+- Real-time community progress displayed
+- Milestones celebrated community-wide
+- Geographic or demographic group options
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+### Story 5.4: Share Progress
+**As a** user  
+**I want to** share my weekly/monthly progress  
+**So that I can** inspire others  
+
+**Acceptance Criteria:**
+- Generate shareable weekly summary
+- Visual includes key stats and achievements
+- Share to Twitter, Facebook, Instagram
+- Includes app link for referrals
+- Earn points for sharing
+
+**Priority:** LOW  
+**Story Points:** 5
+
+---
+
+## Theme 6: Points & Rewards System
+
+### Story 6.1: Earn Points for Actions
+**As a** user  
+**I want to** earn points for all waste-reducing actions  
+**So that** every effort is rewarded  
+
+**Acceptance Criteria:**
+- Points for: Items consumed (+10), Zero waste day (+100), Streaks (+15/day)
+- Points for: Savings milestones, Challenge completion, Social sharing
+- Bonus points for saving items from expiry (+25)
+- Points displayed immediately after action
+- Running total always visible
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 6.2: Point Multipliers & Bonuses
+**As a** user  
+**I want** bonus multipliers for special achievements  
+**So that** exceptional performance is rewarded more  
+
+**Acceptance Criteria:**
+- Weekend bonus (Sat-Sun): 1.5x points
+- Perfect week bonus: Extra 500 points
+- Challenge participation bonus: +20 points
+- Combo bonuses for multiple achievements in one day
+- Multipliers shown when active
+
+**Priority:** LOW  
+**Story Points:** 5
+
+---
+
+### Story 6.3: Redeem Points (Future)
+**As a** user  
+**I want to** redeem points for rewards  
+**So that** points have tangible value  
+
+**Acceptance Criteria:**
+- (Future feature) Point shop/marketplace
+- Rewards could include: Premium features, Badges, Themes
+- Clear point costs for each reward
+- Purchase history tracked
+- Points deducted on redemption
+
+**Priority:** LOW  
+**Story Points:** 8
+
+---
+
+## Theme 7: Hybrid Notification System
+
+### Story 7.1: Major Achievement Push Notifications
+**As a** user  
+**I want** push notifications for major achievements  
+**So that I can** celebrate big moments immediately  
+
+**Acceptance Criteria:**
+- First achievement ever unlocked → Push notification (one-time only)
+- Push notification shows achievement name and points
+- Includes "Celebrate!" and "Dismiss" actions
+- Can tap to view achievement details
+- All other regular achievements → In-app only
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 7.2: Level Up Push Notifications
+**As a** user  
+**I want** push notifications when I level up  
+**So that** I can celebrate this rare, significant milestone  
+
+**Acceptance Criteria:**
+- Level up triggers push notification (happens 1-2x per month)
+- Shows old level → new level
+- Includes "View Profile" and "Share" actions
+- Celebration animation when tapping notification
+- Also appears in in-app notification center
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 7.3: Challenge Completion Push Notifications
+**As a** user  
+**I want** push notifications when I complete challenges  
+**So that** I can celebrate my earned achievement  
+
+**Acceptance Criteria:**
+- Challenge completion → Push notification
+- Shows challenge name and points earned
+- Includes "View Challenges" and "Share" actions
+- Push only for completion, not progress updates
+- Progress updates (25%, 50%, 75%) → In-app only
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 7.4: Major Streak Milestone Push Notifications
+**As a** user  
+**I want** push notifications for major streak milestones  
+**So that** significant achievements are celebrated  
+
+**Acceptance Criteria:**
+- Push notifications for 7, 30, and 100-day streaks only
+- Shows streak count and encouragement
+- Includes "View Streak" and "Share" actions
+- Daily streak updates → In-app only
+- Celebration confetti animation
+
+**Priority:** MEDIUM  
+**Story Points:** 3
+
+---
+
+### Story 7.5: In-App Regular Achievement Notifications
+**As a** user  
+**I want** regular achievements shown in-app  
+**So that** I'm informed without notification spam  
+
+**Acceptance Criteria:**
+- Regular achievement unlocks → In-app badge + toast only
+- Brief celebration toast (5 seconds)
+- Notification center lists all achievements
+- Badge count shows unread count
+- Can tap to view details
+
+**Priority:** HIGH  
+**Story Points:** 3
+
+---
+
+### Story 7.6: In-App Challenge Progress Updates
+**As a** user  
+**I want** challenge progress shown in-app  
+**So that** I stay informed without interruptions  
+
+**Acceptance Criteria:**
+- Progress milestones (25%, 50%, 75%) → In-app only
+- Badge notification appears
+- No push notifications for progress
+- Completion → Push notification (separate story)
+
+**Priority:** MEDIUM  
+**Story Points:** 3
+
+---
+
+### Story 7.7: Notification Preferences
+**As a** user  
+**I want** to control gamification notifications  
+**So that** I can customize my experience  
+
+**Acceptance Criteria:**
+- Toggle gamification push notifications (default: ON)
+- Separate controls for: First achievement, Level ups, Challenges, Streak milestones
+- Can disable all gamification push (keeps expiry alerts)
+- In-app notifications always available
+- Quiet hours respected (22:00 - 07:00)
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 7.8: Notification Center
+**As a** user  
+**I want** a central place to view all notifications  
+**So that** I don't miss any updates  
+
+**Acceptance Criteria:**
+- Notification bell icon with badge count
+- Shows both push and in-app notifications
+- Categorized by type (achievements, challenges, levels, streaks)
+- Mark as read/unread
+- Clear all option
+- Tap to navigate to relevant screen
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 7.9: Celebration Toast Customization
+**As a** user  
+**I want** to customize celebration toasts  
+**So that** they match my preferences  
+
+**Acceptance Criteria:**
+- Enable/disable celebration toasts
+- Adjust duration (3-10 seconds)
+- Choose position (top/bottom, left/right)
+- Sound on/off
+- Preview settings
+
+**Priority:** LOW  
+**Story Points:** 3
+
+---
+
+## Theme 8: Profile & History
+
+### Story 8.1: View Gamification Profile
+**As a** user  
+**I want** a profile showing my gamification stats  
+**So that I can** see my overall progress  
+
+**Acceptance Criteria:**
+- Profile shows: Level, Total points, Current streak, Longest streak
+- Achievement count (X/Y unlocked)
+- Completed challenges count
+- Zero waste days total
+- Visual level badge prominently displayed
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 8.2: Achievement History
+**As a** user  
+**I want to** view my achievement unlock history  
+**So that I can** remember my journey  
+
+**Acceptance Criteria:**
+- Timeline of achievements unlocked
+- Shows unlock date for each
+- Filter by category or date range
+- Recent achievements shown first
+- Can search for specific achievements
+
+**Priority:** MEDIUM  
+**Story Points:** 3
+
+---
+
+### Story 8.3: Challenge History
+**As a** user  
+**I want to** see my completed challenges  
+**So that I can** track what I've accomplished  
+
+**Acceptance Criteria:**
+- List of all completed challenges
+- Shows completion date and final stats
+- Points earned from each challenge
+- Success rate for personal challenges
+- Can revisit challenge details
+
+**Priority:** LOW  
+**Story Points:** 3
+
+---
+
+### Story 8.4: Points Activity Log
+**As a** user  
+**I want** a detailed log of points earned  
+**So that I can** understand how I'm progressing  
+
+**Acceptance Criteria:**
+- Chronological list of point-earning actions
+- Shows date, action, points earned
+- Running total after each action
+- Filter by action type
+- Export capability
+
+**Priority:** LOW  
+**Story Points:** 3
+
+---
+
+## Theme 9: Customization & Settings
+
+### Story 9.1: Customize Gamification Experience
+**As a** user  
+**I want to** customize gamification features  
+**So that** it matches my preferences  
+
+**Acceptance Criteria:**
+- Toggle gamification on/off entirely
+- Enable/disable specific features (leaderboards, challenges)
+- Notification preferences per feature type
+- Privacy settings for social features
+- Visual theme preferences
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+### Story 9.2: Privacy Controls
+**As a** user  
+**I want** control over what others can see  
+**So that** I maintain privacy  
+
+**Acceptance Criteria:**
+- Choose profile visibility (public, friends, private)
+- Control leaderboard participation
+- Hide/show achievements to others
+- Opt out of community features
+- Anonymous participation option
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+### Story 9.3: Gamification Notification Preferences
+**As a** user  
+**I want to** control gamification notifications  
+**So that** I can balance celebration with peace  
+
+**Acceptance Criteria:**
+- **Gamification Push Notifications (toggle ON/OFF):**
+  - First achievement unlocked (one-time)
+  - Level ups (rare events)
+  - Challenge completions
+  - Major streak milestones (7, 30, 100 days)
+- Default: All gamification push enabled
+- Can disable all gamification push while keeping expiry alerts
+- In-app notifications always available (can't disable)
+- Celebration toast preferences (duration, sound, position)
+- Quiet hours apply to all push notifications
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+## Theme 10: Onboarding & Education
+
+### Story 10.1: Gamification Tutorial
+**As a** new user  
+**I want** to understand the gamification system  
+**So that I can** participate effectively  
+
+**Acceptance Criteria:**
+- Interactive tutorial on first use
+- Explains: Points, Levels, Achievements, Streaks, Challenges
+- Shows how to earn first achievement
+- Skippable but accessible later
+- Step-by-step walkthrough
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 10.2: Achievement Guide
+**As a** user  
+**I want** tips on how to unlock specific achievements  
+**So that I know** what to do  
+
+**Acceptance Criteria:**
+- Each achievement has "How to unlock" section
+- Tips and strategies provided
+- Related achievements suggested
+- Difficulty rating shown
+- Estimated time to unlock
+
+**Priority:** MEDIUM  
+**Story Points:** 3
+
+---
+
+### Story 10.3: Challenge Strategy Guide
+**As a** user  
+**I want** guidance on completing challenges  
+**So that I can** succeed  
+
+**Acceptance Criteria:**
+- Tips for each challenge type
+- Success strategies from other users
+- Common pitfalls to avoid
+- Recommended preparation
+- FAQ section
+
+**Priority:** LOW  
+**Story Points:** 3
+
+---
+
+## Non-Functional Requirements
+
+### Performance Stories
+
+**As a** user  
+**I want** gamification features to be fast  
+**So that** they don't slow down the app  
+
+**Acceptance Criteria:**
+- Points calculation < 50ms
+- Achievement check < 100ms
+- Leaderboard load < 1 second
+- No lag when unlocking achievements
+- Smooth animations (60fps)
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Reliability Stories
+
+**As a** user  
+**I want** my points and achievements to be accurate  
+**So that I can** trust the system  
+
+**Acceptance Criteria:**
+- Points awarded correctly for all actions
+- No duplicate achievement unlocks
+- Streak calculations are accurate
+- Data persists across app restarts
+- No point loss or corruption
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Fairness Stories
+
+**As a** user  
+**I want** the gamification system to be fair  
+**So that** I can compete on equal terms  
+
+**Acceptance Criteria:**
+- No exploits or cheating possible
+- Same rules for all users
+- Transparent point calculations
+- Appeals process for issues
+- Anti-gaming measures in place
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+## Story Dependencies and Flow
+
+```
+Onboarding (10.1) → Points System (6.1) → Levels (2.1, 2.2)
+                                         ↓
+                                  Achievements (1.1, 1.2, 1.3)
+                                         ↓
+                                  Streaks (3.1, 3.2, 3.3)
+                                         ↓
+                                  Challenges (4.1, 4.2, 4.3, 4.4, 4.5)
+                                         ↓
+                                  Social (5.1, 5.2, 5.3)
+                                         ↓
+                                  Profile & History (8.1, 8.2, 8.3)
+```
+
+## Implementation Priority
+
+### Sprint 1: Foundation (Weeks 1-2)
+- Stories 6.1, 2.1, 10.1 (Points system, levels, onboarding)
+- Stories 1.1, 1.2 (Achievement unlock and progress)
+
+### Sprint 2: Core Engagement (Weeks 3-4)
+- Stories 3.1, 3.2, 7.1, 7.2 (Streaks, notifications)
+- Stories 8.1, 2.2 (Profile, level rewards)
+
+### Sprint 3: Challenges (Weeks 5-6)
+- Stories 4.1, 4.2, 4.3, 4.4, 4.5 (Challenge system)
+- Stories 7.3, 7.4 (Challenge notifications)
+
+### Sprint 4: Social & Polish (Weeks 7-8)
+- Stories 5.1, 5.3, 1.3 (Leaderboards, sharing)
+- Stories 4.6 (Seasonal challenges)
+- Stories 9.1, 9.2 (Customization, privacy)
+
+### Future Sprints (Post-MVP)
+- Stories 5.2, 5.4, 5.5 (Friends, success stories)
+- Stories 6.2, 6.3 (Bonuses, redemption)
+- Stories 8.2, 8.3, 8.4 (History features)
+- Stories 9.3, 10.2, 10.3 (Advanced customization)
+
+---
+
+## Success Metrics
+
+### Engagement KPIs
+- **Daily active users:** 70%+ of users check gamification features daily
+- **Achievement unlock rate:** Average 2+ achievements per week per user
+- **Streak participation:** 60%+ of users maintain streaks
+- **Challenge participation:** 50%+ join at least one challenge per month
+- **Social sharing:** 20%+ share achievements
+
+### Behavioral Impact KPIs
+- **Waste reduction:** Users with active streaks have 30%+ better waste rates
+- **Retention:** Gamification users have 40%+ higher 30-day retention
+- **Consistency:** Challenge participants show 50%+ more consistent app usage
+- **Long-term engagement:** 70%+ of users still engaged after 90 days
+
+### User Satisfaction KPIs
+- **Feature rating:** > 4.7/5 stars
+- **Fun factor:** 80%+ find gamification enjoyable
+- **Motivation:** 75%+ say gamification keeps them engaged
+- **Competition:** 60%+ enjoy leaderboard competition
+
+### Business Metrics
+- **Viral coefficient:** Each user invites 0.5+ friends
+- **Premium conversion:** Gamification drives 25%+ of upgrades
+- **Community growth:** 1000+ participants in seasonal challenges
+- **Social reach:** 100,000+ social media impressions from shares
+
+---
+
+## Testing Scenarios
+
+### Achievement System Tests
+1. User performs action → Achievement unlocks → Points awarded correctly
+2. Multiple achievements unlock simultaneously → All displayed correctly
+3. Progress tracked accurately before unlock
+4. Duplicate prevention works (achievement unlocks only once)
+
+### Streak System Tests
+1. Zero waste day → Streak increments
+2. Day with waste → Streak resets to 0
+3. Longest streak tracked correctly
+4. Streak calendar displays accurate history
+
+### Challenge System Tests
+1. Join challenge → Progress tracked automatically
+2. Complete challenge → Rewards awarded
+3. Community challenge → Collective progress aggregates correctly
+4. Time-based challenges → Start/end dates enforced
+
+### Social System Tests
+1. Leaderboard ranks correctly based on points
+2. Friend system connects users properly
+3. Privacy settings respected
+4. Social shares include correct data
+
+### Points System Tests
+1. All actions award correct points
+2. Bonuses and multipliers calculate correctly
+3. Level thresholds trigger level-ups
+4. Point totals accurate and persistent
+
+---
+
+## Edge Cases & Error Handling
+
+### Achievement Edge Cases
+- **Rapid actions:** Multiple achievements unlock simultaneously
+- **Offline unlock:** Achievement unlocks while offline, syncs when online
+- **Duplicate criteria:** User meets criteria multiple times (only unlock once)
+- **Retroactive:** Achievements apply to historical data where appropriate
+
+### Streak Edge Cases
+- **Timezone changes:** Streak calculation respects user's timezone
+- **Midnight edge:** Actions near midnight counted for correct day
+- **App not opened:** Background check determines if streak continues
+- **Data corruption:** Streak recovery mechanism in place
+
+### Challenge Edge Cases
+- **Challenge ends while active:** Proper completion/failure handling
+- **User joins late:** Partial progress still tracked
+- **Community goal reached early:** All participants rewarded
+- **Conflicting challenges:** User can participate in multiple simultaneously
+
+### Social Edge Cases
+- **Leaderboard ties:** Tiebreaker logic (earliest achievement time)
+- **Privacy changes:** Immediate effect on visibility
+- **Deleted users:** Removed from leaderboards and friend lists
+- **Inappropriate content:** Reporting and moderation system
+
+---
+
+This gamification system transforms food waste reduction from a chore into an engaging, rewarding experience that drives long-term behavior change through achievements, competition, community, and consistent positive reinforcement.

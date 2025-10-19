@@ -1,0 +1,402 @@
+# Data Input & Scanning Module - User Stories
+
+## Epic: Efficient Food Item Entry
+*As a user, I want multiple ways to quickly add food items to my inventory so that I can reduce the time spent on data entry while maintaining accuracy.*
+
+---
+
+## Theme 1: Manual Item Entry
+
+### Story 1.1: Quick Manual Entry
+**As a** user  
+**I want to** manually add food items with smart defaults  
+**So that I can** quickly log items without having to think about every detail  
+
+**Acceptance Criteria:**
+- I can enter an item name and the app suggests a storage category
+- The app automatically calculates expiry date based on selected category
+- I can override any auto-suggested values if needed
+- Required fields are clearly marked and validated
+- The form saves my entry immediately after completion
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 1.2: Category-Based Smart Defaults
+**As a** user  
+**I want** the app to suggest appropriate expiry dates based on where I store items  
+**So that I don't** have to remember how long different foods typically last  
+
+**Acceptance Criteria:**
+- Selecting "Fridge" auto-suggests 7 days from today
+- Selecting "Freezer" auto-suggests 3 months from today
+- Selecting "Pantry" auto-suggests 12 months from today
+- I can easily adjust the suggested date if needed
+- The app remembers my previous choices for similar items
+
+**Priority:** HIGH  
+**Story Points:** 3
+
+---
+
+### Story 1.3: Historical Learning
+**As a** user  
+**I want** the app to learn from my previous entries  
+**So that** adding similar items becomes faster over time  
+
+**Acceptance Criteria:**
+- When I type an item name I've used before, the app suggests previous category and cost
+- The suggestions improve as I add more items
+- I can accept or override the suggestions
+- The learning works for partial matches (e.g., "Greek" suggests previous "Greek Yogurt" entries)
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+## Theme 2: Barcode Scanning
+
+### Story 2.1: Basic Barcode Scanning
+**As a** user  
+**I want to** scan product barcodes to auto-populate item details  
+**So that I can** avoid typing and reduce entry errors  
+
+**Acceptance Criteria:**
+- I can open the camera to scan a barcode
+- The app recognizes the barcode and fills in product name and brand
+- I can review and edit the auto-filled information before saving
+- The scanning interface is intuitive and provides clear feedback
+- I can switch back to manual entry if scanning fails
+
+**Priority:** HIGH  
+**Story Points:** 8
+
+---
+
+### Story 2.2: Scan Error Recovery
+**As a** user  
+**I want** helpful options when barcode scanning fails  
+**So that I can** still add my item without frustration  
+
+**Acceptance Criteria:**
+- If a product isn't found, I get a clear message with options
+- I can choose to "Enter Details Manually" or "Try Scanning Again"
+- The scanned barcode is preserved for reference in manual entry
+- Error messages are helpful and not technical
+- I never get stuck without a way to proceed
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 2.3: Scanning Limits for Free Users
+**As a** free user  
+**I want to** understand my daily scanning limits  
+**So that I can** plan my usage and consider upgrading if needed  
+
+**Acceptance Criteria:**
+- I can see how many scans I have left for the day
+- When I reach my limit, I get a clear explanation and upgrade option
+- I can still add items manually even after reaching the scan limit
+- The limit resets at midnight
+- I get a helpful notification when approaching my limit
+
+**Priority:** MEDIUM  
+**Story Points:** 3
+
+---
+
+### Story 2.4: Premium Scanning Benefits
+**As a** premium user  
+**I want** unlimited scans and enhanced product data  
+**So that I can** efficiently manage large shopping trips  
+
+**Acceptance Criteria:**
+- I have unlimited daily scans
+- I get access to more comprehensive product databases
+- Scan results include additional details like product descriptions
+- I see "Premium" indicators on enhanced features
+- Scanning is faster due to priority API access
+
+**Priority:** MEDIUM  
+**Story Points:** 3
+
+---
+
+## Theme 3: Bulk Operations
+
+### Story 3.1: Bulk Adding Session
+**As a** user  
+**I want to** add multiple items in one session  
+**So that I can** efficiently process my grocery shopping  
+
+**Acceptance Criteria:**
+- I can start a "bulk add" session
+- I can add multiple items using any input method (scan or manual)
+- I see a running list of items I'm adding
+- I can review all items before finalizing
+- I can remove items from the session before saving
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+### Story 3.2: Bulk Session Management
+**As a** user  
+**I want to** manage items within my bulk adding session  
+**So that I can** correct mistakes before saving everything  
+
+**Acceptance Criteria:**
+- I can edit any item in my current session
+- I can remove items from the session
+- I can see the total number of items and estimated value
+- I can save the entire session at once
+- I can cancel the session and start over if needed
+
+**Priority:** MEDIUM  
+**Story Points:** 3
+
+---
+
+### Story 3.3: Bulk Session Recovery
+**As a** user  
+**I want** my bulk session to be preserved if I close the app  
+**So that I don't** lose my work if interrupted  
+
+**Acceptance Criteria:**
+- My bulk session items are saved locally
+- When I reopen the app, I can continue where I left off
+- I get a notification that I have a saved session
+- I can choose to continue or start fresh
+- Sessions expire after 24 hours to avoid clutter
+
+**Priority:** LOW  
+**Story Points:** 3
+
+---
+
+## Theme 4: Input Method Selection
+
+### Story 4.1: Choosing Input Method
+**As a** user  
+**I want to** easily switch between scanning and manual entry  
+**So that I can** use the best method for each situation  
+
+**Acceptance Criteria:**
+- I can see clear options for "Scan" and "Manual" entry
+- I can switch methods at any time during entry
+- The interface makes it obvious which method I'm currently using
+- Each method is optimized for its specific use case
+- I can set a preferred default method
+
+**Priority:** HIGH  
+**Story Points:** 3
+
+---
+
+
+
+## Theme 5: Data Quality and Validation
+
+### Story 5.1: Form Validation
+**As a** user  
+**I want** helpful validation messages  
+**So that I can** correct errors before saving items  
+
+**Acceptance Criteria:**
+- Required fields are clearly marked
+- I get immediate feedback for invalid entries
+- Error messages are helpful and specific
+- I can't save incomplete items
+- The form guides me to fix issues step by step
+
+**Priority:** HIGH  
+**Story Points:** 3
+
+---
+
+### Story 5.2: Duplicate Detection
+**As a** user  
+**I want** to be warned if I'm adding duplicate items  
+**So that I can** avoid accidentally tracking the same item twice  
+
+**Acceptance Criteria:**
+- The app checks for similar items when I'm adding new ones
+- I get a warning if a very similar item exists
+- I can choose to add anyway or update the existing item
+- The duplicate detection works for both scanned and manual entries
+- I can merge items if they're actually the same
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+### Story 5.3: Data Correction
+**As a** user  
+**I want to** easily fix mistakes in my entries  
+**So that** my inventory data stays accurate  
+
+**Acceptance Criteria:**
+- I can edit item details immediately after adding them
+- I get a confirmation before saving changes
+- Invalid edits are caught and explained
+- I can revert changes if I make a mistake
+- Critical fields (like category) warn me about impacts
+
+**Priority:** HIGH  
+**Story Points:** 3
+
+---
+
+## Theme 6: Offline and Connectivity
+
+### Story 6.1: Offline Manual Entry
+**As a** user  
+**I want to** add items manually when offline  
+**So that** poor connectivity doesn't prevent me from using the app  
+
+**Acceptance Criteria:**
+- Manual entry works completely offline
+- Items are saved locally when offline
+- I get clear indication when I'm offline
+- Items sync when connectivity returns
+- No functionality is lost in offline mode for manual entry
+
+**Priority:** MEDIUM  
+**Story Points:** 5
+
+---
+
+### Story 6.2: Offline Scanning Limitations
+**As a** user  
+**I want to** understand what happens when I try to scan while offline  
+**So that I can** choose the appropriate input method  
+
+**Acceptance Criteria:**
+- I get a clear message that scanning requires internet
+- I'm offered manual entry as an alternative
+- Previously scanned items work from cache
+- I can still enter the barcode manually for future reference
+- The app gracefully handles network issues during scanning
+
+**Priority:** MEDIUM  
+**Story Points:** 3
+
+---
+
+## Theme 7: User Experience and Efficiency
+
+### Story 7.1: Fast Item Entry
+**As a** user  
+**I want** the item entry process to be as fast as possible  
+**So that I don't** get frustrated with slow data entry  
+
+**Acceptance Criteria:**
+- The add item screen loads in under 1 second
+- Barcode scanning responds within 2 seconds
+- Manual form submission completes in under 1 second
+- Smart suggestions appear as I type
+- I can use keyboard shortcuts for common actions
+
+**Priority:** HIGH  
+**Story Points:** 5
+
+---
+
+### Story 7.2: Keyboard Navigation
+**As a** user  
+**I want** efficient keyboard navigation  
+**So that I can** enter items quickly without constantly switching between keyboard and mouse  
+
+**Acceptance Criteria:**
+- I can navigate the form using tab and enter keys
+- Enter key submits the form when all required fields are complete
+- Auto-complete works with keyboard navigation (arrow keys to select)
+- Tab order follows logical form flow
+- Escape key cancels current action
+
+**Priority:** LOW  
+**Story Points:** 3
+
+---
+
+## Non-Functional Requirements
+
+### Performance Stories
+
+**As a** user  
+**I want** the input interface to be responsive  
+**So that** data entry feels smooth and efficient  
+
+- Form fields respond immediately to input
+- Barcode camera activates in under 1 second
+- API lookups complete within 3 seconds
+- Large bulk operations don't freeze the interface
+
+### Accessibility Stories
+
+**As a** user with accessibility needs  
+**I want** the input interface to work with assistive technologies  
+**So that** I can use all features regardless of my abilities  
+
+- All form elements have proper labels
+- Keyboard navigation works throughout
+- Screen readers can announce all important information
+- Color isn't the only way to convey information
+- Text size can be adjusted
+
+### Security Stories
+
+**As a** user  
+**I want** my data to be secure during input  
+**So that** my personal information is protected  
+
+- API calls are made over secure connections
+- No sensitive data is logged
+- Barcode images aren't stored
+- Local data is encrypted
+- Network failures don't expose data
+
+---
+
+## Story Dependencies and Priority
+
+### MVP (Phase 1)
+- Stories 1.1, 1.2, 2.1, 2.2, 4.1, 5.1, 7.1 (Core manual and scanning functionality)
+
+### Enhanced Features (Phase 2)
+- Stories 1.3, 2.3, 2.4, 3.1, 3.2, 5.2, 5.3, 6.1, 6.2 (Smart defaults, bulk operations, validation)
+
+### Polish (Phase 3)
+- Stories 3.3, 7.2 (Session management, keyboard efficiency)
+
+### Future Enhancements (Phase 4+)
+- Advanced computer vision for product recognition, AI-powered categorization
+
+---
+
+## Success Metrics
+
+### User Efficiency
+- Average time to add an item: < 30 seconds
+- Scan success rate: > 85%
+- Form completion rate: > 95%
+- User preference for scan vs manual based on item type
+
+### Data Quality
+- Validation error rate: < 5%
+- Duplicate detection accuracy: > 90%
+- Data correction frequency: < 10% of entries
+- API data confidence scores
+
+### User Satisfaction
+- Feature adoption rates for each input method
+- User feedback scores on input experience
+- Support tickets related to data entry issues
+- User retention correlation with input efficiency

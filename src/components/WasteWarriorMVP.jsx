@@ -37,7 +37,7 @@ const expiredItems = [
   { id: 102, name: 'Yogurt', emoji: '🥛', cost: 4.49, expiredDays: 1 },
 ];
 
-export default function WasteWarriorMVP() {
+function WasteWarriorMVP() {
   const [activeScreen, setActiveScreen] = useState('rewards');
   const [inventory, setInventory] = useState(initialInventory);
   const [expired, setExpired] = useState(expiredItems);

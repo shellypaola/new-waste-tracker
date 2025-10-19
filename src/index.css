@@ -1,3 +1,16 @@
+/* Prevent white flash behind splash screen */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+  min-height: 100vh;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Rest of your CSS... */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

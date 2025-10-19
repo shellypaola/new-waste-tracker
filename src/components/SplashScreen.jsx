@@ -2,10 +2,18 @@ import React from 'react';
 
 const SplashScreen = () => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center animate-fadeIn"
-         style={{
-           background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)'
-         }}>
+    <div 
+      className="fixed inset-0 flex items-center justify-center animate-fadeIn"
+      style={{
+        background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
+        zIndex: 9999,
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+      }}
+    >
       <div className="text-center animate-slideUp">
         {/* Logo Placeholder - W with leaf */}
         <div className="mb-8 flex justify-center">

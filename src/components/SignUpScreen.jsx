@@ -19,38 +19,27 @@ const SignUpScreen = ({ onComplete }) => {
   };
 
   return (
-    <div 
-      className="min-h-screen flex flex-col"
-      style={{
-        background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)'
-      }}
-    >
-      <div className="px-6 pt-8 pb-4">
-        <div className="flex gap-2">
-          <div 
-            className="h-1 flex-1 rounded-full transition-all"
-            style={{ backgroundColor: step >= 1 ? 'white' : 'rgba(255,255,255,0.3)' }}
-          />
-          <div 
-            className="h-1 flex-1 rounded-full transition-all"
-            style={{ backgroundColor: step >= 2 ? 'white' : 'rgba(255,255,255,0.3)' }}
-          />
+    <div style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '32px 24px 16px' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ height: '4px', flex: 1, borderRadius: '9999px', backgroundColor: step >= 1 ? 'white' : 'rgba(255,255,255,0.3)', transition: 'all 0.3s' }}></div>
+          <div style={{ height: '4px', flex: 1, borderRadius: '9999px', backgroundColor: step >= 2 ? 'white' : 'rgba(255,255,255,0.3)', transition: 'all 0.3s' }}></div>
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col justify-center px-6 pb-20">
-        {step === 1 && (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 24px 80px' }}>
+        {step === 1 ? (
           <div className="animate-slideUp">
-            <div className="text-6xl mb-6 text-center">👋</div>
-            <h1 className="text-4xl font-bold text-white mb-4 text-center">
+            <div style={{ fontSize: '60px', marginBottom: '24px', textAlign: 'center' }}>👋</div>
+            <h1 style={{ fontSize: '36px', fontWeight: 'bold', color: 'white', marginBottom: '16px', textAlign: 'center' }}>
               Welcome to Waste Warrior
             </h1>
-            <p className="text-lg text-blue-100 text-center mb-12">
+            <p style={{ fontSize: '18px', color: '#DBEAFE', textAlign: 'center', marginBottom: '48px' }}>
               Track. Reduce. Give Back
             </p>
 
-            <div className="mb-8">
-              <label className="block text-white text-sm font-medium mb-3">
+            <div style={{ marginBottom: '32px' }}>
+              <label style={{ display: 'block', color: 'white', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>
                 What is your name?
               </label>
               <input
@@ -58,8 +47,7 @@ const SignUpScreen = ({ onComplete }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your name"
-                className="w-full px-6 py-4 rounded-2xl text-lg border-2 border-transparent focus:border-white outline-none transition-all"
-                style={{ backgroundColor: 'rgba(255,255,255,0.95)' }}
+                style={{ width: '100%', padding: '16px 24px', borderRadius: '16px', fontSize: '18px', border: '2px solid transparent', outline: 'none', backgroundColor: 'rgba(255,255,255,0.95)' }}
                 autoFocus
                 onKeyPress={(e) => e.key === 'Enter' && handleContinue()}
               />
@@ -68,66 +56,59 @@ const SignUpScreen = ({ onComplete }) => {
             <button
               onClick={handleContinue}
               disabled={!name.trim()}
-              className="w-full py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 transition-all"
-              style={{
-                backgroundColor: name.trim() ? 'white' : 'rgba(255,255,255,0.3)',
-                color: name.trim() ? '#3B82F6' : 'rgba(255,255,255,0.5)',
-                cursor: name.trim() ? 'pointer' : 'not-allowed'
-              }}
+              style={{ width: '100%', padding: '16px', borderRadius: '16px', fontWeight: '600', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', backgroundColor: name.trim() ? 'white' : 'rgba(255,255,255,0.3)', color: name.trim() ? '#3B82F6' : 'rgba(255,255,255,0.5)', cursor: name.trim() ? 'pointer' : 'not-allowed', border: 'none' }}
             >
               Continue
               <ArrowRight size={20} />
             </button>
           </div>
-        )}
-
-        {step === 2 && (
+        ) : (
           <div className="animate-slideUp">
-            <div className="text-6xl mb-6 text-center">🎯</div>
-            <h1 className="text-3xl font-bold text-white mb-4 text-center">
+            <div style={{ fontSize: '60px', marginBottom: '24px', textAlign: 'center' }}>🎯</div>
+            <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: 'white', marginBottom: '16px', textAlign: 'center' }}>
               Nice to meet you, {name}!
             </h1>
-            <p className="text-lg text-blue-100 text-center mb-12">
+            <p style={{ fontSize: '18px', color: '#DBEAFE', textAlign: 'center', marginBottom: '48px' }}>
               Let us help you reduce food waste and save money
             </p>
 
-            <div className="space-y-4 mb-8">
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-5 border border-white border-opacity-30">
-                <div className="flex items-start gap-4">
-                  <div className="text-3xl">📊</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
+              <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(255,255,255,0.3)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <div style={{ fontSize: '28px' }}>📊</div>
                   <div>
-                    <h3 className="text-white font-semibold text-lg mb-1">
+                    <h3 style={{ color: 'white', fontWeight: '600', fontSize: '18px', marginBottom: '4px' }}>
                       Track Your Food
                     </h3>
-                    <p className="text-blue-100 text-sm">
+                    <p style={{ color: '#DBEAFE', fontSize: '14px' }}>
                       Keep tabs on everything in your fridge, freezer, and pantry
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-5 border border-white border-opacity-30">
-                <div className="flex items-start gap-4">
-                  <div className="text-3xl">💰</div>
+              <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(255,255,255,0.3)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <div style={{ fontSize: '28px' }}>💰</div>
                   <div>
-                    <h3 className="text-white font-semibold text-lg mb-1">
+                    <h3 style={{ color: 'white', fontWeight: '600', fontSize: '18px', marginBottom: '4px' }}>
                       Save Money
                     </h3>
-                    <p className="text-blue-100 text-sm">
+                    <p style={{ color: '#DBEAFE', fontSize: '14px' }}>
                       See exactly how much you are wasting and start saving
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-5 border border-white border-opacity-30">
-                <div className="flex items-start gap-4">
-                  <div className="text-3xl">❤️</div>
+              <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(255,255,255,0.3)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <div style={{ fontSize: '28px' }}>❤️</div>
                   <div>
-                    <h3 className="text-white font-semibold text-lg mb-1">
+                    <h3 style={{ color: 'white', fontWeight: '600', fontSize: '18px', marginBottom: '4px' }}>
                       Give Back
                     </h3>
-                    <p className="text-blue-100 text-sm">
+                    <p style={{ color: '#DBEAFE', fontSize: '14px' }}>
                       Turn your savings into meals for families in need
                     </p>
                   </div>
@@ -137,10 +118,16 @@ const SignUpScreen = ({ onComplete }) => {
 
             <button
               onClick={handleFinish}
-              className="w-full py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 transition-all"
-              style={{
-                backgroundColor: 'white',
-                color: '#3B82F6'
-              }}
+              style={{ width: '100%', padding: '16px', borderRadius: '16px', fontWeight: '600', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', backgroundColor: 'white', color: '#3B82F6', border: 'none', cursor: 'pointer' }}
             >
               Get Started
+              <ArrowRight size={20} />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default SignUpScreen;

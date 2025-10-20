@@ -8,16 +8,16 @@
     <title>Waste Warrior</title>
     
     <style>
-      /* Initial Loading Screen - Matches your splash screen */
-      #root:empty::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
         background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
-        z-index: 9999;
+      }
+      
+      #root {
+        background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+        min-height: 100vh;
       }
       
       #root:empty::after {
@@ -32,21 +32,10 @@
         border-top-color: white;
         border-radius: 50%;
         animation: spin 1s linear infinite;
-        z-index: 10000;
       }
       
       @keyframes spin {
         to { transform: translate(-50%, -50%) rotate(360deg); }
-      }
-      
-      /* Hide scrollbar during load */
-      body {
-        margin: 0;
-        overflow: hidden;
-      }
-      
-      #root {
-        overflow: auto;
       }
     </style>
   </head>
@@ -55,4 +44,3 @@
     <div id="root"></div>
   </body>
 </html>
-

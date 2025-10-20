@@ -10,11 +10,6 @@ html, body {
 @tailwind components;
 @tailwind utilities;
 
-/* Rest of your CSS... */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -26,6 +21,7 @@ body {
   -webkit-font-smoothing: antialiased;
   background-color: #F9FAFB;
 }
+
 /* Splash Screen Animations */
 @keyframes fadeIn {
   from {

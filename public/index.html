@@ -55,26 +55,4 @@
     <div id="root"></div>
   </body>
 </html>
-```
 
-**Commit the changes.**
-
----
-
-## **What This Does:**
-
-1. **Shows a blue gradient background** immediately when page loads
-2. **Shows a simple white spinner** in the center
-3. **Once React loads**, it smoothly transitions to your custom splash screen with the logo
-4. **Then after 3 seconds**, it shows your main app
-
----
-
-## **The Flow Will Be:**
-```
-Initial Load (0.5-1 sec)     Your Splash Screen (3 sec)     Main App
-┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
-│  Blue gradient  │    →    │    W + 🌱      │    →    │   Dashboard     │
-│  White spinner  │         │  WASTE WARRIOR  │         │   Content       │
-│                 │         │  Track.Reduce   │         │                 │
-└─────────────────┘         └─────────────────┘         └─────────────────┘

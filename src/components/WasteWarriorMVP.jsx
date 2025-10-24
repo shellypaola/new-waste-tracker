@@ -37,8 +37,8 @@ const expiredItems = [
   { id: 102, name: 'Yogurt', emoji: '🥛', cost: 4.49, expiredDays: 1 },
 ];
 
-function WasteWarriorMVP({ userName }) {
-  const [activeScreen, setActiveScreen] = useState('dashboard');
+export default function WasteWarriorMVP() {
+  const [activeScreen, setActiveScreen] = useState('rewards');
   const [inventory, setInventory] = useState(initialInventory);
   const [expired, setExpired] = useState(expiredItems);
   const [activeCategory, setActiveCategory] = useState('all');
@@ -46,6 +46,7 @@ function WasteWarriorMVP({ userName }) {
   const [showConsumeModal, setShowConsumeModal] = useState(false);
   const [showOpenPantryModal, setShowOpenPantryModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showEditExpiredModal, setShowEditExpiredModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [consumePercentage, setConsumePercentage] = useState(100);
   const [openItemCategory, setOpenItemCategory] = useState('fridge');
@@ -106,6 +107,26 @@ function WasteWarriorMVP({ userName }) {
       item.id === selectedItem.id ? selectedItem : item
     ));
     setShowEditModal(false);
+    setSelectedItem(null);
+  };
+  
+  const handleMarkExpiredAsWasted = (item) => {
+    // Mark entire item as wasted (100% waste, 0% consumed)
+    setTotalWasted(totalWasted + item.cost);
+    setExpired(expired.filter(exp => exp.id !== item.id));
+  };
+  
+  const handleEditExpiredItem = (item) => {
+    setSelectedItem(item);
+    setShowEditExpiredModal(true);
+  };
+  
+  const saveExpiredItemEdit = () => {
+    // Update the expired item's expiry date
+    setExpired(expired.map(item => 
+      item.id === selectedItem.id ? selectedItem : item
+    ));
+    setShowEditExpiredModal(false);
     setSelectedItem(null);
   };
   
@@ -197,14 +218,7 @@ function WasteWarriorMVP({ userName }) {
     <div className="h-full overflow-y-auto pb-24" style={{ WebkitOverflowScrolling: 'touch' }}>
       <div className="px-4 pt-6 pb-4">
         <div className="flex items-center justify-between mb-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-1" style={{ color: colors.text }}>
-            Hi {userName || 'there'}! 👋
-          </h1>
-          <p className="text-base" style={{ color: colors.textSecondary }}>
-            Here's your week at a glance
-          </p>
-        </div>         
+          <h1 className="text-2xl font-bold" style={{ color: colors.text }}>This Week's Impact</h1>
           <button className="p-2 rounded-full" style={{ backgroundColor: colors.bgGray }}>
             <Bell size={20} style={{ color: colors.text }} />
           </button>
@@ -261,7 +275,14 @@ function WasteWarriorMVP({ userName }) {
                     <div className="text-xs" style={{ color: colors.textLight }}>Expired {item.expiredDays}d ago • ${item.cost.toFixed(2)}</div>
                   </div>
                 </div>
-                <Trash2 size={18} style={{ color: colors.textLight }} />
+                <div className="flex items-center gap-2">
+                  <button onClick={() => handleEditExpiredItem(item)} className="p-2 rounded-lg hover:bg-gray-200 transition-colors">
+                    <Edit2 size={18} style={{ color: colors.textLight }} />
+                  </button>
+                  <button onClick={() => handleMarkExpiredAsWasted(item)} className="p-2 rounded-lg hover:bg-red-100 transition-colors">
+                    <Trash2 size={18} style={{ color: colors.textLight }} />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -971,6 +992,36 @@ function WasteWarriorMVP({ userName }) {
         </div>
       )}
 
+      {showEditExpiredModal && selectedItem && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
+            <div className="text-center mb-6">
+              <div className="text-4xl mb-3">{selectedItem.emoji}</div>
+              <h3 className="text-xl font-bold mb-2" style={{ color: colors.text }}>Edit Expiry Date</h3>
+              <p className="text-sm" style={{ color: colors.textSecondary }}>Update when <strong>{selectedItem.name}</strong> expired</p>
+            </div>
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Days Ago (Expired)</label>
+              <input 
+                type="number" 
+                min="0"
+                value={selectedItem.expiredDays} 
+                onChange={(e) => setSelectedItem({ ...selectedItem, expiredDays: parseInt(e.target.value) || 0 })} 
+                className="w-full px-4 py-3 rounded-xl border-2 text-base" 
+                style={{ borderColor: colors.border }} 
+              />
+              <p className="text-xs mt-1" style={{ color: colors.textLight }}>
+                Expired on {new Date(Date.now() - selectedItem.expiredDays * 24 * 60 * 60 * 1000).toLocaleDateString()}
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => { setShowEditExpiredModal(false); setSelectedItem(null); }} className="flex-1 py-3 rounded-xl font-medium" style={{ backgroundColor: colors.bgGray, color: colors.text }}>Cancel</button>
+              <button onClick={saveExpiredItemEdit} className="flex-1 py-3 rounded-xl font-medium text-white" style={{ backgroundColor: colors.primary }}>Save Changes</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {addMethod === 'manual' && (
         <div className="fixed inset-0 bg-white z-50 flex flex-col">
           <div className="px-4 pt-6 pb-4 border-b" style={{ borderColor: colors.border }}>
@@ -1081,5 +1132,3 @@ function WasteWarriorMVP({ userName }) {
     </div>
   );
 }
-
-export default WasteWarriorMVP;

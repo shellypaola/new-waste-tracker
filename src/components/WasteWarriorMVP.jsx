@@ -175,9 +175,10 @@ export default function WasteWarriorMVP() {
     alert('Barcode scanned! Product details loaded.');
   };
 
-  const filteredInventory = activeCategory === 'all' 
+  const filteredInventory = (activeCategory === 'all' 
     ? inventory 
-    : inventory.filter(item => item.category === activeCategory);
+    : inventory.filter(item => item.category === activeCategory))
+    .sort((a, b) => a.daysUntilExpiry - b.daysUntilExpiry); // Sort by expiry: soonest first
 
   const ItemCard = ({ item }) => {
     const getStatusText = () => {

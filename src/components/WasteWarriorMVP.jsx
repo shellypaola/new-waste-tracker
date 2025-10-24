@@ -117,15 +117,32 @@ export default function WasteWarriorMVP() {
   };
   
   const handleEditExpiredItem = (item) => {
-    setSelectedItem(item);
+    // Convert expiredDays to daysUntilExpiry (negative value)
+    const itemWithDaysUntilExpiry = {
+      ...item,
+      daysUntilExpiry: -(item.expiredDays || 0)
+    };
+    setSelectedItem(itemWithDaysUntilExpiry);
     setShowEditExpiredModal(true);
   };
   
   const saveExpiredItemEdit = () => {
-    // Update the expired item's expiry date
-    setExpired(expired.map(item => 
-      item.id === selectedItem.id ? selectedItem : item
-    ));
+    // If the new expiry is in the future (positive days), move back to active inventory
+    if (selectedItem.daysUntilExpiry > 0) {
+      // Remove from expired and add back to inventory
+      setExpired(expired.filter(item => item.id !== selectedItem.id));
+      setInventory([...inventory, {
+        ...selectedItem,
+        // Convert expired item structure back to inventory item structure
+        status: selectedItem.status || 'sealed'
+      }]);
+    } else {
+      // Still expired, just update the expiry date in expired list
+      const expiredDays = Math.abs(selectedItem.daysUntilExpiry);
+      setExpired(expired.map(item => 
+        item.id === selectedItem.id ? { ...item, expiredDays } : item
+      ));
+    }
     setShowEditExpiredModal(false);
     setSelectedItem(null);
   };
@@ -997,21 +1014,27 @@ export default function WasteWarriorMVP() {
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
             <div className="text-center mb-6">
               <div className="text-4xl mb-3">{selectedItem.emoji}</div>
-              <h3 className="text-xl font-bold mb-2" style={{ color: colors.text }}>Edit Expiry Date</h3>
-              <p className="text-sm" style={{ color: colors.textSecondary }}>Update when <strong>{selectedItem.name}</strong> expired</p>
+              <h3 className="text-xl font-bold mb-2" style={{ color: colors.text }}>Update Expiry Date</h3>
+              <p className="text-sm" style={{ color: colors.textSecondary }}>Set the correct expiry date for <strong>{selectedItem.name}</strong></p>
             </div>
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Days Ago (Expired)</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Days Until Expiry</label>
               <input 
                 type="number" 
-                min="0"
-                value={selectedItem.expiredDays} 
-                onChange={(e) => setSelectedItem({ ...selectedItem, expiredDays: parseInt(e.target.value) || 0 })} 
+                value={selectedItem.daysUntilExpiry !== undefined ? selectedItem.daysUntilExpiry : -(selectedItem.expiredDays || 0)} 
+                onChange={(e) => setSelectedItem({ ...selectedItem, daysUntilExpiry: parseInt(e.target.value) || 0 })} 
                 className="w-full px-4 py-3 rounded-xl border-2 text-base" 
                 style={{ borderColor: colors.border }} 
               />
               <p className="text-xs mt-1" style={{ color: colors.textLight }}>
-                Expired on {new Date(Date.now() - selectedItem.expiredDays * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                {(selectedItem.daysUntilExpiry !== undefined ? selectedItem.daysUntilExpiry : -(selectedItem.expiredDays || 0)) > 0 
+                  ? `Expires on ${new Date(Date.now() + (selectedItem.daysUntilExpiry || 0) * 24 * 60 * 60 * 1000).toLocaleDateString()}`
+                  : `Expired on ${new Date(Date.now() + (selectedItem.daysUntilExpiry || 0) * 24 * 60 * 60 * 1000).toLocaleDateString()}`
+                }
+              </p>
+              <p className="text-xs mt-2 p-2 rounded-lg" style={{ backgroundColor: colors.primaryLight, color: colors.primary }}>
+                💡 Positive numbers = Future date (moves back to inventory)<br/>
+                Negative/Zero = Already expired
               </p>
             </div>
             <div className="flex gap-3">

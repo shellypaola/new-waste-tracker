@@ -22,14 +22,14 @@ const colors = {
 };
 
 const initialInventory = [
-  { id: 1, name: 'Milk', emoji: '🥛', category: 'fridge', daysUntilExpiry: 0.5, cost: 4.99, status: 'sealed' },
-  { id: 2, name: 'Strawberries', emoji: '🍓', category: 'fridge', daysUntilExpiry: 2, cost: 5.99, status: 'sealed' },
-  { id: 3, name: 'Carrots', emoji: '🥕', category: 'fridge', daysUntilExpiry: 7, cost: 3.49, status: 'sealed' },
-  { id: 4, name: 'Chicken', emoji: '🍗', category: 'fridge', daysUntilExpiry: 1, cost: 12.99, status: 'sealed' },
-  { id: 5, name: 'Ice Cream', emoji: '🍨', category: 'freezer', daysUntilExpiry: 90, cost: 6.99, status: 'sealed' },
-  { id: 6, name: 'Frozen Pizza', emoji: '🍕', category: 'freezer', daysUntilExpiry: 120, cost: 8.99, status: 'sealed' },
-  { id: 7, name: 'Pasta', emoji: '🍝', category: 'pantry', daysUntilExpiry: 180, cost: 2.99, status: 'sealed' },
-  { id: 8, name: 'Rice', emoji: '🍚', category: 'pantry', daysUntilExpiry: 365, cost: 9.99, status: 'sealed' },
+  { id: 1, name: 'Milk', emoji: '🥛', category: 'fridge', daysUntilExpiry: 0.5, cost: 4.99, status: 'sealed', quantity: 2 },
+  { id: 2, name: 'Strawberries', emoji: '🍓', category: 'fridge', daysUntilExpiry: 2, cost: 5.99, status: 'sealed', quantity: 1 },
+  { id: 3, name: 'Carrots', emoji: '🥕', category: 'fridge', daysUntilExpiry: 7, cost: 3.49, status: 'sealed', quantity: 3 },
+  { id: 4, name: 'Chicken', emoji: '🍗', category: 'fridge', daysUntilExpiry: 1, cost: 12.99, status: 'sealed', quantity: 1 },
+  { id: 5, name: 'Ice Cream', emoji: '🍨', category: 'freezer', daysUntilExpiry: 90, cost: 6.99, status: 'sealed', quantity: 2 },
+  { id: 6, name: 'Frozen Pizza', emoji: '🍕', category: 'freezer', daysUntilExpiry: 120, cost: 8.99, status: 'sealed', quantity: 4 },
+  { id: 7, name: 'Pasta', emoji: '🍝', category: 'pantry', daysUntilExpiry: 180, cost: 2.99, status: 'sealed', quantity: 5 },
+  { id: 8, name: 'Rice', emoji: '🍚', category: 'pantry', daysUntilExpiry: 365, cost: 9.99, status: 'sealed', quantity: 1 },
 ];
 
 const expiredItems = [
@@ -44,11 +44,13 @@ export default function WasteWarriorMVP() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [totalWasted, setTotalWasted] = useState(8.48);
   const [showConsumeModal, setShowConsumeModal] = useState(false);
+  const [showQuantityModal, setShowQuantityModal] = useState(false);
   const [showOpenPantryModal, setShowOpenPantryModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showEditExpiredModal, setShowEditExpiredModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [consumePercentage, setConsumePercentage] = useState(100);
+  const [consumeQuantity, setConsumeQuantity] = useState(1);
   const [openItemCategory, setOpenItemCategory] = useState('fridge');
   const [openItemDays, setOpenItemDays] = useState(7);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
@@ -60,7 +62,8 @@ export default function WasteWarriorMVP() {
     emoji: '🍎',
     category: 'fridge',
     cost: '',
-    daysUntilExpiry: 7
+    daysUntilExpiry: 7,
+    quantity: 1
   });
   
   const atRiskItems = inventory.filter(item => item.daysUntilExpiry <= 3).sort((a, b) => a.daysUntilExpiry - b.daysUntilExpiry);
@@ -84,17 +87,41 @@ export default function WasteWarriorMVP() {
   
   const handleMarkAsFinished = (item) => {
     setSelectedItem(item);
+    setConsumeQuantity(item.quantity || 1);
     setConsumePercentage(100);
-    setShowConsumeModal(true);
+    setShowQuantityModal(true);
   };
   
   const confirmConsume = () => {
-    const wastedAmount = (selectedItem.cost * (100 - consumePercentage)) / 100;
+    // Calculate waste based on quantity and percentage
+    const costPerUnit = selectedItem.cost / (selectedItem.quantity || 1);
+    const wastedAmount = (costPerUnit * consumeQuantity * (100 - consumePercentage)) / 100;
     setTotalWasted(totalWasted + wastedAmount);
-    setInventory(inventory.filter(item => item.id !== selectedItem.id));
+    
+    // Update inventory - reduce quantity or remove item
+    const remainingQuantity = (selectedItem.quantity || 1) - consumeQuantity;
+    if (remainingQuantity <= 0) {
+      // Remove item completely
+      setInventory(inventory.filter(item => item.id !== selectedItem.id));
+    } else {
+      // Reduce quantity
+      setInventory(inventory.map(item => 
+        item.id === selectedItem.id 
+          ? { ...item, quantity: remainingQuantity }
+          : item
+      ));
+    }
+    
     setShowConsumeModal(false);
+    setShowQuantityModal(false);
     setSelectedItem(null);
     setConsumePercentage(100);
+    setConsumeQuantity(1);
+  };
+  
+  const proceedToPercentageModal = () => {
+    setShowQuantityModal(false);
+    setShowConsumeModal(true);
   };
   
   const handleEdit = (item) => {
@@ -117,32 +144,34 @@ export default function WasteWarriorMVP() {
   };
   
   const handleEditExpiredItem = (item) => {
-    // Convert expiredDays to daysUntilExpiry (negative value)
-    const itemWithDaysUntilExpiry = {
+    // For expired items, we'll add days to extend their life
+    const itemWithExtensionDays = {
       ...item,
-      daysUntilExpiry: -(item.expiredDays || 0)
+      extensionDays: 3 // Default: add 3 days
     };
-    setSelectedItem(itemWithDaysUntilExpiry);
+    setSelectedItem(itemWithExtensionDays);
     setShowEditExpiredModal(true);
   };
   
   const saveExpiredItemEdit = () => {
-    // If the new expiry is in the future (positive days), move back to active inventory
-    if (selectedItem.daysUntilExpiry > 0) {
-      // Remove from expired and add back to inventory
-      setExpired(expired.filter(item => item.id !== selectedItem.id));
-      setInventory([...inventory, {
-        ...selectedItem,
-        // Convert expired item structure back to inventory item structure
-        status: selectedItem.status || 'sealed'
-      }]);
-    } else {
-      // Still expired, just update the expiry date in expired list
-      const expiredDays = Math.abs(selectedItem.daysUntilExpiry);
-      setExpired(expired.map(item => 
-        item.id === selectedItem.id ? { ...item, expiredDays } : item
-      ));
-    }
+    // Adding days always moves item back to active inventory
+    const daysToAdd = selectedItem.extensionDays || 3;
+    
+    // Remove from expired list
+    setExpired(expired.filter(item => item.id !== selectedItem.id));
+    
+    // Add back to inventory with new expiry date
+    setInventory([...inventory, {
+      id: selectedItem.id,
+      name: selectedItem.name,
+      emoji: selectedItem.emoji,
+      category: selectedItem.category || 'fridge',
+      cost: selectedItem.cost,
+      daysUntilExpiry: daysToAdd,
+      status: selectedItem.status || 'sealed',
+      quantity: selectedItem.quantity || 1
+    }]);
+    
     setShowEditExpiredModal(false);
     setSelectedItem(null);
   };
@@ -155,11 +184,12 @@ export default function WasteWarriorMVP() {
       category: newItem.category,
       cost: parseFloat(newItem.cost) || 0,
       daysUntilExpiry: parseInt(newItem.daysUntilExpiry) || 7,
-      status: 'sealed'
+      status: 'sealed',
+      quantity: parseInt(newItem.quantity) || 1
     };
     setInventory([...inventory, item]);
     setAddMethod(null);
-    setNewItem({ name: '', emoji: '🍎', category: 'fridge', cost: '', daysUntilExpiry: 7 });
+    setNewItem({ name: '', emoji: '🍎', category: 'fridge', cost: '', daysUntilExpiry: 7, quantity: 1 });
   };
   
   const handleScanBarcode = () => {
@@ -168,7 +198,8 @@ export default function WasteWarriorMVP() {
       emoji: '🥛',
       category: 'fridge',
       cost: 4.99,
-      daysUntilExpiry: 7
+      daysUntilExpiry: 7,
+      quantity: 1
     };
     setNewItem(scannedItem);
     setDailyScans(dailyScans + 1);
@@ -202,8 +233,15 @@ export default function WasteWarriorMVP() {
           <div className="flex items-center gap-3">
             <span className="text-3xl">{item.emoji}</span>
             <div>
-              <div className="font-semibold text-base" style={{ color: colors.text }}>{item.name}</div>
-              <div className="text-sm" style={{ color: colors.textSecondary }}>${item.cost.toFixed(2)}</div>
+              <div className="flex items-center gap-2">
+                <div className="font-semibold text-base" style={{ color: colors.text }}>{item.name}</div>
+                {(item.quantity && item.quantity > 1) && (
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-md" style={{ backgroundColor: colors.primaryLight, color: colors.primary }}>
+                    x{item.quantity}
+                  </span>
+                )}
+              </div>
+              <div className="text-sm" style={{ color: colors.textSecondary }}>${item.cost.toFixed(2)}{item.quantity > 1 ? ` (${(item.cost / item.quantity).toFixed(2)}/unit)` : ''}</div>
             </div>
           </div>
           <button onClick={() => handleEdit(item)}>
@@ -942,13 +980,116 @@ export default function WasteWarriorMVP() {
         </div>
       )}
 
+      {showQuantityModal && selectedItem && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
+            <div className="text-center mb-6">
+              <div className="text-5xl mb-4">{selectedItem.emoji}</div>
+              <h3 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>How many did you use?</h3>
+              <p className="text-base" style={{ color: colors.textSecondary }}>
+                You have {selectedItem.quantity || 1} {(selectedItem.quantity || 1) === 1 ? 'unit' : 'units'} of {selectedItem.name}
+              </p>
+            </div>
+            <div className="mb-6">
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <button
+                  onClick={() => setConsumeQuantity(Math.max(1, consumeQuantity - 1))}
+                  disabled={consumeQuantity <= 1}
+                  className="w-[52px] h-[52px] rounded-xl font-bold text-2xl flex items-center justify-center transition-all"
+                  style={{ 
+                    backgroundColor: colors.bgGray,
+                    color: colors.text,
+                    opacity: consumeQuantity <= 1 ? 0.4 : 1,
+                    cursor: consumeQuantity <= 1 ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  −
+                </button>
+                <div 
+                  className="min-w-[80px] px-6 h-14 rounded-xl flex items-center justify-center font-bold text-3xl"
+                  style={{ 
+                    backgroundColor: colors.primaryLight,
+                    color: colors.primary
+                  }}
+                >
+                  {consumeQuantity}
+                </div>
+                <button
+                  onClick={() => setConsumeQuantity(Math.min(selectedItem.quantity || 1, consumeQuantity + 1))}
+                  disabled={consumeQuantity >= (selectedItem.quantity || 1)}
+                  className="w-[52px] h-[52px] rounded-xl font-bold text-2xl flex items-center justify-center transition-all"
+                  style={{ 
+                    backgroundColor: colors.bgGray,
+                    color: colors.text,
+                    opacity: consumeQuantity >= (selectedItem.quantity || 1) ? 0.4 : 1,
+                    cursor: consumeQuantity >= (selectedItem.quantity || 1) ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  +
+                </button>
+              </div>
+              <p className="text-sm text-center font-medium mb-4" style={{ color: colors.textSecondary }}>
+                {(selectedItem.quantity || 1) - consumeQuantity} {((selectedItem.quantity || 1) - consumeQuantity) === 1 ? 'unit' : 'units'} will remain
+              </p>
+              {(selectedItem.quantity || 1) > 2 && (
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setConsumeQuantity(Math.ceil((selectedItem.quantity || 1) / 2))} 
+                    className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all" 
+                    style={{ 
+                      backgroundColor: consumeQuantity === Math.ceil((selectedItem.quantity || 1) / 2) ? colors.primaryLight : colors.bgGray,
+                      color: consumeQuantity === Math.ceil((selectedItem.quantity || 1) / 2) ? colors.primary : colors.textSecondary
+                    }}
+                  >
+                    Half
+                  </button>
+                  <button 
+                    onClick={() => setConsumeQuantity(selectedItem.quantity || 1)} 
+                    className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all" 
+                    style={{ 
+                      backgroundColor: consumeQuantity === (selectedItem.quantity || 1) ? colors.primaryLight : colors.bgGray,
+                      color: consumeQuantity === (selectedItem.quantity || 1) ? colors.primary : colors.textSecondary
+                    }}
+                  >
+                    All
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => { 
+                  setShowQuantityModal(false); 
+                  setSelectedItem(null); 
+                  setConsumeQuantity(1);
+                  setConsumePercentage(100);
+                }} 
+                className="flex-1 py-3.5 rounded-xl font-semibold text-base" 
+                style={{ backgroundColor: colors.bgGray, color: colors.text, border: 'none' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={proceedToPercentageModal} 
+                className="flex-1 py-3.5 rounded-xl font-semibold text-white text-base" 
+                style={{ backgroundColor: colors.primary, border: 'none' }}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showConsumeModal && selectedItem && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
             <div className="text-center mb-6">
               <div className="text-5xl mb-4">{selectedItem.emoji}</div>
               <h3 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>How much did you use?</h3>
-              <p className="text-base" style={{ color: colors.textSecondary }}>{selectedItem.name}</p>
+              <p className="text-base" style={{ color: colors.textSecondary }}>
+                {consumeQuantity} {consumeQuantity === 1 ? 'unit' : 'units'} of {selectedItem.name}
+              </p>
             </div>
             <div className="mb-8">
               <div className="mb-4">
@@ -964,7 +1105,7 @@ export default function WasteWarriorMVP() {
               </div>
             </div>
             <div className="flex gap-3">
-              <button onClick={() => { setShowConsumeModal(false); setSelectedItem(null); setConsumePercentage(100); }} className="flex-1 py-3.5 rounded-xl font-semibold text-base" style={{ backgroundColor: colors.bgGray, color: colors.text, border: 'none' }}>Cancel</button>
+              <button onClick={() => { setShowConsumeModal(false); setShowQuantityModal(true); }} className="flex-1 py-3.5 rounded-xl font-semibold text-base" style={{ backgroundColor: colors.bgGray, color: colors.text, border: 'none' }}>Back</button>
               <button onClick={confirmConsume} className="flex-1 py-3.5 rounded-xl font-semibold text-white text-base" style={{ backgroundColor: colors.fresh, border: 'none' }}>Confirm</button>
             </div>
           </div>
@@ -988,6 +1129,10 @@ export default function WasteWarriorMVP() {
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Cost ($)</label>
                 <input type="number" step="0.01" value={selectedItem.cost} onChange={(e) => setSelectedItem({ ...selectedItem, cost: parseFloat(e.target.value) || 0 })} className="w-full px-4 py-3 rounded-xl border-2" style={{ borderColor: colors.border }} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Quantity</label>
+                <input type="number" min="1" value={selectedItem.quantity || 1} onChange={(e) => setSelectedItem({ ...selectedItem, quantity: parseInt(e.target.value) || 1 })} className="w-full px-4 py-3 rounded-xl border-2" style={{ borderColor: colors.border }} />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Days Until Expiry</label>
@@ -1014,35 +1159,57 @@ export default function WasteWarriorMVP() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
             <div className="text-center mb-6">
-              <div className="text-4xl mb-3">{selectedItem.emoji}</div>
-              <h3 className="text-xl font-bold mb-2" style={{ color: colors.text }}>Update Expiry Date</h3>
-              <p className="text-sm" style={{ color: colors.textSecondary }}>Set the correct expiry date for <strong>{selectedItem.name}</strong></p>
+              <div className="text-5xl mb-4">{selectedItem.emoji}</div>
+              <h3 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>Extend Expiry Date</h3>
+              <p className="text-base" style={{ color: colors.textSecondary }}>
+                Add more days for {selectedItem.name}
+              </p>
             </div>
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Days Until Expiry</label>
-              <input 
-                type="number" 
-                value={selectedItem.daysUntilExpiry !== undefined ? selectedItem.daysUntilExpiry : -(selectedItem.expiredDays || 0)} 
-                onChange={(e) => setSelectedItem({ ...selectedItem, daysUntilExpiry: parseInt(e.target.value) || 0 })} 
-                className="w-full px-4 py-3 rounded-xl border-2 text-base" 
-                style={{ borderColor: colors.border }} 
-              />
-              <p className="text-xs mt-1" style={{ color: colors.textLight }}>
-                {(selectedItem.daysUntilExpiry !== undefined ? selectedItem.daysUntilExpiry : -(selectedItem.expiredDays || 0)) > 0 
-                  ? `Expires on ${new Date(Date.now() + (selectedItem.daysUntilExpiry || 0) * 24 * 60 * 60 * 1000).toLocaleDateString()}`
-                  : `Expired on ${new Date(Date.now() + (selectedItem.daysUntilExpiry || 0) * 24 * 60 * 60 * 1000).toLocaleDateString()}`
-                }
-              </p>
-              <p className="text-xs mt-2 p-2 rounded-lg" style={{ backgroundColor: colors.primaryLight, color: colors.primary }}>
-                💡 Positive numbers = Future date (moves back to inventory)<br/>
-                Negative/Zero = Already expired
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <button
+                  onClick={() => setSelectedItem({ ...selectedItem, extensionDays: Math.max(1, (selectedItem.extensionDays || 3) - 1) })}
+                  className="w-[52px] h-[52px] rounded-xl font-bold text-2xl flex items-center justify-center transition-all"
+                  style={{ 
+                    backgroundColor: colors.bgGray,
+                    color: colors.text,
+                    cursor: 'pointer'
+                  }}
+                >
+                  −
+                </button>
+                <div 
+                  className="min-w-[80px] px-6 h-14 rounded-xl flex items-center justify-center font-bold text-3xl"
+                  style={{ 
+                    backgroundColor: colors.freshBg,
+                    color: colors.fresh
+                  }}
+                >
+                  +{selectedItem.extensionDays || 3}
+                </div>
+                <button
+                  onClick={() => setSelectedItem({ ...selectedItem, extensionDays: (selectedItem.extensionDays || 3) + 1 })}
+                  className="w-[52px] h-[52px] rounded-xl font-bold text-2xl flex items-center justify-center transition-all"
+                  style={{ 
+                    backgroundColor: colors.bgGray,
+                    color: colors.text,
+                    cursor: 'pointer'
+                  }}
+                >
+                  +
+                </button>
+              </div>
+              <p className="text-sm text-center font-medium" style={{ color: colors.textSecondary }}>
+                New expiry: {new Date(Date.now() + (selectedItem.extensionDays || 3) * 24 * 60 * 60 * 1000).toLocaleDateString()}
               </p>
             </div>
             <div className="flex gap-3">
-              <button onClick={() => { setShowEditExpiredModal(false); setSelectedItem(null); }} className="flex-1 py-3 rounded-xl font-medium" style={{ backgroundColor: colors.bgGray, color: colors.text }}>Cancel</button>
-              <button onClick={saveExpiredItemEdit} className="flex-1 py-3 rounded-xl font-medium text-white" style={{ backgroundColor: colors.primary }}>Save Changes</button>
+              <button onClick={() => { setShowEditExpiredModal(false); setSelectedItem(null); }} className="flex-1 py-3.5 rounded-xl font-semibold text-base" style={{ backgroundColor: colors.bgGray, color: colors.text }}>Cancel</button>
+              <button onClick={saveExpiredItemEdit} className="flex-1 py-3.5 rounded-xl font-semibold text-white text-base" style={{ backgroundColor: colors.fresh }}>Extend & Save</button>
             </div>
           </div>
+        </div>
+      )}
         </div>
       )}
 
@@ -1077,6 +1244,11 @@ export default function WasteWarriorMVP() {
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Cost ($)</label>
                 <input type="number" step="0.01" value={newItem.cost} onChange={(e) => setNewItem({ ...newItem, cost: e.target.value })} placeholder="0.00" className="w-full px-4 py-3 rounded-xl border-2 text-base" style={{ borderColor: colors.border }} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Quantity</label>
+                <input type="number" min="1" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} placeholder="1" className="w-full px-4 py-3 rounded-xl border-2 text-base" style={{ borderColor: colors.border }} />
+                <p className="text-xs mt-1" style={{ color: colors.textLight }}>How many units? (e.g., 10 cartons of milk)</p>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Days Until Expiry</label>

@@ -1210,7 +1210,6 @@ export default function WasteWarriorMVP() {
           </div>
         </div>
       )}
-        </div>
       )}
 
       {addMethod === 'manual' && (
@@ -1325,5 +1324,6 @@ export default function WasteWarriorMVP() {
           </div>
         </div>
       )}
+    </div>
   );
 }

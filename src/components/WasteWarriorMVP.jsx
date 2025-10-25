@@ -1031,30 +1031,6 @@ export default function WasteWarriorMVP() {
               <p className="text-sm text-center font-medium mb-4" style={{ color: colors.textSecondary }}>
                 {(selectedItem.quantity || 1) - consumeQuantity} {((selectedItem.quantity || 1) - consumeQuantity) === 1 ? 'unit' : 'units'} will remain
               </p>
-              {(selectedItem.quantity || 1) > 2 && (
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => setConsumeQuantity(Math.ceil((selectedItem.quantity || 1) / 2))} 
-                    className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all" 
-                    style={{ 
-                      backgroundColor: consumeQuantity === Math.ceil((selectedItem.quantity || 1) / 2) ? colors.primaryLight : colors.bgGray,
-                      color: consumeQuantity === Math.ceil((selectedItem.quantity || 1) / 2) ? colors.primary : colors.textSecondary
-                    }}
-                  >
-                    Half
-                  </button>
-                  <button 
-                    onClick={() => setConsumeQuantity(selectedItem.quantity || 1)} 
-                    className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all" 
-                    style={{ 
-                      backgroundColor: consumeQuantity === (selectedItem.quantity || 1) ? colors.primaryLight : colors.bgGray,
-                      color: consumeQuantity === (selectedItem.quantity || 1) ? colors.primary : colors.textSecondary
-                    }}
-                  >
-                    All
-                  </button>
-                </div>
-              )}
             </div>
             <div className="flex gap-3">
               <button 
@@ -1209,7 +1185,6 @@ export default function WasteWarriorMVP() {
             </div>
           </div>
         </div>
-      )}
       )}
 
       {addMethod === 'manual' && (

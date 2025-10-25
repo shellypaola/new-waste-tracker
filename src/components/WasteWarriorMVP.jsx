@@ -87,7 +87,7 @@ export default function WasteWarriorMVP() {
   
   const handleMarkAsFinished = (item) => {
     setSelectedItem(item);
-    setConsumeQuantity(item.quantity || 1);
+    setConsumeQuantity(1);
     setConsumePercentage(100);
     setShowQuantityModal(true);
   };

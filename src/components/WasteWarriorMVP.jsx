@@ -353,15 +353,11 @@ export default function WasteWarriorMVP() {
         <h1 className="text-2xl font-bold mb-1" style={{ color: colors.text }}>Inventory</h1>
         <p className="text-sm" style={{ color: colors.textSecondary }}>{inventory.length} items tracked</p>
       </div>
-      <div className="px-4 py-3 flex items-center gap-2">
-        <div className="flex-1 relative">
+      <div className="px-4 py-3">
+        <div className="relative">
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: colors.textLight }} />
           <input type="text" placeholder="Search items..." className="w-full pl-10 pr-4 py-3 rounded-xl border-2 text-sm" style={{ borderColor: colors.border, backgroundColor: colors.bg, height: '44px' }} />
         </div>
-        <button className="px-4 rounded-xl border-2 font-medium text-sm flex items-center gap-2" style={{ borderColor: colors.border, color: colors.text, height: '44px' }}>
-          <Filter size={18} />
-          Filter
-        </button>
       </div>
       <div className="px-4 py-2 flex gap-2 overflow-x-auto">
         {['all', 'fridge', 'freezer', 'pantry'].map(cat => (
@@ -1136,7 +1132,7 @@ export default function WasteWarriorMVP() {
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
             <div className="text-center mb-6">
               <div className="text-5xl mb-4">{selectedItem.emoji}</div>
-              <h3 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>Extend Expiry Date</h3>
+              <h3 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>Extend expiry date?</h3>
               <p className="text-base" style={{ color: colors.textSecondary }}>
                 Add more days for {selectedItem.name}
               </p>
@@ -1157,11 +1153,11 @@ export default function WasteWarriorMVP() {
                 <div 
                   className="min-w-[80px] px-6 h-14 rounded-xl flex items-center justify-center font-bold text-3xl"
                   style={{ 
-                    backgroundColor: colors.freshBg,
-                    color: colors.fresh
+                    backgroundColor: colors.primaryLight,
+                    color: colors.primary
                   }}
                 >
-                  +{selectedItem.extensionDays || 3}
+                  {selectedItem.extensionDays || 3}
                 </div>
                 <button
                   onClick={() => setSelectedItem({ ...selectedItem, extensionDays: (selectedItem.extensionDays || 3) + 1 })}
@@ -1175,13 +1171,13 @@ export default function WasteWarriorMVP() {
                   +
                 </button>
               </div>
-              <p className="text-sm text-center font-medium" style={{ color: colors.textSecondary }}>
+              <p className="text-sm text-center font-medium mb-4" style={{ color: colors.textSecondary }}>
                 New expiry: {new Date(Date.now() + (selectedItem.extensionDays || 3) * 24 * 60 * 60 * 1000).toLocaleDateString()}
               </p>
             </div>
             <div className="flex gap-3">
               <button onClick={() => { setShowEditExpiredModal(false); setSelectedItem(null); }} className="flex-1 py-3.5 rounded-xl font-semibold text-base" style={{ backgroundColor: colors.bgGray, color: colors.text }}>Cancel</button>
-              <button onClick={saveExpiredItemEdit} className="flex-1 py-3.5 rounded-xl font-semibold text-white text-base" style={{ backgroundColor: colors.fresh }}>Extend & Save</button>
+              <button onClick={saveExpiredItemEdit} className="flex-1 py-3.5 rounded-xl font-semibold text-white text-base" style={{ backgroundColor: colors.primary }}>Confirm</button>
             </div>
           </div>
         </div>

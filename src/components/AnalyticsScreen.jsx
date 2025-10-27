@@ -166,10 +166,8 @@ function AnalyticsScreen() {
   });
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: colors.bgGray, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
-      <div className="max-w-md mx-auto">
-        <div className="h-screen overflow-y-auto pb-8" style={{ WebkitOverflowScrolling: 'touch' }}>
-          <div className="px-4 pt-6">
+      <>
+        <div className="px-4 pt-6">
             {/* Header */}
             <div className="mb-6">
               <h1 className="text-2xl font-bold" style={{ color: colors.text }}>🚀 NEW ANALYTICS SCREEN 🚀</h1>
@@ -500,9 +498,6 @@ function AnalyticsScreen() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
     </div>
   </>
   );

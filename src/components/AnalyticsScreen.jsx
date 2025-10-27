@@ -506,3 +506,5 @@ export default function FinalizedStatsPreview() {
     </div>
   );
 }
+
+export default AnalyticsScreen;

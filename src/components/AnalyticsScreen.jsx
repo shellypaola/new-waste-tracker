@@ -166,8 +166,7 @@ function AnalyticsScreen() {
   });
 
   return (
-  <>
-    <div className="flex-1 overflow-y-auto pb-20">
+    <div className="h-full overflow-y-auto">
       <div className="px-4 pt-6">
             {/* Header */}
             <div className="mb-6">
@@ -501,7 +500,6 @@ function AnalyticsScreen() {
             </div>
         </div>
     </div>
-  </>
   );
 }
 

@@ -153,7 +153,7 @@ function AnalyticsScreen() {
   const topItemsData = getTopItemsData();
 
   // Calculate angles for top items pie chart
-  currentAngle = 0;
+  let currentAngle = 0;
   const topItemsSlices = topItemsData.map((item) => {
     const angle = (item.percentage / 100) * 360;
     const slice = {

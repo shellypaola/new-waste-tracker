@@ -504,6 +504,7 @@ function AnalyticsScreen() {
         </div>
       </div>
     </div>
+  </>
   );
 }
 

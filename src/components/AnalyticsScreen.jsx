@@ -166,8 +166,9 @@ function AnalyticsScreen() {
   });
 
   return (
-      <>
-        <div className="px-4 pt-6">
+  <>
+    <div className="flex-1 overflow-y-auto pb-20">
+      <div className="px-4 pt-6">
             {/* Header */}
             <div className="mb-6">
               <h1 className="text-2xl font-bold" style={{ color: colors.text }}>🚀 NEW ANALYTICS SCREEN 🚀</h1>
@@ -498,6 +499,7 @@ function AnalyticsScreen() {
                 </div>
               </div>
             </div>
+        </div>
     </div>
   </>
   );

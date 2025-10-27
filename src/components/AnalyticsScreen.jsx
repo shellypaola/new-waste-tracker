@@ -172,7 +172,7 @@ function AnalyticsScreen() {
           <div className="px-4 pt-6">
             {/* Header */}
             <div className="mb-6">
-              <h1 className="text-2xl font-bold mb-1" style={{ color: colors.text }}>Analytics</h1>
+              <h1 className="text-2xl font-bold" style={{ color: colors.text }}>🚀 NEW ANALYTICS SCREEN 🚀</h1>
               <p className="text-sm" style={{ color: colors.textSecondary }}>Your waste reduction journey</p>
             </div>
 

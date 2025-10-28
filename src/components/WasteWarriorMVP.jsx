@@ -100,7 +100,7 @@ export default function WasteWarriorMVP() {
     setShowQuantityModal(true);
   };
   
-  onst confirmConsume = () => {
+  const confirmConsume = () => {
   // Calculate waste based on quantity and percentage
   const costPerUnit = selectedItem.cost / (selectedItem.quantity || 1);
   const wastedAmount = (costPerUnit * consumeQuantity * (100 - consumePercentage)) / 100;

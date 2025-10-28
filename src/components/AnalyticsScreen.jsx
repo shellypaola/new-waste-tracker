@@ -46,6 +46,35 @@ const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
 function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 0, totalSpent = 0 }) {
   const [analyticsPeriod, setAnalyticsPeriod] = useState('Month');
 
+  // ADD THIS CODE HERE ↓↓↓
+  // Helper to filter items by time period
+  const getItemsForPeriod = () => {
+    const now = new Date();
+    const filtered = consumedItems.filter(item => {
+      const itemDate = new Date(item.consumedDate);
+      if (analyticsPeriod === 'Week') {
+        const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        return itemDate >= oneWeekAgo;
+      } else if (analyticsPeriod === 'Month') {
+        const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        return itemDate >= oneMonthAgo;
+      } else {
+        const oneYearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+        return itemDate >= oneYearAgo;
+      }
+    });
+    return filtered;
+  };
+
+  const periodItems = getItemsForPeriod();
+  const periodWasted = periodItems.reduce((sum, item) => sum + item.wastedAmount, 0);
+  const periodConsumed = periodItems.reduce((sum, item) => sum + item.consumedAmount, 0);
+  const periodSpent = periodWasted + periodConsumed;
+  // END OF CODE TO ADD ↑↑↑
+
+  // Chart data calculation
+  const getChartLabels = () => {
+
   // Chart data calculation
   const getChartLabels = () => {
     if (analyticsPeriod === 'Week') {

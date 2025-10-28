@@ -156,28 +156,6 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
     percentage: Math.round((item.value / periodWasted) * 100)
   }));
 };
-    
-    // Calculate "Other" items
-    const topItemsTotal = topItems.reduce((sum, item) => sum + item.value, 0);
-    const otherValue = totalWaste - topItemsTotal;
-    
-    // Add "Other" item if there's remaining waste
-    if (otherValue > 0.01) {
-      topItems.push({
-        name: 'Other',
-        emoji: '',
-        value: otherValue,
-        color: '#D1D5DB',  // Light grey
-        opacity: 1
-      });
-    }
-    
-    // Calculate percentages
-    return topItems.map(item => ({
-      ...item,
-      percentage: Math.round((item.value / totalWaste) * 100)
-    }));
-  };
 
   const topItemsData = getTopItemsData();
 

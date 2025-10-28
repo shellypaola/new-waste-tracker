@@ -43,7 +43,7 @@ const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
   };
 };
 
-function AnalyticsScreen() {
+function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 0, totalSpent = 0 }) {
   const [analyticsPeriod, setAnalyticsPeriod] = useState('Month');
 
   // Chart data calculation

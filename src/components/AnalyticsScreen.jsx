@@ -655,6 +655,7 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
               </div>
             </div>
         </div>
+      </div> 
     </div>
   );
 }

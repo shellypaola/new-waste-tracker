@@ -404,11 +404,9 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
               <h2 className="text-lg font-bold mb-4" style={{ color: colors.text }}>Waste Analysis</h2>
               
               {/* Consumption Timing Trends - Stacked Bar Chart */}
-<div className="bg-white p-4 rounded-2xl shadow-sm mb-3" style={{ border: `1px solid ${colors.border}` }}>
-  <div className="mb-4">
-    <h3 className="text-sm font-bold" style={{ color: colors.text }}>Consumption Timing Trends</h3>
-    <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>When items are consumed relative to expiry</p>
-  </div>
+              <div className="bg-white p-4 rounded-2xl shadow-sm mb-3" style={{ border: `1px solid ${colors.border}` }}>
+                <div className="mb-4">
+                  <h3 className="text-sm font-bold" style={{ color: colors.text }}>Consumption Timing Trends</h3>
   
   {/* Stacked Bar Chart */}
   <div className="space-y-3">

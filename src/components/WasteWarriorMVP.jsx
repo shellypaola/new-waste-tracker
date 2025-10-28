@@ -66,6 +66,13 @@ export default function WasteWarriorMVP() {
     daysUntilExpiry: 7,
     quantity: 1
   });
+
+  const [consumedItems, setConsumedItems] = useState([]);
+  // Calculate total consumed value
+  const totalConsumed = consumedItems.reduce((sum, item) => sum + item.consumedAmount, 0);
+
+  // Calculate total spent (consumed + wasted)
+  const totalSpent = totalConsumed + totalWasted;
   
   const atRiskItems = inventory.filter(item => item.daysUntilExpiry <= 3).sort((a, b) => a.daysUntilExpiry - b.daysUntilExpiry);
   
@@ -93,32 +100,45 @@ export default function WasteWarriorMVP() {
     setShowQuantityModal(true);
   };
   
-  const confirmConsume = () => {
-    // Calculate waste based on quantity and percentage
-    const costPerUnit = selectedItem.cost / (selectedItem.quantity || 1);
-    const wastedAmount = (costPerUnit * consumeQuantity * (100 - consumePercentage)) / 100;
-    setTotalWasted(totalWasted + wastedAmount);
-    
-    // Update inventory - reduce quantity or remove item
-    const remainingQuantity = (selectedItem.quantity || 1) - consumeQuantity;
-    if (remainingQuantity <= 0) {
-      // Remove item completely
-      setInventory(inventory.filter(item => item.id !== selectedItem.id));
-    } else {
-      // Reduce quantity
-      setInventory(inventory.map(item => 
-        item.id === selectedItem.id 
-          ? { ...item, quantity: remainingQuantity }
-          : item
-      ));
-    }
-    
-    setShowConsumeModal(false);
-    setShowQuantityModal(false);
-    setSelectedItem(null);
-    setConsumePercentage(100);
-    setConsumeQuantity(1);
+  onst confirmConsume = () => {
+  // Calculate waste based on quantity and percentage
+  const costPerUnit = selectedItem.cost / (selectedItem.quantity || 1);
+  const wastedAmount = (costPerUnit * consumeQuantity * (100 - consumePercentage)) / 100;
+  const consumedAmount = (costPerUnit * consumeQuantity * consumePercentage) / 100;
+  setTotalWasted(totalWasted + wastedAmount);
+  
+  // Save consumption history
+  const newConsumedItem = {
+    id: Date.now(),
+    name: selectedItem.name,
+    emoji: selectedItem.emoji,
+    consumedAmount: consumedAmount,
+    wastedAmount: wastedAmount,
+    totalCost: costPerUnit * consumeQuantity,
+    consumedDate: new Date(),
+    daysUntilExpiryAtConsumption: selectedItem.daysUntilExpiry,
+    percentageConsumed: consumePercentage
   };
+  setConsumedItems([...consumedItems, newConsumedItem]);
+  
+  // Update inventory - reduce quantity or remove item
+  const remainingQuantity = (selectedItem.quantity || 1) - consumeQuantity;
+  if (remainingQuantity <= 0) {
+    setInventory(inventory.filter(item => item.id !== selectedItem.id));
+  } else {
+    setInventory(inventory.map(item => 
+      item.id === selectedItem.id 
+        ? { ...item, quantity: remainingQuantity }
+        : item
+    ));
+  }
+  
+  setShowConsumeModal(false);
+  setShowQuantityModal(false);
+  setSelectedItem(null);
+  setConsumePercentage(100);
+  setConsumeQuantity(1);
+};
   
   const proceedToPercentageModal = () => {
     setShowQuantityModal(false);
@@ -139,10 +159,25 @@ export default function WasteWarriorMVP() {
   };
   
   const handleMarkExpiredAsWasted = (item) => {
-    // Mark entire item as wasted (100% waste, 0% consumed)
-    setTotalWasted(totalWasted + item.cost);
-    setExpired(expired.filter(exp => exp.id !== item.id));
+  // Mark entire item as wasted (100% waste, 0% consumed)
+  setTotalWasted(totalWasted + item.cost);
+  
+  // Save to consumed history as expired
+  const expiredItem = {
+    id: Date.now(),
+    name: item.name,
+    emoji: item.emoji,
+    consumedAmount: 0,
+    wastedAmount: item.cost,
+    totalCost: item.cost,
+    consumedDate: new Date(),
+    daysUntilExpiryAtConsumption: -item.expiredDays, // Negative = days past expiry
+    percentageConsumed: 0
   };
+  setConsumedItems([...consumedItems, expiredItem]);
+  
+  setExpired(expired.filter(exp => exp.id !== item.id));
+};
   
   const handleEditExpiredItem = (item) => {
     // For expired items, we'll add days to extend their life
@@ -541,7 +576,14 @@ export default function WasteWarriorMVP() {
         {activeScreen === 'dashboard' && <DashboardScreen />}
         {activeScreen === 'inventory' && <InventoryScreen />}
         {activeScreen === 'rewards' && <RewardsScreen />}
-        {activeScreen === 'analytics' && <AnalyticsScreen />}
+        {activeScreen === 'analytics' && (
+        <AnalyticsScreen 
+          consumedItems={consumedItems}
+          totalWasted={totalWasted}
+          totalConsumed={totalConsumed}
+          totalSpent={totalSpent}
+        />
+      )}
       </div>
       <div className="relative">
         <div className="absolute left-1/2 -translate-x-1/2 -top-7 z-10">

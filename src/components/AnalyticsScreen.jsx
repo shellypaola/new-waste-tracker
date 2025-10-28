@@ -319,11 +319,10 @@ function AnalyticsScreen() {
                     <div className="absolute left-0 right-0 flex justify-between text-xs font-medium" style={{ color: colors.textSecondary, bottom: '-24px' }}>
                       {chartLabels.map((label, idx) => (
                         <span 
-                          key={idx}
-                          className={idx === chartLabels.length - 1 ? 'font-bold' : ''}
-                          style={{ 
-                            color: idx === chartLabels.length - 1 ? colors.primary : colors.textSecondary,
-                            fontSize: analyticsPeriod === 'Year' ? '10px' : '12px'
+                            key={idx}
+                            style={{ 
+                              color: colors.textSecondary,
+                              fontSize: analyticsPeriod === 'Year' ? '10px' : '12px'
                           }}
                         >
                           {label}

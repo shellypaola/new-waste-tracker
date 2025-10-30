@@ -46,7 +46,6 @@ const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
 function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 0, totalSpent = 0 }) {
   const [analyticsPeriod, setAnalyticsPeriod] = useState('Month');
 
-  // ADD THIS CODE HERE ↓↓↓
   // Helper to filter items by time period
   const getItemsForPeriod = () => {
     const now = new Date();
@@ -70,10 +69,41 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
   const periodWasted = periodItems.reduce((sum, item) => sum + item.wastedAmount, 0);
   const periodConsumed = periodItems.reduce((sum, item) => sum + item.consumedAmount, 0);
   const periodSpent = periodWasted + periodConsumed;
-  // END OF CODE TO ADD ↑↑↑
 
-  // Chart data calculation
-  const getChartLabels = () => {
+  // Calculate previous period for comparison
+  const getPreviousPeriodData = () => {
+    const now = new Date();
+    let previousStart, previousEnd, currentStart;
+    
+    if (analyticsPeriod === 'Week') {
+      currentStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      previousStart = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+      previousEnd = currentStart;
+    } else if (analyticsPeriod === 'Month') {
+      currentStart = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      previousStart = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+      previousEnd = currentStart;
+    } else {
+      currentStart = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+      previousStart = new Date(now.getTime() - 730 * 24 * 60 * 60 * 1000);
+      previousEnd = currentStart;
+    }
+    
+    const previousItems = consumedItems.filter(item => {
+      const itemDate = new Date(item.consumedDate);
+      return itemDate >= previousStart && itemDate < previousEnd;
+    });
+    
+    const previousWasted = previousItems.reduce((sum, item) => sum + item.wastedAmount, 0);
+    const previousConsumed = previousItems.reduce((sum, item) => sum + item.consumedAmount, 0);
+    
+    return {
+      wastedDiff: periodWasted - previousWasted,
+      consumedDiff: periodConsumed - previousConsumed
+    };
+  };
+
+  const periodComparison = getPreviousPeriodData();
 
   // Chart data calculation
   const getChartLabels = () => {
@@ -91,31 +121,19 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
     // Formula: y = 192 - (value/max * 192)
     
     if (analyticsPeriod === 'Week') {
-      // Total: $98 spent, $12 wasted over 7 days
-      // Daily spent: ~$14/day (46.7% of $30 scale = y≈102)
-      // Daily wasted: ~$1.71/day (5.7% of $30 scale = y≈181)
-      // Max scale: $30
       return {
-        spent: '0,102 16.67,98 33.33,100 50,104 66.67,106 83.33,103 100,102', // ~$13-15/day
-        wasted: '0,181 16.67,180 33.33,182 50,181 66.67,183 83.33,182 100,181'  // ~$1-2/day
+        spent: '0,102 16.67,98 33.33,100 50,104 66.67,106 83.33,103 100,102',
+        wasted: '0,181 16.67,180 33.33,182 50,181 66.67,183 83.33,182 100,181'
       };
     } else if (analyticsPeriod === 'Month') {
-      // Total: $680 spent, $163 wasted over 4 weeks
-      // Weekly spent: ~$170/week (85% of $200 scale = y≈29)
-      // Weekly wasted: ~$41/week (20.5% of $200 scale = y≈153)
-      // Max scale: $200
       return {
-        spent: '0,29 33.33,26 66.67,28 100,25',  // ~$165-175/week
-        wasted: '0,153 33.33,150 66.67,152 100,153'  // ~$38-44/week
+        spent: '0,29 33.33,26 66.67,28 100,25',
+        wasted: '0,153 33.33,150 66.67,152 100,153'
       };
     } else {
-      // Total: $8,160 spent, $1,956 wasted over 12 months
-      // Monthly spent: ~$680/month (68% of $1000 = y≈61)
-      // Monthly wasted: ~$163/month (16.3% of $1000 = y≈161)
-      // Max scale: $1000
       const xPositions = [0, 9.09, 18.18, 27.27, 36.36, 45.45, 54.55, 63.64, 72.73, 81.82, 90.91, 100];
-      const spentY = [64, 61, 66, 68, 71, 74, 68, 66, 61, 58, 56, 54]; // ~$650-700/month
-      const wastedY = [163, 161, 165, 167, 169, 171, 167, 165, 161, 159, 157, 155]; // ~$150-170/month
+      const spentY = [64, 61, 66, 68, 71, 74, 68, 66, 61, 58, 56, 54];
+      const wastedY = [163, 161, 165, 167, 169, 171, 167, 165, 161, 159, 157, 155];
       
       const spentPoints = xPositions.map((x, i) => `${x},${spentY[i]}`).join(' ');
       const wastedPoints = xPositions.map((x, i) => `${x},${wastedY[i]}`).join(' ');
@@ -130,61 +148,61 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
   const chartLabels = getChartLabels();
   const dataPoints = getDataPoints();
 
-  // Pie chart data for most wasted items (dynamic by period) - using orange/yellow warm tones
+  // Calculate Top Wasted Items from real data
   const getTopItemsData = () => {
-  // Group items by name and sum wasted amounts
-  const wastedByItem = {};
-  periodItems.forEach(item => {
-    if (item.wastedAmount > 0) {
-      if (!wastedByItem[item.name]) {
-        wastedByItem[item.name] = {
-          name: item.name,
-          emoji: item.emoji,
-          value: 0
-        };
+    // Group items by name and sum wasted amounts
+    const wastedByItem = {};
+    periodItems.forEach(item => {
+      if (item.wastedAmount > 0) {
+        if (!wastedByItem[item.name]) {
+          wastedByItem[item.name] = {
+            name: item.name,
+            emoji: item.emoji,
+            value: 0
+          };
+        }
+        wastedByItem[item.name].value += item.wastedAmount;
       }
-      wastedByItem[item.name].value += item.wastedAmount;
-    }
-  });
-  
-  // Convert to array and sort by value
-  const items = Object.values(wastedByItem).sort((a, b) => b.value - a.value);
-  
-  // Take top 3
-  const top3 = items.slice(0, 3);
-  
-  // If no data, return empty
-  if (top3.length === 0) {
-    return [];
-  }
-  
-  // Assign colors
-  const colors = ['#EA580C', '#FB923C', '#FCD34D'];
-  top3.forEach((item, idx) => {
-    item.color = colors[idx] || '#D1D5DB';
-    item.opacity = 1;
-  });
-  
-  // Calculate total and add "Other"
-  const top3Total = top3.reduce((sum, item) => sum + item.value, 0);
-  const otherValue = periodWasted - top3Total;
-  
-  if (otherValue > 0.01) {
-    top3.push({
-      name: 'Other',
-      emoji: '',
-      value: otherValue,
-      color: '#D1D5DB',
-      opacity: 1
     });
-  }
-  
-  // Calculate percentages
-  return top3.map(item => ({
-    ...item,
-    percentage: Math.round((item.value / periodWasted) * 100)
-  }));
-};
+    
+    // Convert to array and sort by value
+    const items = Object.values(wastedByItem).sort((a, b) => b.value - a.value);
+    
+    // Take top 3
+    const top3 = items.slice(0, 3);
+    
+    // If no data, return empty
+    if (top3.length === 0) {
+      return [];
+    }
+    
+    // Assign colors
+    const itemColors = ['#EA580C', '#FB923C', '#FCD34D'];
+    top3.forEach((item, idx) => {
+      item.color = itemColors[idx] || '#D1D5DB';
+      item.opacity = 1;
+    });
+    
+    // Calculate total and add "Other"
+    const top3Total = top3.reduce((sum, item) => sum + item.value, 0);
+    const otherValue = periodWasted - top3Total;
+    
+    if (otherValue > 0.01) {
+      top3.push({
+        name: 'Other',
+        emoji: '',
+        value: otherValue,
+        color: '#D1D5DB',
+        opacity: 1
+      });
+    }
+    
+    // Calculate percentages
+    return top3.map(item => ({
+      ...item,
+      percentage: Math.round((item.value / periodWasted) * 100)
+    }));
+  };
 
   const topItemsData = getTopItemsData();
 
@@ -203,7 +221,7 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="px-4 pt-6">
+      <div className="px-4 pt-6 pb-20">
             {/* Header */}
             <div className="mb-6">
               <h1 className="text-2xl font-bold" style={{ color: colors.text }}>Analytics</h1>
@@ -244,11 +262,11 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                     <span className="text-xs font-bold tracking-wide" style={{ color: colors.critical }}>WASTED</span>
                   </div>
                   <div className="text-3xl font-bold mb-2" style={{ color: colors.critical }}>
-                    {analyticsPeriod === 'Week' ? '$12' : analyticsPeriod === 'Month' ? '$163' : '$1,956'}
+                    ${periodWasted.toFixed(0)}
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: colors.bgGray, color: colors.textSecondary }}>
-                      {analyticsPeriod === 'Week' ? '↓ $2' : analyticsPeriod === 'Month' ? '↓ $18' : '↓ $125'}
+                      {periodComparison.wastedDiff >= 0 ? '↑' : '↓'} ${Math.abs(periodComparison.wastedDiff).toFixed(0)}
                     </span>
                     <span className="text-xs" style={{ color: colors.textSecondary }}>vs last {analyticsPeriod.toLowerCase()}</span>
                   </div>
@@ -268,11 +286,11 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                     <span className="text-xs font-bold tracking-wide" style={{ color: colors.fresh }}>CONSUMED</span>
                   </div>
                   <div className="text-3xl font-bold mb-2" style={{ color: colors.fresh }}>
-                    {analyticsPeriod === 'Week' ? '$86' : analyticsPeriod === 'Month' ? '$517' : '$6,204'}
+                    ${periodConsumed.toFixed(0)}
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: colors.bgGray, color: colors.textSecondary }}>
-                      {analyticsPeriod === 'Week' ? '↑ $8' : analyticsPeriod === 'Month' ? '↑ $45' : '↑ $380'}
+                      {periodComparison.consumedDiff >= 0 ? '↑' : '↓'} ${Math.abs(periodComparison.consumedDiff).toFixed(0)}
                     </span>
                     <span className="text-xs" style={{ color: colors.textSecondary }}>vs last {analyticsPeriod.toLowerCase()}</span>
                   </div>
@@ -355,10 +373,10 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                     <div className="absolute left-0 right-0 flex justify-between text-xs font-medium" style={{ color: colors.textSecondary, bottom: '-24px' }}>
                       {chartLabels.map((label, idx) => (
                         <span 
-                            key={idx}
-                            style={{ 
-                              color: colors.textSecondary,
-                              fontSize: analyticsPeriod === 'Year' ? '10px' : '12px'
+                          key={idx}
+                          style={{ 
+                            color: colors.textSecondary,
+                            fontSize: analyticsPeriod === 'Year' ? '10px' : '12px'
                           }}
                         >
                           {label}
@@ -377,7 +395,7 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                         <span className="text-xs font-semibold" style={{ color: colors.text }}>Spent</span>
                       </div>
                       <span className="text-xs font-bold" style={{ color: colors.text }}>
-                        {analyticsPeriod === 'Week' ? '$98' : analyticsPeriod === 'Month' ? '$680' : '$8,160'}
+                        ${periodSpent.toFixed(0)}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -386,220 +404,222 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                         <span className="text-xs font-semibold" style={{ color: colors.text }}>Wasted</span>
                       </div>
                       <span className="text-xs font-bold" style={{ color: colors.text }}>
-                        {analyticsPeriod === 'Week' ? '$12' : analyticsPeriod === 'Month' ? '$163' : '$1,956'}
+                        ${periodWasted.toFixed(0)}
                       </span>
                     </div>
                   </div>
                   <div className="mt-3 text-xs" style={{ color: colors.textSecondary }}>
-                    {analyticsPeriod === 'Week' && 'Daily average: $14 spent, $1.71 wasted'}
-                    {analyticsPeriod === 'Month' && 'Weekly average: $170 spent, $41 wasted'}
-                    {analyticsPeriod === 'Year' && 'Monthly average: $680 spent, $163 wasted'}
+                    {analyticsPeriod === 'Week' && `Daily average: $${(periodSpent / 7).toFixed(0)} spent, $${(periodWasted / 7).toFixed(0)} wasted`}
+                    {analyticsPeriod === 'Month' && `Weekly average: $${(periodSpent / 4).toFixed(0)} spent, $${(periodWasted / 4).toFixed(0)} wasted`}
+                    {analyticsPeriod === 'Year' && `Monthly average: $${(periodSpent / 12).toFixed(0)} spent, $${(periodWasted / 12).toFixed(0)} wasted`}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Waste Analysis - Two Improved Pie Charts */}
+            {/* Waste Analysis */}
             <div className="mb-6">
-              <h2 className="text-lg font-bold mb-4" style={{ color: colors.text }}>Waste Analysis</h2>
-              
+              <h2 className="text-lg font-bold mb-3" style={{ color: colors.text }}>Waste Analysis</h2>
+
               {/* Consumption Timing Trends - Stacked Bar Chart */}
               <div className="bg-white p-4 rounded-2xl shadow-sm mb-3" style={{ border: `1px solid ${colors.border}` }}>
                 <div className="mb-4">
                   <h3 className="text-sm font-bold" style={{ color: colors.text }}>Consumption Timing Trends</h3>
-  
-  {/* Stacked Bar Chart */}
-  <div className="space-y-3">
-    {(() => {
-      // Pale color scheme
-      const timingColors = {
-        fresh: '#D1FAE5',      // Pale mint
-        good: '#DBEAFE',       // Pale sky blue
-        closeCall: '#FEF3C7',  // Pale amber
-        expired: '#FEE2E2'     // Pale rose
-      };
-      
-      // Calculate timing data from real consumedItems
-      const getTimingData = () => {
-        const now = new Date();
-        let periods = [];
-        
-        if (analyticsPeriod === 'Week') {
-          periods = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((label, idx) => ({
-            label,
-            dayIndex: idx,
-            fresh: 0,
-            good: 0,
-            closeCall: 0,
-            expired: 0
-          }));
-        } else if (analyticsPeriod === 'Month') {
-          periods = ['Week 1', 'Week 2', 'Week 3', 'Week 4'].map((label, idx) => ({
-            label,
-            weekIndex: idx,
-            fresh: 0,
-            good: 0,
-            closeCall: 0,
-            expired: 0
-          }));
-        } else {
-          periods = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((label, idx) => ({
-            label,
-            monthIndex: idx,
-            fresh: 0,
-            good: 0,
-            closeCall: 0,
-            expired: 0
-          }));
-        }
-        
-        // Fill in data from consumed items
-        periodItems.forEach(item => {
-          const itemDate = new Date(item.consumedDate);
-          let periodIndex = -1;
-          
-          if (analyticsPeriod === 'Week') {
-            periodIndex = itemDate.getDay();
-          } else if (analyticsPeriod === 'Month') {
-            const dayOfMonth = itemDate.getDate();
-            periodIndex = Math.floor((dayOfMonth - 1) / 7);
-          } else {
-            periodIndex = itemDate.getMonth();
-          }
-          
-          if (periodIndex >= 0 && periodIndex < periods.length) {
-            const days = item.daysUntilExpiryAtConsumption;
-            const amount = item.totalCost;
-            
-            if (days < 0) {
-              periods[periodIndex].expired += amount;
-            } else if (days <= 1) {
-              periods[periodIndex].closeCall += amount;
-            } else if (days <= 4) {
-              periods[periodIndex].good += amount;
-            } else {
-              periods[periodIndex].fresh += amount;
-            }
-          }
-        });
-        
-        return periods;
-      };
-      
-      const timingData = getTimingData();
-      
-      // If no data, show empty state
-      if (timingData.every(d => d.fresh === 0 && d.good === 0 && d.closeCall === 0 && d.expired === 0)) {
-        return (
-          <div className="flex flex-col items-center justify-center py-8 px-4">
-            <div className="text-4xl mb-3">📊</div>
-            <p className="text-sm font-medium text-center mb-1" style={{ color: colors.text }}>
-              Start consuming items to see timing patterns!
-            </p>
-            <p className="text-xs text-center" style={{ color: colors.textSecondary }}>
-              Track when you use items to optimize freshness
-            </p>
-          </div>
-        );
-      }
-      
-      // Calculate max total for scaling
-      const maxTotal = Math.max(...timingData.map(d => d.fresh + d.good + d.closeCall + d.expired));
-      
-      return (
-        <>
-          {/* Bars */}
-          <div className="flex items-end justify-between gap-2 h-40">
-            {timingData.map((item, idx) => {
-              const total = item.fresh + item.good + item.closeCall + item.expired;
-              const height = total > 0 ? (total / maxTotal) * 100 : 0;
-              
-              return (
-                <div key={idx} className="flex-1 flex flex-col items-center gap-2">
-                  {/* Stacked bar */}
-                  <div className="w-full flex flex-col-reverse" style={{ height: '128px' }}>
-                    {total > 0 && (
-                      <div className="w-full relative" style={{ height: `${height}%` }}>
-                        {/* Expired (bottom) */}
-                        {item.expired > 0 && (
-                          <div 
-                            className="w-full absolute bottom-0 left-0 rounded-t-lg transition-all"
-                            style={{ 
-                              height: `${(item.expired / total) * 100}%`,
-                              backgroundColor: timingColors.expired
-                            }}
-                          />
-                        )}
-                        {/* Close Call */}
-                        {item.closeCall > 0 && (
-                          <div 
-                            className="w-full absolute left-0 transition-all"
-                            style={{ 
-                              bottom: `${(item.expired / total) * 100}%`,
-                              height: `${(item.closeCall / total) * 100}%`,
-                              backgroundColor: timingColors.closeCall
-                            }}
-                          />
-                        )}
-                        {/* Good */}
-                        {item.good > 0 && (
-                          <div 
-                            className="w-full absolute left-0 transition-all"
-                            style={{ 
-                              bottom: `${((item.expired + item.closeCall) / total) * 100}%`,
-                              height: `${(item.good / total) * 100}%`,
-                              backgroundColor: timingColors.good
-                            }}
-                          />
-                        )}
-                        {/* Fresh (top) */}
-                        {item.fresh > 0 && (
-                          <div 
-                            className="w-full absolute left-0 rounded-t-lg transition-all"
-                            style={{ 
-                              bottom: `${((item.expired + item.closeCall + item.good) / total) * 100}%`,
-                              height: `${(item.fresh / total) * 100}%`,
-                              backgroundColor: timingColors.fresh
-                            }}
-                          />
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Label */}
-                  <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>
-                    {item.label}
-                  </span>
+                  <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>When items are consumed relative to expiry</p>
                 </div>
-              );
-            })}
-          </div>
-          
-          {/* Legend */}
-          <div className="grid grid-cols-2 gap-2 pt-3 border-t" style={{ borderColor: colors.border }}>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: timingColors.fresh }} />
-              <span className="text-xs font-medium" style={{ color: colors.text }}>Fresh (5+ days)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: timingColors.good }} />
-              <span className="text-xs font-medium" style={{ color: colors.text }}>Good (2-4 days)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: timingColors.closeCall }} />
-              <span className="text-xs font-medium" style={{ color: colors.text }}>Close Call (1 day)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: timingColors.expired }} />
-              <span className="text-xs font-medium" style={{ color: colors.text }}>Expired (wasted)</span>
-            </div>
-          </div>
-        </>
-      );
-    })()}
-  </div>
-</div>
+                
+                {/* Stacked Bar Chart */}
+                <div className="space-y-3">
+                  {(() => {
+                    // Pale color scheme
+                    const timingColors = {
+                      fresh: '#D1FAE5',
+                      good: '#DBEAFE',
+                      closeCall: '#FEF3C7',
+                      expired: '#FEE2E2'
+                    };
+                    
+                    // Calculate timing data from real consumedItems
+                    const getTimingData = () => {
+                      const now = new Date();
+                      let periods = [];
+                      
+                      if (analyticsPeriod === 'Week') {
+                        periods = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((label, idx) => ({
+                          label,
+                          dayIndex: idx,
+                          fresh: 0,
+                          good: 0,
+                          closeCall: 0,
+                          expired: 0
+                        }));
+                      } else if (analyticsPeriod === 'Month') {
+                        periods = ['Week 1', 'Week 2', 'Week 3', 'Week 4'].map((label, idx) => ({
+                          label,
+                          weekIndex: idx,
+                          fresh: 0,
+                          good: 0,
+                          closeCall: 0,
+                          expired: 0
+                        }));
+                      } else {
+                        periods = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((label, idx) => ({
+                          label,
+                          monthIndex: idx,
+                          fresh: 0,
+                          good: 0,
+                          closeCall: 0,
+                          expired: 0
+                        }));
+                      }
+                      
+                      // Fill in data from consumed items
+                      periodItems.forEach(item => {
+                        const itemDate = new Date(item.consumedDate);
+                        let periodIndex = -1;
+                        
+                        if (analyticsPeriod === 'Week') {
+                          periodIndex = itemDate.getDay();
+                        } else if (analyticsPeriod === 'Month') {
+                          const dayOfMonth = itemDate.getDate();
+                          periodIndex = Math.floor((dayOfMonth - 1) / 7);
+                        } else {
+                          periodIndex = itemDate.getMonth();
+                        }
+                        
+                        if (periodIndex >= 0 && periodIndex < periods.length) {
+                          const days = item.daysUntilExpiryAtConsumption;
+                          const amount = item.totalCost;
+                          
+                          if (days < 0) {
+                            periods[periodIndex].expired += amount;
+                          } else if (days <= 1) {
+                            periods[periodIndex].closeCall += amount;
+                          } else if (days <= 4) {
+                            periods[periodIndex].good += amount;
+                          } else {
+                            periods[periodIndex].fresh += amount;
+                          }
+                        }
+                      });
+                      
+                      return periods;
+                    };
+                    
+                    const timingData = getTimingData();
+                    
+                    // If no data, show empty state
+                    if (timingData.every(d => d.fresh === 0 && d.good === 0 && d.closeCall === 0 && d.expired === 0)) {
+                      return (
+                        <div className="flex flex-col items-center justify-center py-8 px-4">
+                          <div className="text-4xl mb-3">📊</div>
+                          <p className="text-sm font-medium text-center mb-1" style={{ color: colors.text }}>
+                            Start consuming items to see timing patterns!
+                          </p>
+                          <p className="text-xs text-center" style={{ color: colors.textSecondary }}>
+                            Track when you use items to optimize freshness
+                          </p>
+                        </div>
+                      );
+                    }
+                    
+                    // Calculate max total for scaling
+                    const maxTotal = Math.max(...timingData.map(d => d.fresh + d.good + d.closeCall + d.expired));
+                    
+                    return (
+                      <>
+                        {/* Bars */}
+                        <div className="flex items-end justify-between gap-2 h-40">
+                          {timingData.map((item, idx) => {
+                            const total = item.fresh + item.good + item.closeCall + item.expired;
+                            const height = total > 0 ? (total / maxTotal) * 100 : 0;
+                            
+                            return (
+                              <div key={idx} className="flex-1 flex flex-col items-center gap-2">
+                                {/* Stacked bar */}
+                                <div className="w-full flex flex-col-reverse" style={{ height: '128px' }}>
+                                  {total > 0 && (
+                                    <div className="w-full relative" style={{ height: `${height}%` }}>
+                                      {/* Expired (bottom) */}
+                                      {item.expired > 0 && (
+                                        <div 
+                                          className="w-full absolute bottom-0 left-0 rounded-t-lg transition-all"
+                                          style={{ 
+                                            height: `${(item.expired / total) * 100}%`,
+                                            backgroundColor: timingColors.expired
+                                          }}
+                                        />
+                                      )}
+                                      {/* Close Call */}
+                                      {item.closeCall > 0 && (
+                                        <div 
+                                          className="w-full absolute left-0 transition-all"
+                                          style={{ 
+                                            bottom: `${(item.expired / total) * 100}%`,
+                                            height: `${(item.closeCall / total) * 100}%`,
+                                            backgroundColor: timingColors.closeCall
+                                          }}
+                                        />
+                                      )}
+                                      {/* Good */}
+                                      {item.good > 0 && (
+                                        <div 
+                                          className="w-full absolute left-0 transition-all"
+                                          style={{ 
+                                            bottom: `${((item.expired + item.closeCall) / total) * 100}%`,
+                                            height: `${(item.good / total) * 100}%`,
+                                            backgroundColor: timingColors.good
+                                          }}
+                                        />
+                                      )}
+                                      {/* Fresh (top) */}
+                                      {item.fresh > 0 && (
+                                        <div 
+                                          className="w-full absolute left-0 rounded-t-lg transition-all"
+                                          style={{ 
+                                            bottom: `${((item.expired + item.closeCall + item.good) / total) * 100}%`,
+                                            height: `${(item.fresh / total) * 100}%`,
+                                            backgroundColor: timingColors.fresh
+                                          }}
+                                        />
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                {/* Label */}
+                                <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>
+                                  {item.label}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        
+                        {/* Legend */}
+                        <div className="grid grid-cols-2 gap-2 pt-3 border-t" style={{ borderColor: colors.border }}>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded" style={{ backgroundColor: timingColors.fresh }} />
+                            <span className="text-xs font-medium" style={{ color: colors.text }}>Fresh (5+ days)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded" style={{ backgroundColor: timingColors.good }} />
+                            <span className="text-xs font-medium" style={{ color: colors.text }}>Good (2-4 days)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded" style={{ backgroundColor: timingColors.closeCall }} />
+                            <span className="text-xs font-medium" style={{ color: colors.text }}>Close Call (1 day)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded" style={{ backgroundColor: timingColors.expired }} />
+                            <span className="text-xs font-medium" style={{ color: colors.text }}>Expired (wasted)</span>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
 
               {/* Top Items - Full Width */}
               <div className="bg-white p-4 rounded-2xl shadow-sm" style={{ border: `1px solid ${colors.border}` }}>
@@ -652,7 +672,7 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                 </div>
               </div>
             </div>
-      </div> 
+      </div>
     </div>
   );
 }

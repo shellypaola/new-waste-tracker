@@ -44,7 +44,7 @@ const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
 };
 
 function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 0, totalSpent = 0 }) {
-  const [analyticsPeriod, setAnalyticsPeriod] = useState('Month');
+  const [analyticsPeriod, setAnalyticsPeriod] = useState('Week');
 
   // Helper to filter items by time period
   const getItemsForPeriod = () => {
@@ -117,95 +117,98 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
   };
 
   const getDataPoints = () => {
-  // Y-axis range: y=0 is TOP, y=192 is BOTTOM
-  // Formula: y = 192 - (value/max * 192)
-  
-  const now = new Date();
-  let periods = [];
-  let maxScale = 30; // Default for week
-  
-  // Initialize periods based on time range
-  if (analyticsPeriod === 'Week') {
-    // 7 days (Mon-Sun)
-    maxScale = 30;
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000);
-      periods.push({
-        date: date,
-        dayIndex: date.getDay(),
-        spent: 0,
-        wasted: 0
-      });
-    }
-  } else if (analyticsPeriod === 'Month') {
-    // 4 weeks
-    maxScale = 200;
-    for (let i = 0; i < 4; i++) {
-      periods.push({
-        weekIndex: i,
-        spent: 0,
-        wasted: 0
-      });
-    }
-  } else {
-    // 12 months
-    maxScale = 1000;
-    for (let i = 0; i < 12; i++) {
-      periods.push({
-        monthIndex: i,
-        spent: 0,
-        wasted: 0
-      });
-    }
-  }
-  
-  // Populate with real data
-  periodItems.forEach(item => {
-    const itemDate = new Date(item.consumedDate);
-    let periodIndex = -1;
+    // Y-axis range: y=0 is TOP, y=192 is BOTTOM
+    // Formula: y = 192 - (value/max * 192)
     
+    const now = new Date();
+    let periods = [];
+    let maxScale = 30; // Default for week
+    
+    // Initialize periods based on time range
     if (analyticsPeriod === 'Week') {
-      // Find which day this item belongs to
-      periodIndex = periods.findIndex(p => {
-        const pDate = new Date(p.date);
-        return pDate.toDateString() === itemDate.toDateString();
-      });
+      // 7 days (Mon-Sun)
+      maxScale = 30;
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000);
+        periods.push({
+          date: date,
+          dayIndex: date.getDay(),
+          spent: 0,
+          wasted: 0
+        });
+      }
     } else if (analyticsPeriod === 'Month') {
-      // Calculate which week of the month (0-3)
-      const dayOfMonth = itemDate.getDate();
-      periodIndex = Math.min(Math.floor((dayOfMonth - 1) / 7), 3);
+      // 4 weeks
+      maxScale = 200;
+      for (let i = 0; i < 4; i++) {
+        periods.push({
+          weekIndex: i,
+          spent: 0,
+          wasted: 0
+        });
+      }
     } else {
-      // Month index (0-11)
-      periodIndex = itemDate.getMonth();
+      // 12 months
+      maxScale = 1000;
+      for (let i = 0; i < 12; i++) {
+        periods.push({
+          monthIndex: i,
+          spent: 0,
+          wasted: 0
+        });
+      }
     }
     
-    if (periodIndex >= 0 && periodIndex < periods.length) {
-      periods[periodIndex].spent += item.totalCost;
-      periods[periodIndex].wasted += item.wastedAmount;
-    }
-  });
-  
-  // Convert to SVG coordinates
-  const numPoints = periods.length;
-  const xStep = 100 / (numPoints - 1);
-  
-  const spentPoints = periods.map((period, idx) => {
-    const x = idx * xStep;
-    const y = 192 - (period.spent / maxScale) * 192;
-    return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
-  }).join(' ');
-  
-  const wastedPoints = periods.map((period, idx) => {
-    const x = idx * xStep;
-    const y = 192 - (period.wasted / maxScale) * 192;
-    return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
-  }).join(' ');
-  
-  return {
-    spent: spentPoints,
-    wasted: wastedPoints
+    // Populate with real data
+    periodItems.forEach(item => {
+      const itemDate = new Date(item.consumedDate);
+      let periodIndex = -1;
+      
+      if (analyticsPeriod === 'Week') {
+        // Find which day this item belongs to
+        periodIndex = periods.findIndex(p => {
+          const pDate = new Date(p.date);
+          return pDate.toDateString() === itemDate.toDateString();
+        });
+      } else if (analyticsPeriod === 'Month') {
+        // Calculate which week relative to "now"
+        const daysDiff = Math.floor((now.getTime() - itemDate.getTime()) / (24 * 60 * 60 * 1000));
+        if (daysDiff < 30) {
+          periodIndex = Math.floor(daysDiff / 7);
+          if (periodIndex > 3) periodIndex = 3; // Cap at week 4
+        }
+      } else {
+        // Month index (0-11)
+        periodIndex = itemDate.getMonth();
+      }
+      
+      if (periodIndex >= 0 && periodIndex < periods.length) {
+        periods[periodIndex].spent += item.totalCost;
+        periods[periodIndex].wasted += item.wastedAmount;
+      }
+    });
+    
+    // Convert to SVG coordinates
+    const numPoints = periods.length;
+    const xStep = 100 / (numPoints - 1);
+    
+    const spentPoints = periods.map((period, idx) => {
+      const x = idx * xStep;
+      const y = 192 - (period.spent / maxScale) * 192;
+      return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
+    }).join(' ');
+    
+    const wastedPoints = periods.map((period, idx) => {
+      const x = idx * xStep;
+      const y = 192 - (period.wasted / maxScale) * 192;
+      return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
+    }).join(' ');
+    
+    return {
+      spent: spentPoints,
+      wasted: wastedPoints
+    };
   };
-};
 
   const chartLabels = getChartLabels();
   const dataPoints = getDataPoints();
@@ -543,8 +546,12 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                         if (analyticsPeriod === 'Week') {
                           periodIndex = itemDate.getDay();
                         } else if (analyticsPeriod === 'Month') {
-                          const dayOfMonth = itemDate.getDate();
-                          periodIndex = Math.floor((dayOfMonth - 1) / 7);
+                          // Calculate which week relative to "now" - FIXED
+                          const daysDiff = Math.floor((now.getTime() - itemDate.getTime()) / (24 * 60 * 60 * 1000));
+                          if (daysDiff < 30) {
+                            periodIndex = Math.floor(daysDiff / 7);
+                            if (periodIndex > 3) periodIndex = 3; // Cap at week 4
+                          }
                         } else {
                           periodIndex = itemDate.getMonth();
                         }
@@ -590,72 +597,84 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                     
                     return (
                       <>
-                        {/* Bars */}
-                        <div className="flex items-end justify-between gap-2 h-40">
-                          {timingData.map((item, idx) => {
-                            const total = item.fresh + item.good + item.closeCall + item.expired;
-                            const height = total > 0 ? (total / maxTotal) * 100 : 0;
-                            
-                            return (
-                              <div key={idx} className="flex-1 flex flex-col items-center gap-2">
-                                {/* Stacked bar */}
-                                <div className="w-full flex flex-col-reverse" style={{ height: '128px' }}>
-                                  {total > 0 && (
-                                    <div className="w-full relative" style={{ height: `${height}%` }}>
-                                      {/* Expired (bottom) */}
-                                      {item.expired > 0 && (
-                                        <div 
-                                          className="w-full absolute bottom-0 left-0 rounded-t-lg transition-all"
-                                          style={{ 
-                                            height: `${(item.expired / total) * 100}%`,
-                                            backgroundColor: timingColors.expired
-                                          }}
-                                        />
-                                      )}
-                                      {/* Close Call */}
-                                      {item.closeCall > 0 && (
-                                        <div 
-                                          className="w-full absolute left-0 transition-all"
-                                          style={{ 
-                                            bottom: `${(item.expired / total) * 100}%`,
-                                            height: `${(item.closeCall / total) * 100}%`,
-                                            backgroundColor: timingColors.closeCall
-                                          }}
-                                        />
-                                      )}
-                                      {/* Good */}
-                                      {item.good > 0 && (
-                                        <div 
-                                          className="w-full absolute left-0 transition-all"
-                                          style={{ 
-                                            bottom: `${((item.expired + item.closeCall) / total) * 100}%`,
-                                            height: `${(item.good / total) * 100}%`,
-                                            backgroundColor: timingColors.good
-                                          }}
-                                        />
-                                      )}
-                                      {/* Fresh (top) */}
-                                      {item.fresh > 0 && (
-                                        <div 
-                                          className="w-full absolute left-0 rounded-t-lg transition-all"
-                                          style={{ 
-                                            bottom: `${((item.expired + item.closeCall + item.good) / total) * 100}%`,
-                                            height: `${(item.fresh / total) * 100}%`,
-                                            backgroundColor: timingColors.fresh
-                                          }}
-                                        />
-                                      )}
-                                    </div>
-                                  )}
+                        {/* Chart with Y-axis */}
+                        <div className="flex gap-3">
+                          {/* Y-axis labels */}
+                          <div className="flex flex-col justify-between text-xs font-medium" style={{ color: colors.textLight, height: '160px' }}>
+                            <span>${Math.round(maxTotal)}</span>
+                            <span>${Math.round(maxTotal * 0.75)}</span>
+                            <span>${Math.round(maxTotal * 0.5)}</span>
+                            <span>${Math.round(maxTotal * 0.25)}</span>
+                            <span>$0</span>
+                          </div>
+                          
+                          {/* Bars */}
+                          <div className="flex-1 flex items-end justify-between gap-2 h-40">
+                            {timingData.map((item, idx) => {
+                              const total = item.fresh + item.good + item.closeCall + item.expired;
+                              const height = total > 0 ? (total / maxTotal) * 100 : 0;
+                              
+                              return (
+                                <div key={idx} className="flex-1 flex flex-col items-center gap-2">
+                                  {/* Stacked bar */}
+                                  <div className="w-full flex flex-col-reverse" style={{ height: '128px' }}>
+                                    {total > 0 && (
+                                      <div className="w-full relative" style={{ height: `${height}%` }}>
+                                        {/* Expired (bottom) - NO ROUNDING */}
+                                        {item.expired > 0 && (
+                                          <div 
+                                            className="w-full absolute bottom-0 left-0 transition-all"
+                                            style={{ 
+                                              height: `${(item.expired / total) * 100}%`,
+                                              backgroundColor: timingColors.expired
+                                            }}
+                                          />
+                                        )}
+                                        {/* Close Call */}
+                                        {item.closeCall > 0 && (
+                                          <div 
+                                            className="w-full absolute left-0 transition-all"
+                                            style={{ 
+                                              bottom: `${(item.expired / total) * 100}%`,
+                                              height: `${(item.closeCall / total) * 100}%`,
+                                              backgroundColor: timingColors.closeCall
+                                            }}
+                                          />
+                                        )}
+                                        {/* Good */}
+                                        {item.good > 0 && (
+                                          <div 
+                                            className="w-full absolute left-0 transition-all"
+                                            style={{ 
+                                              bottom: `${((item.expired + item.closeCall) / total) * 100}%`,
+                                              height: `${(item.good / total) * 100}%`,
+                                              backgroundColor: timingColors.good
+                                            }}
+                                          />
+                                        )}
+                                        {/* Fresh (top) */}
+                                        {item.fresh > 0 && (
+                                          <div 
+                                            className="w-full absolute left-0 rounded-t-lg transition-all"
+                                            style={{ 
+                                              bottom: `${((item.expired + item.closeCall + item.good) / total) * 100}%`,
+                                              height: `${(item.fresh / total) * 100}%`,
+                                              backgroundColor: timingColors.fresh
+                                            }}
+                                          />
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                  
+                                  {/* Label */}
+                                  <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>
+                                    {item.label}
+                                  </span>
                                 </div>
-                                
-                                {/* Label */}
-                                <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>
-                                  {item.label}
-                                </span>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
+                          </div>
                         </div>
                         
                         {/* Legend */}

@@ -55,8 +55,8 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
         const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         return itemDate >= oneWeekAgo;
       } else if (analyticsPeriod === 'Month') {
-        const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        return itemDate >= oneMonthAgo;
+        // Current calendar month
+        return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear();
       } else {
         const oneYearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
         return itemDate >= oneYearAgo;
@@ -80,9 +80,10 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
       previousStart = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
       previousEnd = currentStart;
     } else if (analyticsPeriod === 'Month') {
-      currentStart = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      previousStart = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
-      previousEnd = currentStart;
+      // Previous calendar month
+      previousStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      previousEnd = new Date(now.getFullYear(), now.getMonth(), 1);
+      currentStart = previousEnd;
     } else {
       currentStart = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
       previousStart = new Date(now.getTime() - 730 * 24 * 60 * 60 * 1000);
@@ -105,142 +106,115 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
 
   const periodComparison = getPreviousPeriodData();
 
-  // Chart data calculation
-  const getChartLabels = () => {
+  // Chart data calculation - generates labels AND data together
+  const getChartData = () => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    let periods = [];
+    let maxScale = 30;
+    
     if (analyticsPeriod === 'Week') {
-      return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    } else if (analyticsPeriod === 'Month') {
-      return ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-    } else {
-      return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    }
-  };
-
-  const getDataPoints = () => {
-  // Y-axis range: y=0 is TOP, y=192 is BOTTOM
-  // Formula: y = 192 - (value/max * 192)
-  
-  const now = new Date();
-  now.setHours(0, 0, 0, 0); // Normalize to start of day
-  let periods = [];
-  let maxScale = 30; // Default for week
-  
-  // Initialize periods based on time range
-  if (analyticsPeriod === 'Week') {
-    // Last 7 days - oldest to newest (left to right)
-    maxScale = 30;
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      // Last 7 days
+      maxScale = 30;
       const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      periods.push({
-        date: date,
-        label: dayNames[date.getDay()],
-        spent: 0,
-        wasted: 0
-      });
-    }
-  } else if (analyticsPeriod === 'Month') {
-    // Current calendar month broken into 4 weeks
-    maxScale = 200;
-    
-    // Get first day of current month
-    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    
-    // Get last day of current month
-    const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    
-    // Calculate total days in month
-    const daysInMonth = lastDayOfMonth.getDate();
-    
-    // Split month into 4 weeks (approximately)
-    // Week 1: Day 1-7, Week 2: Day 8-14, Week 3: Day 15-21, Week 4: Day 22-end
-    periods = [
-      { label: 'Week 1', startDay: 1, endDay: 7, spent: 0, wasted: 0 },
-      { label: 'Week 2', startDay: 8, endDay: 14, spent: 0, wasted: 0 },
-      { label: 'Week 3', startDay: 15, endDay: 21, spent: 0, wasted: 0 },
-      { label: 'Week 4', startDay: 22, endDay: daysInMonth, spent: 0, wasted: 0 }
-    ];
-  } else {
-    // Last 12 months - oldest to newest
-    maxScale = 1000;
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    for (let i = 11; i >= 0; i--) {
-      const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      periods.push({
-        monthIndex: monthDate.getMonth(),
-        year: monthDate.getFullYear(),
-        label: monthNames[monthDate.getMonth()],
-        spent: 0,
-        wasted: 0
-      });
-    }
-  }
-  
-  // Populate with real data
-  periodItems.forEach(item => {
-    const itemDate = new Date(item.consumedDate);
-    itemDate.setHours(0, 0, 0, 0); // Normalize to start of day
-    let periodIndex = -1;
-    
-    if (analyticsPeriod === 'Week') {
-      // Find exact day match
-      periodIndex = periods.findIndex(p => {
-        const pDate = new Date(p.date);
-        pDate.setHours(0, 0, 0, 0);
-        return pDate.getTime() === itemDate.getTime();
-      });
-    } else if (analyticsPeriod === 'Month') {
-      // Check if item is in current calendar month
-      if (itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear()) {
-        const dayOfMonth = itemDate.getDate();
-        
-        // Find which week this day belongs to
-        if (dayOfMonth >= 1 && dayOfMonth <= 7) periodIndex = 0;
-        else if (dayOfMonth >= 8 && dayOfMonth <= 14) periodIndex = 1;
-        else if (dayOfMonth >= 15 && dayOfMonth <= 21) periodIndex = 2;
-        else if (dayOfMonth >= 22) periodIndex = 3;
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+        periods.push({
+          label: dayNames[date.getDay()],
+          date: new Date(date),
+          spent: 0,
+          wasted: 0
+        });
       }
+    } else if (analyticsPeriod === 'Month') {
+      // Current calendar month by weeks
+      maxScale = 200;
+      const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      periods = [
+        { label: 'Week 1', startDay: 1, endDay: 7, spent: 0, wasted: 0 },
+        { label: 'Week 2', startDay: 8, endDay: 14, spent: 0, wasted: 0 },
+        { label: 'Week 3', startDay: 15, endDay: 21, spent: 0, wasted: 0 },
+        { label: 'Week 4', startDay: 22, endDay: lastDayOfMonth, spent: 0, wasted: 0 }
+      ];
     } else {
-      // Find matching month and year
-      periodIndex = periods.findIndex(p => 
-        p.monthIndex === itemDate.getMonth() && p.year === itemDate.getFullYear()
-      );
+      // Last 12 months
+      maxScale = 1000;
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      for (let i = 11; i >= 0; i--) {
+        const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        periods.push({
+          label: monthNames[monthDate.getMonth()],
+          monthIndex: monthDate.getMonth(),
+          year: monthDate.getFullYear(),
+          spent: 0,
+          wasted: 0
+        });
+      }
     }
     
-    if (periodIndex >= 0 && periodIndex < periods.length) {
-      periods[periodIndex].spent += item.totalCost;
-      periods[periodIndex].wasted += item.wastedAmount;
-    }
-  });
-  
-  // Convert to SVG coordinates
-  const numPoints = periods.length;
-  const xStep = 100 / (numPoints - 1);
-  
-  const spentPoints = periods.map((period, idx) => {
-    const x = idx * xStep;
-    const y = 192 - (period.spent / maxScale) * 192;
-    return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
-  }).join(' ');
-  
-  const wastedPoints = periods.map((period, idx) => {
-    const x = idx * xStep;
-    const y = 192 - (period.wasted / maxScale) * 192;
-    return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
-  }).join(' ');
-  
-  return {
-    spent: spentPoints,
-    wasted: wastedPoints
+    // Populate with real data
+    periodItems.forEach(item => {
+      const itemDate = new Date(item.consumedDate);
+      itemDate.setHours(0, 0, 0, 0);
+      let periodIndex = -1;
+      
+      if (analyticsPeriod === 'Week') {
+        periodIndex = periods.findIndex(p => {
+          const pDate = new Date(p.date);
+          pDate.setHours(0, 0, 0, 0);
+          return pDate.getTime() === itemDate.getTime();
+        });
+      } else if (analyticsPeriod === 'Month') {
+        if (itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear()) {
+          const dayOfMonth = itemDate.getDate();
+          if (dayOfMonth >= 1 && dayOfMonth <= 7) periodIndex = 0;
+          else if (dayOfMonth >= 8 && dayOfMonth <= 14) periodIndex = 1;
+          else if (dayOfMonth >= 15 && dayOfMonth <= 21) periodIndex = 2;
+          else if (dayOfMonth >= 22) periodIndex = 3;
+        }
+      } else {
+        periodIndex = periods.findIndex(p => 
+          p.monthIndex === itemDate.getMonth() && p.year === itemDate.getFullYear()
+        );
+      }
+      
+      if (periodIndex >= 0 && periodIndex < periods.length) {
+        periods[periodIndex].spent += item.totalCost;
+        periods[periodIndex].wasted += item.wastedAmount;
+      }
+    });
+    
+    // Convert to SVG coordinates
+    const numPoints = periods.length;
+    const xStep = 100 / (numPoints - 1);
+    
+    const spentPoints = periods.map((period, idx) => {
+      const x = idx * xStep;
+      const y = 192 - (period.spent / maxScale) * 192;
+      return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
+    }).join(' ');
+    
+    const wastedPoints = periods.map((period, idx) => {
+      const x = idx * xStep;
+      const y = 192 - (period.wasted / maxScale) * 192;
+      return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
+    }).join(' ');
+    
+    return {
+      labels: periods.map(p => p.label),
+      dataPoints: {
+        spent: spentPoints,
+        wasted: wastedPoints
+      }
+    };
   };
-};
 
-  const chartLabels = getChartLabels();
-  const dataPoints = getDataPoints();
+  const chartData = getChartData();
+  const chartLabels = chartData.labels;
+  const dataPoints = chartData.dataPoints;
 
   // Calculate Top Wasted Items from real data
   const getTopItemsData = () => {
-    // Group items by name and sum wasted amounts
     const wastedByItem = {};
     periodItems.forEach(item => {
       if (item.wastedAmount > 0) {
@@ -255,25 +229,19 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
       }
     });
     
-    // Convert to array and sort by value
     const items = Object.values(wastedByItem).sort((a, b) => b.value - a.value);
-    
-    // Take top 3
     const top3 = items.slice(0, 3);
     
-    // If no data, return empty
     if (top3.length === 0) {
       return [];
     }
     
-    // Assign colors
     const itemColors = ['#EA580C', '#FB923C', '#FCD34D'];
     top3.forEach((item, idx) => {
       item.color = itemColors[idx] || '#D1D5DB';
       item.opacity = 1;
     });
     
-    // Calculate total and add "Other"
     const top3Total = top3.reduce((sum, item) => sum + item.value, 0);
     const otherValue = periodWasted - top3Total;
     
@@ -287,7 +255,6 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
       });
     }
     
-    // Calculate percentages
     return top3.map(item => ({
       ...item,
       percentage: Math.round((item.value / periodWasted) * 100)
@@ -296,7 +263,6 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
 
   const topItemsData = getTopItemsData();
 
-  // Calculate angles for top items pie chart
   let currentAngle = 0;
   const topItemsSlices = topItemsData.map((item) => {
     const angle = (item.percentage / 100) * 360;
@@ -511,17 +477,15 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
             <div className="mb-6">
               <h2 className="text-lg font-bold mb-3" style={{ color: colors.text }}>Waste Analysis</h2>
 
-              {/* Consumption Timing Trends - Stacked Bar Chart */}
+              {/* Consumption Timing Trends */}
               <div className="bg-white p-4 rounded-2xl shadow-sm mb-3" style={{ border: `1px solid ${colors.border}` }}>
                 <div className="mb-4">
                   <h3 className="text-sm font-bold" style={{ color: colors.text }}>Consumption Timing Trends</h3>
                   <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>When items are consumed relative to expiry</p>
                 </div>
                 
-                {/* Stacked Bar Chart */}
                 <div className="space-y-3">
                   {(() => {
-                    // Pale color scheme
                     const timingColors = {
                       fresh: '#D1FAE5',
                       good: '#DBEAFE',
@@ -529,56 +493,76 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                       expired: '#FEE2E2'
                     };
                     
-                    // Calculate timing data from real consumedItems
                     const getTimingData = () => {
                       const now = new Date();
+                      now.setHours(0, 0, 0, 0);
                       let periods = [];
                       
                       if (analyticsPeriod === 'Week') {
-                        periods = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((label, idx) => ({
-                          label,
-                          dayIndex: idx,
-                          fresh: 0,
-                          good: 0,
-                          closeCall: 0,
-                          expired: 0
-                        }));
+                        // Last 7 days - same as trend chart
+                        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                        for (let i = 6; i >= 0; i--) {
+                          const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+                          periods.push({
+                            label: dayNames[date.getDay()],
+                            date: new Date(date),
+                            fresh: 0,
+                            good: 0,
+                            closeCall: 0,
+                            expired: 0
+                          });
+                        }
                       } else if (analyticsPeriod === 'Month') {
-                        periods = ['Week 1', 'Week 2', 'Week 3', 'Week 4'].map((label, idx) => ({
-                          label,
-                          weekIndex: idx,
-                          fresh: 0,
-                          good: 0,
-                          closeCall: 0,
-                          expired: 0
-                        }));
+                        // Current calendar month by weeks
+                        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+                        periods = [
+                          { label: 'Week 1', startDay: 1, endDay: 7, fresh: 0, good: 0, closeCall: 0, expired: 0 },
+                          { label: 'Week 2', startDay: 8, endDay: 14, fresh: 0, good: 0, closeCall: 0, expired: 0 },
+                          { label: 'Week 3', startDay: 15, endDay: 21, fresh: 0, good: 0, closeCall: 0, expired: 0 },
+                          { label: 'Week 4', startDay: 22, endDay: lastDayOfMonth, fresh: 0, good: 0, closeCall: 0, expired: 0 }
+                        ];
                       } else {
-                        periods = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((label, idx) => ({
-                          label,
-                          monthIndex: idx,
-                          fresh: 0,
-                          good: 0,
-                          closeCall: 0,
-                          expired: 0
-                        }));
+                        // Last 12 months
+                        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        for (let i = 11; i >= 0; i--) {
+                          const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                          periods.push({
+                            label: monthNames[monthDate.getMonth()],
+                            monthIndex: monthDate.getMonth(),
+                            year: monthDate.getFullYear(),
+                            fresh: 0,
+                            good: 0,
+                            closeCall: 0,
+                            expired: 0
+                          });
+                        }
                       }
                       
-                      // Fill in data from consumed items
                       periodItems.forEach(item => {
                         const itemDate = new Date(item.consumedDate);
+                        itemDate.setHours(0, 0, 0, 0);
                         let periodIndex = -1;
                         
                         if (analyticsPeriod === 'Week') {
-                          periodIndex = itemDate.getDay();
+                          // Find exact day match
+                          periodIndex = periods.findIndex(p => {
+                            const pDate = new Date(p.date);
+                            pDate.setHours(0, 0, 0, 0);
+                            return pDate.getTime() === itemDate.getTime();
+                          });
                         } else if (analyticsPeriod === 'Month') {
-                          // Calculate which week relative to "now" - FIXED
-                          const daysDiff = Math.floor((now.getTime() - itemDate.getTime()) / (24 * 60 * 60 * 1000));
-                          if (daysDiff < 30) {
-                            periodIndex = Math.floor(daysDiff / 7);
-                            if (periodIndex > 3) periodIndex = 3; // Cap at week 4
+                          if (itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear()) {
+                            const dayOfMonth = itemDate.getDate();
+                            if (dayOfMonth >= 1 && dayOfMonth <= 7) periodIndex = 0;
+                            else if (dayOfMonth >= 8 && dayOfMonth <= 14) periodIndex = 1;
+                            else if (dayOfMonth >= 15 && dayOfMonth <= 21) periodIndex = 2;
+                            else if (dayOfMonth >= 22) periodIndex = 3;
                           }
                         } else {
-                          periodIndex = itemDate.getMonth();
+                          // Find matching month and year
+                          periodIndex = periods.findIndex(p => 
+                            p.monthIndex === itemDate.getMonth() && p.year === itemDate.getFullYear()
+                          );
                         }
                         
                         if (periodIndex >= 0 && periodIndex < periods.length) {
@@ -602,7 +586,6 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                     
                     const timingData = getTimingData();
                     
-                    // If no data, show empty state
                     if (timingData.every(d => d.fresh === 0 && d.good === 0 && d.closeCall === 0 && d.expired === 0)) {
                       return (
                         <div className="flex flex-col items-center justify-center py-8 px-4">
@@ -617,14 +600,11 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                       );
                     }
                     
-                    // Calculate max total for scaling
                     const maxTotal = Math.max(...timingData.map(d => d.fresh + d.good + d.closeCall + d.expired));
                     
                     return (
                       <>
-                        {/* Chart with Y-axis */}
                         <div className="flex gap-3">
-                          {/* Y-axis labels */}
                           <div className="flex flex-col justify-between text-xs font-medium" style={{ color: colors.textLight, height: '160px' }}>
                             <span>${Math.round(maxTotal)}</span>
                             <span>${Math.round(maxTotal * 0.75)}</span>
@@ -633,7 +613,6 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                             <span>$0</span>
                           </div>
                           
-                          {/* Bars */}
                           <div className="flex-1 flex items-end justify-between gap-2 h-40">
                             {timingData.map((item, idx) => {
                               const total = item.fresh + item.good + item.closeCall + item.expired;
@@ -641,11 +620,9 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                               
                               return (
                                 <div key={idx} className="flex-1 flex flex-col items-center gap-2">
-                                  {/* Stacked bar */}
                                   <div className="w-full flex flex-col-reverse" style={{ height: '128px' }}>
                                     {total > 0 && (
                                       <div className="w-full relative" style={{ height: `${height}%` }}>
-                                        {/* Expired (bottom) - NO ROUNDING */}
                                         {item.expired > 0 && (
                                           <div 
                                             className="w-full absolute bottom-0 left-0 transition-all"
@@ -655,7 +632,6 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                                             }}
                                           />
                                         )}
-                                        {/* Close Call */}
                                         {item.closeCall > 0 && (
                                           <div 
                                             className="w-full absolute left-0 transition-all"
@@ -666,7 +642,6 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                                             }}
                                           />
                                         )}
-                                        {/* Good */}
                                         {item.good > 0 && (
                                           <div 
                                             className="w-full absolute left-0 transition-all"
@@ -677,7 +652,6 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                                             }}
                                           />
                                         )}
-                                        {/* Fresh (top) */}
                                         {item.fresh > 0 && (
                                           <div 
                                             className="w-full absolute left-0 rounded-t-lg transition-all"
@@ -692,7 +666,6 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                                     )}
                                   </div>
                                   
-                                  {/* Label */}
                                   <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>
                                     {item.label}
                                   </span>
@@ -702,7 +675,6 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                           </div>
                         </div>
                         
-                        {/* Legend */}
                         <div className="grid grid-cols-2 gap-2 pt-3 border-t" style={{ borderColor: colors.border }}>
                           <div className="flex items-center gap-2">
                             <div className="w-3 h-3 rounded" style={{ backgroundColor: timingColors.fresh }} />
@@ -727,20 +699,16 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                 </div>
               </div>
 
-              {/* Top Items - Full Width */}
+              {/* Top Items */}
               <div className="bg-white p-4 rounded-2xl shadow-sm" style={{ border: `1px solid ${colors.border}` }}>
                 <div className="mb-4">
                   <h3 className="text-sm font-bold" style={{ color: colors.text }}>Top Wasted Items</h3>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3">
-                  {/* Donut Chart */}
                   <div className="flex items-center justify-center">
                     <svg width="140" height="140" viewBox="0 0 140 140" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.06))' }}>
-                      {/* Background circle */}
                       <circle cx="70" cy="70" r="60" fill={colors.bgGray} />
-                      
-                      {/* Pie slices */}
                       {topItemsSlices.map((slice, idx) => (
                         <path
                           key={idx}
@@ -750,22 +718,17 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                           style={{ transition: 'opacity 0.2s' }}
                         />
                       ))}
-                      
-                      {/* Center white circle */}
                       <circle cx="70" cy="70" r="38" fill="white" />
                     </svg>
                   </div>
                   
-                  {/* Legend */}
                   <div className="flex flex-col justify-center space-y-3">
                     {topItemsSlices.map((item, idx) => (
                       <div key={idx} className="flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2">
                           <div 
                             className="w-3 h-3 rounded-full" 
-                            style={{ 
-                              backgroundColor: item.color
-                            }} 
+                            style={{ backgroundColor: item.color }} 
                           />
                           <span className="font-medium" style={{ color: colors.text }}>
                             {item.name}

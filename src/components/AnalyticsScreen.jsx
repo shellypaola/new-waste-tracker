@@ -117,98 +117,123 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
   };
 
   const getDataPoints = () => {
-    // Y-axis range: y=0 is TOP, y=192 is BOTTOM
-    // Formula: y = 192 - (value/max * 192)
+  // Y-axis range: y=0 is TOP, y=192 is BOTTOM
+  // Formula: y = 192 - (value/max * 192)
+  
+  const now = new Date();
+  now.setHours(0, 0, 0, 0); // Normalize to start of day
+  let periods = [];
+  let maxScale = 30; // Default for week
+  
+  // Initialize periods based on time range
+  if (analyticsPeriod === 'Week') {
+    // Last 7 days - oldest to newest (left to right)
+    maxScale = 30;
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      periods.push({
+        date: date,
+        label: dayNames[date.getDay()],
+        spent: 0,
+        wasted: 0
+      });
+    }
+  } else if (analyticsPeriod === 'Month') {
+    // Current calendar month broken into 4 weeks
+    maxScale = 200;
     
-    const now = new Date();
-    let periods = [];
-    let maxScale = 30; // Default for week
+    // Get first day of current month
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     
-    // Initialize periods based on time range
+    // Get last day of current month
+    const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    
+    // Calculate total days in month
+    const daysInMonth = lastDayOfMonth.getDate();
+    
+    // Split month into 4 weeks (approximately)
+    // Week 1: Day 1-7, Week 2: Day 8-14, Week 3: Day 15-21, Week 4: Day 22-end
+    periods = [
+      { label: 'Week 1', startDay: 1, endDay: 7, spent: 0, wasted: 0 },
+      { label: 'Week 2', startDay: 8, endDay: 14, spent: 0, wasted: 0 },
+      { label: 'Week 3', startDay: 15, endDay: 21, spent: 0, wasted: 0 },
+      { label: 'Week 4', startDay: 22, endDay: daysInMonth, spent: 0, wasted: 0 }
+    ];
+  } else {
+    // Last 12 months - oldest to newest
+    maxScale = 1000;
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    for (let i = 11; i >= 0; i--) {
+      const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      periods.push({
+        monthIndex: monthDate.getMonth(),
+        year: monthDate.getFullYear(),
+        label: monthNames[monthDate.getMonth()],
+        spent: 0,
+        wasted: 0
+      });
+    }
+  }
+  
+  // Populate with real data
+  periodItems.forEach(item => {
+    const itemDate = new Date(item.consumedDate);
+    itemDate.setHours(0, 0, 0, 0); // Normalize to start of day
+    let periodIndex = -1;
+    
     if (analyticsPeriod === 'Week') {
-      // 7 days (Mon-Sun)
-      maxScale = 30;
-      for (let i = 0; i < 7; i++) {
-        const date = new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000);
-        periods.push({
-          date: date,
-          dayIndex: date.getDay(),
-          spent: 0,
-          wasted: 0
-        });
-      }
+      // Find exact day match
+      periodIndex = periods.findIndex(p => {
+        const pDate = new Date(p.date);
+        pDate.setHours(0, 0, 0, 0);
+        return pDate.getTime() === itemDate.getTime();
+      });
     } else if (analyticsPeriod === 'Month') {
-      // 4 weeks
-      maxScale = 200;
-      for (let i = 0; i < 4; i++) {
-        periods.push({
-          weekIndex: i,
-          spent: 0,
-          wasted: 0
-        });
+      // Check if item is in current calendar month
+      if (itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear()) {
+        const dayOfMonth = itemDate.getDate();
+        
+        // Find which week this day belongs to
+        if (dayOfMonth >= 1 && dayOfMonth <= 7) periodIndex = 0;
+        else if (dayOfMonth >= 8 && dayOfMonth <= 14) periodIndex = 1;
+        else if (dayOfMonth >= 15 && dayOfMonth <= 21) periodIndex = 2;
+        else if (dayOfMonth >= 22) periodIndex = 3;
       }
     } else {
-      // 12 months
-      maxScale = 1000;
-      for (let i = 0; i < 12; i++) {
-        periods.push({
-          monthIndex: i,
-          spent: 0,
-          wasted: 0
-        });
-      }
+      // Find matching month and year
+      periodIndex = periods.findIndex(p => 
+        p.monthIndex === itemDate.getMonth() && p.year === itemDate.getFullYear()
+      );
     }
     
-    // Populate with real data
-    periodItems.forEach(item => {
-      const itemDate = new Date(item.consumedDate);
-      let periodIndex = -1;
-      
-      if (analyticsPeriod === 'Week') {
-        // Find which day this item belongs to
-        periodIndex = periods.findIndex(p => {
-          const pDate = new Date(p.date);
-          return pDate.toDateString() === itemDate.toDateString();
-        });
-      } else if (analyticsPeriod === 'Month') {
-        // Calculate which week relative to "now"
-        const daysDiff = Math.floor((now.getTime() - itemDate.getTime()) / (24 * 60 * 60 * 1000));
-        if (daysDiff < 30) {
-          periodIndex = Math.floor(daysDiff / 7);
-          if (periodIndex > 3) periodIndex = 3; // Cap at week 4
-        }
-      } else {
-        // Month index (0-11)
-        periodIndex = itemDate.getMonth();
-      }
-      
-      if (periodIndex >= 0 && periodIndex < periods.length) {
-        periods[periodIndex].spent += item.totalCost;
-        periods[periodIndex].wasted += item.wastedAmount;
-      }
-    });
-    
-    // Convert to SVG coordinates
-    const numPoints = periods.length;
-    const xStep = 100 / (numPoints - 1);
-    
-    const spentPoints = periods.map((period, idx) => {
-      const x = idx * xStep;
-      const y = 192 - (period.spent / maxScale) * 192;
-      return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
-    }).join(' ');
-    
-    const wastedPoints = periods.map((period, idx) => {
-      const x = idx * xStep;
-      const y = 192 - (period.wasted / maxScale) * 192;
-      return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
-    }).join(' ');
-    
-    return {
-      spent: spentPoints,
-      wasted: wastedPoints
-    };
+    if (periodIndex >= 0 && periodIndex < periods.length) {
+      periods[periodIndex].spent += item.totalCost;
+      periods[periodIndex].wasted += item.wastedAmount;
+    }
+  });
+  
+  // Convert to SVG coordinates
+  const numPoints = periods.length;
+  const xStep = 100 / (numPoints - 1);
+  
+  const spentPoints = periods.map((period, idx) => {
+    const x = idx * xStep;
+    const y = 192 - (period.spent / maxScale) * 192;
+    return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
+  }).join(' ');
+  
+  const wastedPoints = periods.map((period, idx) => {
+    const x = idx * xStep;
+    const y = 192 - (period.wasted / maxScale) * 192;
+    return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
+  }).join(' ');
+  
+  return {
+    spent: spentPoints,
+    wasted: wastedPoints
   };
+};
 
   const chartLabels = getChartLabels();
   const dataPoints = getDataPoints();

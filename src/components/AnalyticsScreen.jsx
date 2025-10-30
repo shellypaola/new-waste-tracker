@@ -117,33 +117,95 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
   };
 
   const getDataPoints = () => {
-    // Y-axis range: y=0 is TOP, y=192 is BOTTOM
-    // Formula: y = 192 - (value/max * 192)
+  // Y-axis range: y=0 is TOP, y=192 is BOTTOM
+  // Formula: y = 192 - (value/max * 192)
+  
+  const now = new Date();
+  let periods = [];
+  let maxScale = 30; // Default for week
+  
+  // Initialize periods based on time range
+  if (analyticsPeriod === 'Week') {
+    // 7 days (Mon-Sun)
+    maxScale = 30;
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000);
+      periods.push({
+        date: date,
+        dayIndex: date.getDay(),
+        spent: 0,
+        wasted: 0
+      });
+    }
+  } else if (analyticsPeriod === 'Month') {
+    // 4 weeks
+    maxScale = 200;
+    for (let i = 0; i < 4; i++) {
+      periods.push({
+        weekIndex: i,
+        spent: 0,
+        wasted: 0
+      });
+    }
+  } else {
+    // 12 months
+    maxScale = 1000;
+    for (let i = 0; i < 12; i++) {
+      periods.push({
+        monthIndex: i,
+        spent: 0,
+        wasted: 0
+      });
+    }
+  }
+  
+  // Populate with real data
+  periodItems.forEach(item => {
+    const itemDate = new Date(item.consumedDate);
+    let periodIndex = -1;
     
     if (analyticsPeriod === 'Week') {
-      return {
-        spent: '0,102 16.67,98 33.33,100 50,104 66.67,106 83.33,103 100,102',
-        wasted: '0,181 16.67,180 33.33,182 50,181 66.67,183 83.33,182 100,181'
-      };
+      // Find which day this item belongs to
+      periodIndex = periods.findIndex(p => {
+        const pDate = new Date(p.date);
+        return pDate.toDateString() === itemDate.toDateString();
+      });
     } else if (analyticsPeriod === 'Month') {
-      return {
-        spent: '0,29 33.33,26 66.67,28 100,25',
-        wasted: '0,153 33.33,150 66.67,152 100,153'
-      };
+      // Calculate which week of the month (0-3)
+      const dayOfMonth = itemDate.getDate();
+      periodIndex = Math.min(Math.floor((dayOfMonth - 1) / 7), 3);
     } else {
-      const xPositions = [0, 9.09, 18.18, 27.27, 36.36, 45.45, 54.55, 63.64, 72.73, 81.82, 90.91, 100];
-      const spentY = [64, 61, 66, 68, 71, 74, 68, 66, 61, 58, 56, 54];
-      const wastedY = [163, 161, 165, 167, 169, 171, 167, 165, 161, 159, 157, 155];
-      
-      const spentPoints = xPositions.map((x, i) => `${x},${spentY[i]}`).join(' ');
-      const wastedPoints = xPositions.map((x, i) => `${x},${wastedY[i]}`).join(' ');
-      
-      return {
-        spent: spentPoints,
-        wasted: wastedPoints
-      };
+      // Month index (0-11)
+      periodIndex = itemDate.getMonth();
     }
+    
+    if (periodIndex >= 0 && periodIndex < periods.length) {
+      periods[periodIndex].spent += item.totalCost;
+      periods[periodIndex].wasted += item.wastedAmount;
+    }
+  });
+  
+  // Convert to SVG coordinates
+  const numPoints = periods.length;
+  const xStep = 100 / (numPoints - 1);
+  
+  const spentPoints = periods.map((period, idx) => {
+    const x = idx * xStep;
+    const y = 192 - (period.spent / maxScale) * 192;
+    return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
+  }).join(' ');
+  
+  const wastedPoints = periods.map((period, idx) => {
+    const x = idx * xStep;
+    const y = 192 - (period.wasted / maxScale) * 192;
+    return `${x.toFixed(2)},${Math.max(0, Math.min(192, y)).toFixed(2)}`;
+  }).join(' ');
+  
+  return {
+    spent: spentPoints,
+    wasted: wastedPoints
   };
+};
 
   const chartLabels = getChartLabels();
   const dataPoints = getDataPoints();

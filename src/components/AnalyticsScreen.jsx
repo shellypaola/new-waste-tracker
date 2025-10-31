@@ -147,7 +147,7 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
       // Last 12 months
       maxScale = 1000;
       const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      for (let i = 11; i >= 0; i--) {
+      for (let i = 0; i < 12; i++) {
         const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
         periods.push({
           label: monthNames[monthDate.getMonth()],
@@ -508,7 +508,7 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                       if (analyticsPeriod === 'Week') {
                         // Last 7 days - same as trend chart
                         const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                        for (let i = 6; i >= 0; i--) {
+                        for (let i = 0; i >= 7; i--) {
                           const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
                           periods.push({
                             label: dayNames[date.getDay()],
@@ -531,7 +531,7 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                       } else {
                         // Last 12 months
                         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                        for (let i = 11; i >= 0; i--) {
+                        for (let i = 0; i >= 12; i--) {
                           const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
                           periods.push({
                             label: monthNames[monthDate.getMonth()],

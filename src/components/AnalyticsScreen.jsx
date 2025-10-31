@@ -114,11 +114,18 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
     let maxScale = 30;
     
     if (analyticsPeriod === 'Week') {
-      // Last 7 days
+      // Current week (Monday to Sunday)
       maxScale = 30;
       const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      
+      // Find the Monday of the current week
+      const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+      const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days; otherwise go back (dayOfWeek - 1)
+      const monday = new Date(now.getTime() - daysFromMonday * 24 * 60 * 60 * 1000);
+      
+      // Create 7 days starting from Monday
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(monday.getTime() + i * 24 * 60 * 60 * 1000);
         periods.push({
           label: dayNames[date.getDay()],
           date: new Date(date),

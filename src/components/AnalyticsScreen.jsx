@@ -191,13 +191,23 @@ periodItems.forEach(item => {
 // Helper function to create nice round numbers
 const getNiceNumber = (value) => {
   if (value === 0) return 0;
+  
   const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
   const fraction = value / magnitude;
+  
+  // Finer granularity: use steps of 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5, 10
   let niceFraction;
   if (fraction <= 1) niceFraction = 1;
+  else if (fraction <= 1.5) niceFraction = 1.5;
   else if (fraction <= 2) niceFraction = 2;
+  else if (fraction <= 2.5) niceFraction = 2.5;
+  else if (fraction <= 3) niceFraction = 3;
+  else if (fraction <= 4) niceFraction = 4;
   else if (fraction <= 5) niceFraction = 5;
+  else if (fraction <= 6) niceFraction = 6;
+  else if (fraction <= 7.5) niceFraction = 7.5;
   else niceFraction = 10;
+  
   return niceFraction * magnitude;
 };
 
@@ -397,16 +407,20 @@ if (maxSpent > 0) {
                       // Helper function to create nice round numbers
                       const getNiceNumber = (value) => {
                         if (value === 0) return 0;
-                        
-                        // Get magnitude (e.g., 15000 -> 10000, 500 -> 100)
                         const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
                         const fraction = value / magnitude;
                         
-                        // Round to nice fractions (1, 2, 5, 10)
+                        // Finer granularity: use steps of 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5, 10
                         let niceFraction;
                         if (fraction <= 1) niceFraction = 1;
+                        else if (fraction <= 1.5) niceFraction = 1.5;
                         else if (fraction <= 2) niceFraction = 2;
+                        else if (fraction <= 2.5) niceFraction = 2.5;
+                        else if (fraction <= 3) niceFraction = 3;
+                        else if (fraction <= 4) niceFraction = 4;
                         else if (fraction <= 5) niceFraction = 5;
+                        else if (fraction <= 6) niceFraction = 6;
+                        else if (fraction <= 7.5) niceFraction = 7.5;
                         else niceFraction = 10;
                         
                         return niceFraction * magnitude;
@@ -674,11 +688,20 @@ if (maxSpent > 0) {
                       if (value === 0) return 0;
                       const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
                       const fraction = value / magnitude;
+                      
+                      // Finer granularity: use steps of 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5, 10
                       let niceFraction;
                       if (fraction <= 1) niceFraction = 1;
+                      else if (fraction <= 1.5) niceFraction = 1.5;
                       else if (fraction <= 2) niceFraction = 2;
+                      else if (fraction <= 2.5) niceFraction = 2.5;
+                      else if (fraction <= 3) niceFraction = 3;
+                      else if (fraction <= 4) niceFraction = 4;
                       else if (fraction <= 5) niceFraction = 5;
+                      else if (fraction <= 6) niceFraction = 6;
+                      else if (fraction <= 7.5) niceFraction = 7.5;
                       else niceFraction = 10;
+                      
                       return niceFraction * magnitude;
                     };
                     
@@ -699,14 +722,20 @@ if (maxSpent > 0) {
                             // Helper function to create nice round numbers
                             const getNiceNumber = (value) => {
                               if (value === 0) return 0;
-                              
                               const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
                               const fraction = value / magnitude;
                               
+                              // Finer granularity: use steps of 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5, 10
                               let niceFraction;
                               if (fraction <= 1) niceFraction = 1;
+                              else if (fraction <= 1.5) niceFraction = 1.5;
                               else if (fraction <= 2) niceFraction = 2;
+                              else if (fraction <= 2.5) niceFraction = 2.5;
+                              else if (fraction <= 3) niceFraction = 3;
+                              else if (fraction <= 4) niceFraction = 4;
                               else if (fraction <= 5) niceFraction = 5;
+                              else if (fraction <= 6) niceFraction = 6;
+                              else if (fraction <= 7.5) niceFraction = 7.5;
                               else niceFraction = 10;
                               
                               return niceFraction * magnitude;

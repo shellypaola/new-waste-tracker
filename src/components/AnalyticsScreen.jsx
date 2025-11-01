@@ -196,7 +196,14 @@ if (analyticsPeriod === 'Week') {
 } else {
   maxScale = maxSpent > 0 ? Math.ceil((maxSpent + 500) / 100) * 100 : 1000;
 }
-    
+// DEBUG - ADD THESE LINES
+console.log('=== CHART DEBUG ===');
+console.log('Period:', analyticsPeriod);
+console.log('Periods:', periods);
+console.log('Max Spent:', maxSpent);
+console.log('Max Scale:', maxScale);
+console.log('PeriodItems count:', periodItems.length);
+// END DEBUG
     // Convert to SVG coordinates
     const numPoints = periods.length;
     const xStep = 100 / (numPoints - 1);

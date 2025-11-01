@@ -384,49 +384,65 @@ console.log('PeriodItems count:', periodItems.length);
                 <div className="relative h-48 mb-4">
                   {/* Y-axis labels */}
                   {/* Y-axis labels */}
-<div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs font-medium" style={{ color: colors.textLight }}>
-  {(() => {
-    // Get maxScale from chartData
-    const max = parseInt(chartData.dataPoints.spent.split(' ')[0].split(',')[1]) === 192 ? 0 : 
-                Math.ceil(periodSpent / (1 - 192/192)); // This is a hack, let's use a better approach
-    
-    // Actually, we need to extract maxScale differently
-    // Let's create labels based on what we know the scale should be
-    const getLabels = () => {
-      if (analyticsPeriod === 'Week') {
-        const scale = Math.max(periodSpent, periodWasted, 30);
-        const dynamicMax = scale > 0 ? Math.ceil((scale + 10) / 10) * 10 : 30;
-        return [
-          <span key="max">${dynamicMax}</span>,
-          <span key="75">${Math.round(dynamicMax * 0.75)}</span>,
-          <span key="50">${Math.round(dynamicMax * 0.5)}</span>,
-          <span key="25">${Math.round(dynamicMax * 0.25)}</span>,
-          <span key="0">$0</span>
-        ];
-      } else if (analyticsPeriod === 'Month') {
-        const scale = Math.max(periodSpent, periodWasted, 200);
-        const dynamicMax = scale > 0 ? Math.ceil((scale + 50) / 50) * 50 : 200;
-        return [
-          <span key="max">${dynamicMax}</span>,
-          <span key="50">${Math.round(dynamicMax * 0.5)}</span>,
-          <span key="0">$0</span>
-        ];
-      } else {
-        const scale = Math.max(periodSpent, periodWasted, 1000);
-        const dynamicMax = scale > 0 ? Math.ceil((scale + 500) / 100) * 100 : 1000;
-        return [
-          <span key="max">${dynamicMax}</span>,
-          <span key="75">${Math.round(dynamicMax * 0.75)}</span>,
-          <span key="50">${Math.round(dynamicMax * 0.5)}</span>,
-          <span key="25">${Math.round(dynamicMax * 0.25)}</span>,
-          <span key="0">$0</span>
-        ];
-      }
-    };
-    
-    return getLabels();
-  })()}
-</div>
+                  <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs font-medium" style={{ color: colors.textLight }}>
+                    {(() => {
+                      // Helper function to create nice round numbers
+                      const getNiceNumber = (value) => {
+                        if (value === 0) return 0;
+                        
+                        // Get magnitude (e.g., 15000 -> 10000, 500 -> 100)
+                        const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+                        const fraction = value / magnitude;
+                        
+                        // Round to nice fractions (1, 2, 5, 10)
+                        let niceFraction;
+                        if (fraction <= 1) niceFraction = 1;
+                        else if (fraction <= 2) niceFraction = 2;
+                        else if (fraction <= 5) niceFraction = 5;
+                        else niceFraction = 10;
+                        
+                        return niceFraction * magnitude;
+                      };
+                      
+                      const getLabels = () => {
+                        const maxValue = Math.max(periodSpent, periodWasted);
+                        let dynamicMax;
+                        
+                        if (analyticsPeriod === 'Week') {
+                          dynamicMax = maxValue > 0 ? getNiceNumber(maxValue + 10) : 30;
+                        } else if (analyticsPeriod === 'Month') {
+                          dynamicMax = maxValue > 0 ? getNiceNumber(maxValue + 50) : 200;
+                        } else {
+                          dynamicMax = maxValue > 0 ? getNiceNumber(maxValue + 500) : 1000;
+                        }
+                        
+                        // Format currency nicely (no decimals, with commas for thousands)
+                        const formatCurrency = (val) => {
+                          return `$${Math.round(val).toLocaleString()}`;
+                        };
+                        
+                        if (analyticsPeriod === 'Month') {
+                          // 3 labels for month view
+                          return [
+                            <span key="max">{formatCurrency(dynamicMax)}</span>,
+                            <span key="50">{formatCurrency(dynamicMax * 0.5)}</span>,
+                            <span key="0">$0</span>
+                          ];
+                        } else {
+                          // 5 labels for week and year view
+                          return [
+                            <span key="max">{formatCurrency(dynamicMax)}</span>,
+                            <span key="75">{formatCurrency(dynamicMax * 0.75)}</span>,
+                            <span key="50">{formatCurrency(dynamicMax * 0.5)}</span>,
+                            <span key="25">{formatCurrency(dynamicMax * 0.25)}</span>,
+                            <span key="0">$0</span>
+                          ];
+                        }
+                      };
+                      
+                      return getLabels();
+                    })()}
+                  </div>
                   
                   {/* Chart content */}
                   <div className="ml-10 h-full relative">
@@ -646,18 +662,77 @@ console.log('PeriodItems count:', periodItems.length);
                       );
                     }
                     
+                    // Helper function for nice numbers
+                    const getNiceNumber = (value) => {
+                      if (value === 0) return 0;
+                      const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+                      const fraction = value / magnitude;
+                      let niceFraction;
+                      if (fraction <= 1) niceFraction = 1;
+                      else if (fraction <= 2) niceFraction = 2;
+                      else if (fraction <= 5) niceFraction = 5;
+                      else niceFraction = 10;
+                      return niceFraction * magnitude;
+                    };
+                    
                     const maxDataValue = Math.max(...timingData.map(d => d.fresh + d.good + d.closeCall + d.expired));
-                    const maxTotal = maxDataValue > 0 ? Math.ceil((maxDataValue + 50) / 50) * 50 : 50;                    
+                    let maxTotal;
+                    if (analyticsPeriod === 'Week') {
+                      maxTotal = maxDataValue > 0 ? getNiceNumber(maxDataValue + 10) : 30;
+                    } else if (analyticsPeriod === 'Month') {
+                      maxTotal = maxDataValue > 0 ? getNiceNumber(maxDataValue + 50) : 200;
+                    } else {
+                      maxTotal = maxDataValue > 0 ? getNiceNumber(maxDataValue + 500) : 1000;
+                    }              
                     return (
                       <>
                         <div className="flex gap-3">
-                          <div className="flex flex-col justify-between text-xs font-medium" style={{ color: colors.textLight, height: '160px' }}>
-                            <span>${Math.round(maxTotal)}</span>
-                            <span>${Math.round(maxTotal * 0.75)}</span>
-                            <span>${Math.round(maxTotal * 0.5)}</span>
-                            <span>${Math.round(maxTotal * 0.25)}</span>
-                            <span>$0</span>
-                          </div>
+                        <div className="flex flex-col justify-between text-xs font-medium" style={{ color: colors.textLight, height: '160px' }}>
+                          {(() => {
+                            // Helper function to create nice round numbers
+                            const getNiceNumber = (value) => {
+                              if (value === 0) return 0;
+                              
+                              const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+                              const fraction = value / magnitude;
+                              
+                              let niceFraction;
+                              if (fraction <= 1) niceFraction = 1;
+                              else if (fraction <= 2) niceFraction = 2;
+                              else if (fraction <= 5) niceFraction = 5;
+                              else niceFraction = 10;
+                              
+                              return niceFraction * magnitude;
+                            };
+                            
+                            // Format currency nicely
+                            const formatCurrency = (val) => {
+                              return `$${Math.round(val).toLocaleString()}`;
+                            };
+                            
+                            // Get nice max value
+                            const maxDataValue = Math.max(...timingData.map(d => d.fresh + d.good + d.closeCall + d.expired));
+                            let niceMax;
+                            
+                            if (analyticsPeriod === 'Week') {
+                              niceMax = maxDataValue > 0 ? getNiceNumber(maxDataValue + 10) : 30;
+                            } else if (analyticsPeriod === 'Month') {
+                              niceMax = maxDataValue > 0 ? getNiceNumber(maxDataValue + 50) : 200;
+                            } else {
+                              niceMax = maxDataValue > 0 ? getNiceNumber(maxDataValue + 500) : 1000;
+                            }
+                            
+                            return (
+                              <>
+                                <span>{formatCurrency(niceMax)}</span>
+                                <span>{formatCurrency(niceMax * 0.75)}</span>
+                                <span>{formatCurrency(niceMax * 0.5)}</span>
+                                <span>{formatCurrency(niceMax * 0.25)}</span>
+                                <span>$0</span>
+                              </>
+                            );
+                          })()}
+                        </div>
                           
                           <div className="flex-1 flex items-end justify-between gap-2 h-40">
                             {timingData.map((item, idx) => {

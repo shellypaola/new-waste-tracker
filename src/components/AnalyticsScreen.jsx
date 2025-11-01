@@ -315,7 +315,7 @@ if (maxSpent > 0) {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="px-4 pt-6 pb-20">
+      <div className="px-6 pt-6 pb-20">
             {/* Header */}
             <div className="mb-6">
               <h1 className="text-2xl font-bold" style={{ color: colors.text }}>Analytics</h1>

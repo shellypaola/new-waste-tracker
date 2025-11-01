@@ -734,8 +734,8 @@ export default function WasteWarriorMVP() {
                   {consumeQuantity}
                 </div>
                 <button
-                  onClick={() => setConsumeQuantity(Math.min(selectedItem.quantity || 1, consumeQuantity + 1))}
-                  disabled={consumeQuantity >= (selectedItem.quantity || 1)}
+                  onClick={() => setConsumeQuantity(Math.min(selectedItem.quantity || 0, consumeQuantity + 1))}
+                  disabled={consumeQuantity >= (selectedItem.quantity || 0)}
                   className="w-[52px] h-[52px] rounded-xl font-bold text-2xl flex items-center justify-center transition-all"
                   style={{ 
                     backgroundColor: colors.bgGray,

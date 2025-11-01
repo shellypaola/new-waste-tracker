@@ -114,36 +114,34 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
     let maxScale = 30;
     
     if (analyticsPeriod === 'Week') {
-      // Current week (Monday to Sunday)
-      maxScale = 30;
-      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      
-      // Find the Monday of the current week
-      const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-      const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days; otherwise go back (dayOfWeek - 1)
-      const monday = new Date(now.getTime() - daysFromMonday * 24 * 60 * 60 * 1000);
-      
-      // Create 7 days starting from Monday
-      for (let i = 0; i < 7; i++) {
-        const date = new Date(monday.getTime() + i * 24 * 60 * 60 * 1000);
-        periods.push({
-          label: dayNames[date.getDay()],
-          date: new Date(date),
-          spent: 0,
-          wasted: 0
-        });
-      }
-    } else if (analyticsPeriod === 'Month') {
-      // Current calendar month by weeks
-      maxScale = 200;
-      const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-      periods = [
-        { label: 'Week 1', startDay: 1, endDay: 7, spent: 0, wasted: 0 },
-        { label: 'Week 2', startDay: 8, endDay: 14, spent: 0, wasted: 0 },
-        { label: 'Week 3', startDay: 15, endDay: 21, spent: 0, wasted: 0 },
-        { label: 'Week 4', startDay: 22, endDay: lastDayOfMonth, spent: 0, wasted: 0 }
-      ];
-    } else {
+  // Current week (Monday to Sunday)
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  
+  // Find the Monday of the current week
+  const dayOfWeek = now.getDay();
+  const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  const monday = new Date(now.getTime() - daysFromMonday * 24 * 60 * 60 * 1000);
+  
+  // Create 7 days starting from Monday
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(monday.getTime() + i * 24 * 60 * 60 * 1000);
+    periods.push({
+      label: dayNames[date.getDay()],
+      date: new Date(date),
+      spent: 0,
+      wasted: 0
+    });
+  }
+} else if (analyticsPeriod === 'Month') {
+  // Current calendar month by weeks
+  const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  periods = [
+    { label: 'Week 1', startDay: 1, endDay: 7, spent: 0, wasted: 0 },
+    { label: 'Week 2', startDay: 8, endDay: 14, spent: 0, wasted: 0 },
+    { label: 'Week 3', startDay: 15, endDay: 21, spent: 0, wasted: 0 },
+    { label: 'Week 4', startDay: 22, endDay: lastDayOfMonth, spent: 0, wasted: 0 }
+  ];
+} else {
   // Current calendar year (Jan-Dec)
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   for (let i = 0; i < 12; i++) {
@@ -154,10 +152,48 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
       spent: 0,
       wasted: 0
     });
-  }  
+  }
+}
+
+// Populate with real data
+periodItems.forEach(item => {
+  const itemDate = new Date(item.consumedDate);
+  itemDate.setHours(0, 0, 0, 0);
+  let periodIndex = -1;
   
-  // Calculate dynamic maxScale based on actual data
-  const maxSpent = Math.max(...periods.map(p => p.spent), 0);
+  if (analyticsPeriod === 'Week') {
+    periodIndex = periods.findIndex(p => {
+      const pDate = new Date(p.date);
+      pDate.setHours(0, 0, 0, 0);
+      return pDate.getTime() === itemDate.getTime();
+    });
+  } else if (analyticsPeriod === 'Month') {
+    if (itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear()) {
+      const dayOfMonth = itemDate.getDate();
+      if (dayOfMonth >= 1 && dayOfMonth <= 7) periodIndex = 0;
+      else if (dayOfMonth >= 8 && dayOfMonth <= 14) periodIndex = 1;
+      else if (dayOfMonth >= 15 && dayOfMonth <= 21) periodIndex = 2;
+      else if (dayOfMonth >= 22) periodIndex = 3;
+    }
+  } else {
+    periodIndex = periods.findIndex(p => 
+      p.monthIndex === itemDate.getMonth() && p.year === itemDate.getFullYear()
+    );
+  }
+  
+  if (periodIndex >= 0 && periodIndex < periods.length) {
+    periods[periodIndex].spent += item.totalCost;
+    periods[periodIndex].wasted += item.wastedAmount;
+  }
+});
+
+// Calculate dynamic maxScale for ALL views based on actual data
+const maxSpent = Math.max(...periods.map(p => p.spent), 0);
+if (analyticsPeriod === 'Week') {
+  maxScale = maxSpent > 0 ? Math.ceil((maxSpent + 10) / 10) * 10 : 30;
+} else if (analyticsPeriod === 'Month') {
+  maxScale = maxSpent > 0 ? Math.ceil((maxSpent + 50) / 50) * 50 : 200;
+} else {
   maxScale = maxSpent > 0 ? Math.ceil((maxSpent + 500) / 100) * 100 : 1000;
 }
     

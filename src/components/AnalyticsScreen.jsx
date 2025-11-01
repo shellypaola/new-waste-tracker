@@ -144,52 +144,22 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
         { label: 'Week 4', startDay: 22, endDay: lastDayOfMonth, spent: 0, wasted: 0 }
       ];
     } else {
-      // Last 12 months
-      maxScale = 1000;
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      for (let i = 0; i < 12; i++) {
-        const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        periods.push({
-          label: monthNames[monthDate.getMonth()],
-          monthIndex: monthDate.getMonth(),
-          year: monthDate.getFullYear(),
-          spent: 0,
-          wasted: 0
-        });
-      }
-    }
-    
-    // Populate with real data
-    periodItems.forEach(item => {
-      const itemDate = new Date(item.consumedDate);
-      itemDate.setHours(0, 0, 0, 0);
-      let periodIndex = -1;
-      
-      if (analyticsPeriod === 'Week') {
-        periodIndex = periods.findIndex(p => {
-          const pDate = new Date(p.date);
-          pDate.setHours(0, 0, 0, 0);
-          return pDate.getTime() === itemDate.getTime();
-        });
-      } else if (analyticsPeriod === 'Month') {
-        if (itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear()) {
-          const dayOfMonth = itemDate.getDate();
-          if (dayOfMonth >= 1 && dayOfMonth <= 7) periodIndex = 0;
-          else if (dayOfMonth >= 8 && dayOfMonth <= 14) periodIndex = 1;
-          else if (dayOfMonth >= 15 && dayOfMonth <= 21) periodIndex = 2;
-          else if (dayOfMonth >= 22) periodIndex = 3;
-        }
-      } else {
-        periodIndex = periods.findIndex(p => 
-          p.monthIndex === itemDate.getMonth() && p.year === itemDate.getFullYear()
-        );
-      }
-      
-      if (periodIndex >= 0 && periodIndex < periods.length) {
-        periods[periodIndex].spent += item.totalCost;
-        periods[periodIndex].wasted += item.wastedAmount;
-      }
+  // Current calendar year (Jan-Dec)
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  for (let i = 0; i < 12; i++) {
+    periods.push({
+      label: monthNames[i],
+      monthIndex: i,
+      year: now.getFullYear(),
+      spent: 0,
+      wasted: 0
     });
+  }  
+  
+  // Calculate dynamic maxScale based on actual data
+  const maxSpent = Math.max(...periods.map(p => p.spent), 0);
+  maxScale = maxSpent > 0 ? Math.ceil((maxSpent + 500) / 100) * 100 : 1000;
+}
     
     // Convert to SVG coordinates
     const numPoints = periods.length;
@@ -506,17 +476,24 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                       let periods = [];
                       
                       if (analyticsPeriod === 'Week') {
-                        // Last 7 days - same as trend chart
-                        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                        for (let i = 0; i >= 7; i--) {
-                          const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-                          periods.push({
-                            label: dayNames[date.getDay()],
-                            date: new Date(date),
-                            fresh: 0,
-                            good: 0,
-                            closeCall: 0,
-                            expired: 0
+                      // Current week (Monday to Sunday) - matches Spending & Waste Trend
+                      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                      
+                      // Find the Monday of the current week
+                      const dayOfWeek = now.getDay();
+                      const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+                      const monday = new Date(now.getTime() - daysFromMonday * 24 * 60 * 60 * 1000);
+                      
+                      // Create 7 days starting from Monday
+                      for (let i = 0; i < 7; i++) {
+                        const date = new Date(monday.getTime() + i * 24 * 60 * 60 * 1000);
+                        periods.push({
+                          label: dayNames[date.getDay()],
+                          date: new Date(date),
+                          fresh: 0,
+                          good: 0,
+                          closeCall: 0,
+                          expired: 0
                           });
                         }
                       } else if (analyticsPeriod === 'Month') {
@@ -529,14 +506,13 @@ function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 
                           { label: 'Week 4', startDay: 22, endDay: lastDayOfMonth, fresh: 0, good: 0, closeCall: 0, expired: 0 }
                         ];
                       } else {
-                        // Last 12 months
+                        // Current calendar year (Jan-Dec)
                         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                        for (let i = 0; i >= 12; i--) {
-                          const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                        for (let i = 0; i < 12; i++) {
                           periods.push({
-                            label: monthNames[monthDate.getMonth()],
-                            monthIndex: monthDate.getMonth(),
-                            year: monthDate.getFullYear(),
+                            label: monthNames[i],
+                            monthIndex: i,
+                            year: now.getFullYear(),
                             fresh: 0,
                             good: 0,
                             closeCall: 0,

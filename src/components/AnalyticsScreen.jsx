@@ -842,8 +842,24 @@ if (analyticsPeriod === 'Week') {
                     {console.log('topItemsSlices:', topItemsSlices)}
                   <div className="flex items-center justify-center">
                     <svg width="140" height="140" viewBox="0 0 140 140" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.06))' }}>
-                      <circle cx="70" cy="70" r="60" fill={colors.bgGray} />
-                      {topItemsSlices.map((slice, idx) => (
+                    <circle cx="70" cy="70" r="60" fill={colors.bgGray} />
+                    {topItemsSlices.map((slice, idx) => {
+                      // Special handling for 100% or near-100% slices
+                      if (slice.percentage >= 99) {
+                        return (
+                          <circle
+                            key={idx}
+                            cx="70"
+                            cy="70"
+                            r="60"
+                            fill={slice.color}
+                            opacity={slice.opacity}
+                          />
+                        );
+                      }
+                      
+                      // Normal arc rendering for partial slices
+                      return (
                         <path
                           key={idx}
                           d={createPieSlice(70, 70, 60, slice.startAngle, slice.endAngle)}
@@ -851,9 +867,10 @@ if (analyticsPeriod === 'Week') {
                           opacity={slice.opacity}
                           style={{ transition: 'opacity 0.2s' }}
                         />
-                      ))}
-                      <circle cx="70" cy="70" r="38" fill="white" />
-                    </svg>
+                      );
+                    })}
+                    <circle cx="70" cy="70" r="38" fill="white" />
+                  </svg>
                   </div>
                   
                   <div className="flex flex-col justify-center space-y-3">

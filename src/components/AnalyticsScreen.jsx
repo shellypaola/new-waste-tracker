@@ -671,16 +671,22 @@ if (maxSpent > 0) {
                     
                     if (timingData.every(d => d.fresh === 0 && d.good === 0 && d.closeCall === 0 && d.expired === 0)) {
                       return (
-                        <div className="flex flex-col items-center justify-center py-8 px-4">
-                          <div className="text-4xl mb-3">📊</div>
-                          <p className="text-sm font-medium text-center mb-1" style={{ color: colors.text }}>
-                            Start consuming items to see timing patterns!
-                          </p>
-                          <p className="text-xs text-center" style={{ color: colors.textSecondary }}>
-                            Track when you use items to optimize freshness
-                          </p>
+                      <div className="flex flex-col items-center justify-center py-10 px-4">
+                        <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4" 
+                             style={{ background: 'linear-gradient(135deg, #DBEAFE 0%, #EEF2FF 100%)' }}>
+                          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={colors.primary} strokeWidth="2">
+                            <path d="M3 3v18h18" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M18 9l-5 5-4-4-3 3" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
                         </div>
-                      );
+                        <p className="text-sm font-semibold text-center mb-1" style={{ color: colors.text }}>
+                          Start consuming items to see timing patterns!
+                        </p>
+                        <p className="text-xs text-center max-w-[200px]" style={{ color: colors.textSecondary }}>
+                          Track when you use items to optimize freshness
+                        </p>
+                      </div>
+                    );
                     }
                     
                     // Helper function for nice numbers

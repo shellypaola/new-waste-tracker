@@ -188,13 +188,27 @@ periodItems.forEach(item => {
 });
 
 // Calculate dynamic maxScale for ALL views based on actual data
+// Helper function to create nice round numbers
+const getNiceNumber = (value) => {
+  if (value === 0) return 0;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+  const fraction = value / magnitude;
+  let niceFraction;
+  if (fraction <= 1) niceFraction = 1;
+  else if (fraction <= 2) niceFraction = 2;
+  else if (fraction <= 5) niceFraction = 5;
+  else niceFraction = 10;
+  return niceFraction * magnitude;
+};
+
+// Calculate dynamic maxScale for ALL views based on actual data
 const maxSpent = Math.max(...periods.map(p => p.spent), 0);
 if (analyticsPeriod === 'Week') {
-  maxScale = maxSpent > 0 ? Math.ceil((maxSpent + 10) / 10) * 10 : 30;
+  maxScale = maxSpent > 0 ? getNiceNumber(maxSpent + 10) : 30;
 } else if (analyticsPeriod === 'Month') {
-  maxScale = maxSpent > 0 ? Math.ceil((maxSpent + 50) / 50) * 50 : 200;
+  maxScale = maxSpent > 0 ? getNiceNumber(maxSpent + 50) : 200;
 } else {
-  maxScale = maxSpent > 0 ? Math.ceil((maxSpent + 500) / 100) * 100 : 1000;
+  maxScale = maxSpent > 0 ? getNiceNumber(maxSpent + 500) : 1000;
 }
 // DEBUG - ADD THESE LINES
 console.log('=== CHART DEBUG ===');

@@ -210,14 +210,8 @@ if (analyticsPeriod === 'Week') {
 } else {
   maxScale = maxSpent > 0 ? getNiceNumber(maxSpent + 500) : 1000;
 }
-// DEBUG - ADD THESE LINES
-console.log('=== CHART DEBUG ===');
-console.log('Period:', analyticsPeriod);
-console.log('Periods:', periods);
-console.log('Max Spent:', maxSpent);
-console.log('Max Scale:', maxScale);
-console.log('PeriodItems count:', periodItems.length);
-// END DEBUG
+
+    
     // Convert to SVG coordinates
     const numPoints = periods.length;
     const xStep = 100 / (numPoints - 1);
@@ -841,6 +835,11 @@ console.log('PeriodItems count:', periodItems.length);
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3">
+                    {/* ADD DEBUG LOGGING HERE */}
+                    {console.log('=== TOP WASTED ITEMS DEBUG ===')}
+                    {console.log('periodWasted:', periodWasted)}
+                    {console.log('topItemsData:', topItemsData)}
+                    {console.log('topItemsSlices:', topItemsSlices)}
                   <div className="flex items-center justify-center">
                     <svg width="140" height="140" viewBox="0 0 140 140" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.06))' }}>
                       <circle cx="70" cy="70" r="60" fill={colors.bgGray} />

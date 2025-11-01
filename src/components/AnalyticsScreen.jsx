@@ -868,43 +868,53 @@ if (maxSpent > 0) {
                   <h3 className="text-sm font-bold" style={{ color: colors.text }}>Top Wasted Items</h3>
                 </div>
                 
+                {topItemsData.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-10 px-4">
+                  <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4" 
+                       style={{ background: 'linear-gradient(135deg, #FEE2E2 0%, #FEF2F2 100%)' }}>
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={colors.critical} strokeWidth="2">
+                      <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M12 8v4M12 16h.01" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <p className="text-sm font-semibold text-center mb-1" style={{ color: colors.text }}>
+                    No waste tracked yet!
+                  </p>
+                  <p className="text-xs text-center max-w-[200px]" style={{ color: colors.textSecondary }}>
+                    Great job! Start tracking to identify waste patterns
+                  </p>
+                </div>
+              ) : (
                 <div className="grid grid-cols-2 gap-3">
-                    {/* ADD DEBUG LOGGING HERE */}
-                    {console.log('=== TOP WASTED ITEMS DEBUG ===')}
-                    {console.log('periodWasted:', periodWasted)}
-                    {console.log('topItemsData:', topItemsData)}
-                    {console.log('topItemsSlices:', topItemsSlices)}
                   <div className="flex items-center justify-center">
                     <svg width="140" height="140" viewBox="0 0 140 140" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.06))' }}>
-                    <circle cx="70" cy="70" r="60" fill={colors.bgGray} />
-                    {topItemsSlices.map((slice, idx) => {
-                      // Special handling for 100% or near-100% slices
-                      if (slice.percentage >= 99) {
+                      <circle cx="70" cy="70" r="60" fill={colors.bgGray} />
+                      {topItemsSlices.map((slice, idx) => {
+                        if (slice.percentage >= 99) {
+                          return (
+                            <circle
+                              key={idx}
+                              cx="70"
+                              cy="70"
+                              r="60"
+                              fill={slice.color}
+                              opacity={slice.opacity}
+                            />
+                          );
+                        }
+                        
                         return (
-                          <circle
+                          <path
                             key={idx}
-                            cx="70"
-                            cy="70"
-                            r="60"
+                            d={createPieSlice(70, 70, 60, slice.startAngle, slice.endAngle)}
                             fill={slice.color}
                             opacity={slice.opacity}
+                            style={{ transition: 'opacity 0.2s' }}
                           />
                         );
-                      }
-                      
-                      // Normal arc rendering for partial slices
-                      return (
-                        <path
-                          key={idx}
-                          d={createPieSlice(70, 70, 60, slice.startAngle, slice.endAngle)}
-                          fill={slice.color}
-                          opacity={slice.opacity}
-                          style={{ transition: 'opacity 0.2s' }}
-                        />
-                      );
-                    })}
-                    <circle cx="70" cy="70" r="38" fill="white" />
-                  </svg>
+                      })}
+                      <circle cx="70" cy="70" r="38" fill="white" />
+                    </svg>
                   </div>
                   
                   <div className="flex flex-col justify-center space-y-3">
@@ -924,6 +934,7 @@ if (maxSpent > 0) {
                     ))}
                   </div>
                 </div>
+              )}
               </div>
             </div>
       </div>

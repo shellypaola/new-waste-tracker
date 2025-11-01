@@ -97,6 +97,7 @@ export default function WasteWarriorMVP() {
     setSelectedItem(item);
     setConsumeQuantity(1);
     setConsumePercentage(100);
+    if (Number(item.quantity) > 1) {
     setShowQuantityModal(true);
   };
   

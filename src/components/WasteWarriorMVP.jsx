@@ -97,7 +97,6 @@ export default function WasteWarriorMVP() {
     setSelectedItem(item);
     setConsumeQuantity(1);
     setConsumePercentage(100);
-    if (Number(item.quantity) > 1) {
     setShowQuantityModal(true);
   };
   
@@ -703,11 +702,11 @@ export default function WasteWarriorMVP() {
               <div className="text-5xl mb-4">{selectedItem.emoji}</div>
               <h3 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>How many did you use?</h3>
               <p className="text-base" style={{ color: colors.textSecondary }}>
-                {Number(selectedItem?.quantity) > 1 && (
+                {selectedItem.quantity > 1 && (
                 <>
-                  You have {Number(selectedItem.quantity)} units of {selectedItem.name}
+                You have {selectedItem.quantity} units of {selectedItem.name}
                 </>
-              )}
+                )}
               </p>
             </div>
             <div className="mb-6">
@@ -735,8 +734,8 @@ export default function WasteWarriorMVP() {
                   {consumeQuantity}
                 </div>
                 <button
-                  onClick={() => setConsumeQuantity(Math.min(selectedItem.quantity || 0, consumeQuantity + 1))}
-                  disabled={consumeQuantity >= (selectedItem.quantity || 0)}
+                  onClick={() => setConsumeQuantity(Math.min(selectedItem.quantity || 1, consumeQuantity + 1))}
+                  disabled={consumeQuantity >= (selectedItem.quantity || 1)}
                   className="w-[52px] h-[52px] rounded-xl font-bold text-2xl flex items-center justify-center transition-all"
                   style={{ 
                     backgroundColor: colors.bgGray,

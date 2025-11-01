@@ -383,30 +383,50 @@ console.log('PeriodItems count:', periodItems.length);
                 {/* Chart Area */}
                 <div className="relative h-48 mb-4">
                   {/* Y-axis labels */}
-                  <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs font-medium" style={{ color: colors.textLight }}>
-                    {analyticsPeriod === 'Week' ? (
-                      <>
-                        <span>$30</span>
-                        <span>$20</span>
-                        <span>$10</span>
-                        <span>$0</span>
-                      </>
-                    ) : analyticsPeriod === 'Month' ? (
-                      <>
-                        <span>$200</span>
-                        <span>$100</span>
-                        <span>$0</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>$1000</span>
-                        <span>$750</span>
-                        <span>$500</span>
-                        <span>$250</span>
-                        <span>$0</span>
-                      </>
-                    )}
-                  </div>
+                  {/* Y-axis labels */}
+<div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs font-medium" style={{ color: colors.textLight }}>
+  {(() => {
+    // Get maxScale from chartData
+    const max = parseInt(chartData.dataPoints.spent.split(' ')[0].split(',')[1]) === 192 ? 0 : 
+                Math.ceil(periodSpent / (1 - 192/192)); // This is a hack, let's use a better approach
+    
+    // Actually, we need to extract maxScale differently
+    // Let's create labels based on what we know the scale should be
+    const getLabels = () => {
+      if (analyticsPeriod === 'Week') {
+        const scale = Math.max(periodSpent, periodWasted, 30);
+        const dynamicMax = scale > 0 ? Math.ceil((scale + 10) / 10) * 10 : 30;
+        return [
+          <span key="max">${dynamicMax}</span>,
+          <span key="75">${Math.round(dynamicMax * 0.75)}</span>,
+          <span key="50">${Math.round(dynamicMax * 0.5)}</span>,
+          <span key="25">${Math.round(dynamicMax * 0.25)}</span>,
+          <span key="0">$0</span>
+        ];
+      } else if (analyticsPeriod === 'Month') {
+        const scale = Math.max(periodSpent, periodWasted, 200);
+        const dynamicMax = scale > 0 ? Math.ceil((scale + 50) / 50) * 50 : 200;
+        return [
+          <span key="max">${dynamicMax}</span>,
+          <span key="50">${Math.round(dynamicMax * 0.5)}</span>,
+          <span key="0">$0</span>
+        ];
+      } else {
+        const scale = Math.max(periodSpent, periodWasted, 1000);
+        const dynamicMax = scale > 0 ? Math.ceil((scale + 500) / 100) * 100 : 1000;
+        return [
+          <span key="max">${dynamicMax}</span>,
+          <span key="75">${Math.round(dynamicMax * 0.75)}</span>,
+          <span key="50">${Math.round(dynamicMax * 0.5)}</span>,
+          <span key="25">${Math.round(dynamicMax * 0.25)}</span>,
+          <span key="0">$0</span>
+        ];
+      }
+    };
+    
+    return getLabels();
+  })()}
+</div>
                   
                   {/* Chart content */}
                   <div className="ml-10 h-full relative">
@@ -626,8 +646,8 @@ console.log('PeriodItems count:', periodItems.length);
                       );
                     }
                     
-                    const maxTotal = Math.max(...timingData.map(d => d.fresh + d.good + d.closeCall + d.expired));
-                    
+                    const maxDataValue = Math.max(...timingData.map(d => d.fresh + d.good + d.closeCall + d.expired));
+                    const maxTotal = maxDataValue > 0 ? Math.ceil((maxDataValue + 50) / 50) * 50 : 50;                    
                     return (
                       <>
                         <div className="flex gap-3">

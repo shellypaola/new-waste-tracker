@@ -702,7 +702,7 @@ export default function WasteWarriorMVP() {
               <div className="text-5xl mb-4">{selectedItem.emoji}</div>
               <h3 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>How many did you use?</h3>
               <p className="text-base" style={{ color: colors.textSecondary }}>
-                {selectedItem.quantity > 1 && (
+                {Number.selectedItem.quantity > 1 && (
                 <>
                 You have {selectedItem.quantity} units of {selectedItem.name}
                 </>

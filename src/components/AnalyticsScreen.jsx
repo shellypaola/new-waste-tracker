@@ -203,12 +203,12 @@ const getNiceNumber = (value) => {
 
 // Calculate dynamic maxScale for ALL views based on actual data
 const maxSpent = Math.max(...periods.map(p => p.spent), 0);
-if (analyticsPeriod === 'Week') {
-  maxScale = maxSpent > 0 ? getNiceNumber(maxSpent + 10) : 30;
-} else if (analyticsPeriod === 'Month') {
-  maxScale = maxSpent > 0 ? getNiceNumber(maxSpent + 50) : 200;
+if (maxSpent > 0) {
+  // Add 10% buffer then round to nice number
+  maxScale = getNiceNumber(maxSpent * 1.1);
 } else {
-  maxScale = maxSpent > 0 ? getNiceNumber(maxSpent + 500) : 1000;
+  // Default empty state values
+  maxScale = analyticsPeriod === 'Week' ? 30 : analyticsPeriod === 'Month' ? 200 : 1000;
 }
 
     
@@ -416,14 +416,13 @@ if (analyticsPeriod === 'Week') {
                         const maxValue = Math.max(periodSpent, periodWasted);
                         let dynamicMax;
                         
-                        if (analyticsPeriod === 'Week') {
-                          dynamicMax = maxValue > 0 ? getNiceNumber(maxValue + 10) : 30;
-                        } else if (analyticsPeriod === 'Month') {
-                          dynamicMax = maxValue > 0 ? getNiceNumber(maxValue + 50) : 200;
+                        if (maxValue > 0) {
+                          // Add 10% buffer then round to nice number
+                          dynamicMax = getNiceNumber(maxValue * 1.1);
                         } else {
-                          dynamicMax = maxValue > 0 ? getNiceNumber(maxValue + 500) : 1000;
+                          // Default empty state values
+                          dynamicMax = analyticsPeriod === 'Week' ? 30 : analyticsPeriod === 'Month' ? 200 : 1000;
                         }
-                        
                         // Format currency nicely (no decimals, with commas for thousands)
                         const formatCurrency = (val) => {
                           return `$${Math.round(val).toLocaleString()}`;
@@ -685,14 +684,14 @@ if (analyticsPeriod === 'Week') {
                     
                     const maxDataValue = Math.max(...timingData.map(d => d.fresh + d.good + d.closeCall + d.expired));
                     let maxTotal;
-                    if (analyticsPeriod === 'Week') {
-                      maxTotal = maxDataValue > 0 ? getNiceNumber(maxDataValue + 10) : 30;
-                    } else if (analyticsPeriod === 'Month') {
-                      maxTotal = maxDataValue > 0 ? getNiceNumber(maxDataValue + 50) : 200;
+                    if (maxDataValue > 0) {
+                      // Add 10% buffer then round to nice number
+                      maxTotal = getNiceNumber(maxDataValue * 1.1);
                     } else {
-                      maxTotal = maxDataValue > 0 ? getNiceNumber(maxDataValue + 500) : 1000;
-                    }              
-                    return (
+                      // Default empty state values
+                      maxTotal = analyticsPeriod === 'Week' ? 30 : analyticsPeriod === 'Month' ? 200 : 1000;
+                    }            
+                                        return (
                       <>
                         <div className="flex gap-3">
                         <div className="flex flex-col justify-between text-xs font-medium" style={{ color: colors.textLight, height: '160px' }}>

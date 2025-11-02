@@ -357,10 +357,10 @@ export default function WasteWarriorMVP() {
           </div>
         </div>
       </div>
-      <div className="px-4 mb-6">
-        <h2 className="text-lg font-bold mb-3" style={{ color: colors.text }}>Items Expiring Soon ({atRiskItems.length})</h2>
+      <div className="mb-6">
+        <h2 className="text-lg font-bold mb-3 px-4" style={{ color: colors.text }}>Items Expiring Soon ({atRiskItems.length})</h2>
         {atRiskItems.length === 0 ? (
-          <div className="text-center py-8 px-4 rounded-xl" style={{ backgroundColor: colors.bgGray }}>
+          <div className="text-center py-8 px-4 rounded-xl mx-4" style={{ backgroundColor: colors.bgGray }}>
             <div className="text-4xl mb-2">🎉</div>
             <div className="font-semibold mb-1" style={{ color: colors.text }}>No items at risk!</div>
             <div className="text-sm" style={{ color: colors.textSecondary }}>Great job managing your food</div>

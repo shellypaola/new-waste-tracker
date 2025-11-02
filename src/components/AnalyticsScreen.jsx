@@ -43,7 +43,7 @@ const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
   };
 };
 
-function AnalyticsScreen({ consumedItems = [], totalWasted = 0, totalConsumed = 0, totalSpent = 0 }) {
+function AnalyticsScreen({ inventory = [], consumedItems = [], totalWasted = 0, totalConsumed = 0, totalSpent = 0 }) {
   const [analyticsPeriod, setAnalyticsPeriod] = useState('Week');
 
   // Helper to filter items by time period

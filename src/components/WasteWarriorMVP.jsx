@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AnalyticsScreen from './AnalyticsScreen';
+import SignUpScreen from './SignUpScreen'; // Adjust path if needed
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign } from 'lucide-react';
 
 const colors = {
@@ -58,6 +59,8 @@ export default function WasteWarriorMVP() {
   const [addMethod, setAddMethod] = useState(null);
   const [dailyScans, setDailyScans] = useState(12);
   const [isPremium, setIsPremium] = useState(false);
+  const [userName, setUserName] = useState(localStorage.getItem('userName') || '');
+  const [showSignUp, setShowSignUp] = useState(!localStorage.getItem('userName'));
   const [newItem, setNewItem] = useState({
     name: '',
     emoji: '🍎',
@@ -75,6 +78,11 @@ export default function WasteWarriorMVP() {
   const totalSpent = totalConsumed + totalWasted;
   
   const atRiskItems = inventory.filter(item => item.daysUntilExpiry <= 3).sort((a, b) => a.daysUntilExpiry - b.daysUntilExpiry);
+  
+  const handleSignUpComplete = (name) => {
+  setUserName(name);
+  setShowSignUp(false);
+};
   
   const handleMarkAsOpen = (item) => {
     setSelectedItem(item);
@@ -569,7 +577,10 @@ export default function WasteWarriorMVP() {
     </div>
     );
   };
-
+  
+  if (showSignUp) {
+    return <SignUpScreen onComplete={handleSignUpComplete} />;
+  }
 
   return (
     <div className="h-screen flex flex-col" style={{ backgroundColor: colors.bg, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', maxHeight: '100vh', overflow: 'hidden' }}>

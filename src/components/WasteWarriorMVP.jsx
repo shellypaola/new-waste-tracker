@@ -360,11 +360,15 @@ export default function WasteWarriorMVP() {
       <div className="mb-6">
         <h2 className="text-lg font-bold mb-3 px-4" style={{ color: colors.text }}>Items Expiring Soon ({atRiskItems.length})</h2>
         {atRiskItems.length === 0 ? (
-          <div className="text-center py-8 px-4 rounded-xl mx-4" style={{ backgroundColor: colors.bgGray }}>
-            <div className="text-4xl mb-2">🎉</div>
-            <div className="font-semibold mb-1" style={{ color: colors.text }}>No items at risk!</div>
-            <div className="text-sm" style={{ color: colors.textSecondary }}>Great job managing your food</div>
+          <div className="text-center py-12 px-6 mx-4">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-3xl flex items-center justify-center" style={{ backgroundColor: colors.freshBg }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={colors.fresh} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
           </div>
+          <div className="text-xl font-bold mb-2" style={{ color: colors.text }}>All items are fresh!</div>
+          <div className="text-base" style={{ color: colors.textSecondary }}>Great job managing your food.<br />Keep tracking to maintain this streak</div>
+        </div>
         ) : (
           atRiskItems.map(item => <ItemCard key={item.id} item={item} />)
         )}

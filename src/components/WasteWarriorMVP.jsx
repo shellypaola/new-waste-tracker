@@ -589,6 +589,20 @@ export default function WasteWarriorMVP() {
   }
 
   return (
+    <>
+    <style>{`
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      *::-webkit-scrollbar {
+        display: none;
+      }
+      
+      /* Hide scrollbar for IE, Edge and Firefox */
+      * {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+    `}</style>
+      
     <div className="h-screen flex flex-col" style={{ backgroundColor: colors.bg, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', maxHeight: '100vh', overflow: 'hidden' }}>
       <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         {activeScreen === 'dashboard' && <DashboardScreen />}

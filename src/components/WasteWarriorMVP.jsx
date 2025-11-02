@@ -102,11 +102,17 @@ export default function WasteWarriorMVP() {
   };
   
   const handleMarkAsFinished = (item) => {
-    setSelectedItem(item);
-    setConsumeQuantity(1);
-    setConsumePercentage(100);
+  setSelectedItem(item);
+  setConsumeQuantity(1);
+  setConsumePercentage(100);
+  
+  // Skip quantity modal if only 1 item
+  if ((item.quantity || 1) > 1) {
     setShowQuantityModal(true);
-  };
+  } else {
+    setShowConsumeModal(true);
+  }
+};
   
   const confirmConsume = () => {
   // Calculate waste based on quantity and percentage

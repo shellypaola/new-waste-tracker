@@ -319,11 +319,11 @@ export default function WasteWarriorMVP() {
       <div className="px-4 pt-6 pb-4">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold" style={{ color: colors.text }}>Hello, {userName} 👋</h1>
-          <p className="text-sm" style={{ color: colors.textSecondary }}>Here's your weekly impact</p>
           <button className="p-2 rounded-full" style={{ backgroundColor: colors.bgGray }}>
             <Bell size={20} style={{ color: colors.text }} />
           </button>
         </div>
+        <p className="text-sm mb-6" style={{ color: colors.textSecondary }}>Here's this week's impact</p>
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="p-4 rounded-2xl" style={{ backgroundColor: '#EFF6FF' }}>
             <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: colors.primaryLight }}>

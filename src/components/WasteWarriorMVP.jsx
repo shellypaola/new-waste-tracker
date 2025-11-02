@@ -94,16 +94,20 @@ export default function WasteWarriorMVP() {
     
     const emojiMap = {
       'milk': '🥛', 'yogurt': '🥛', 'cheese': '🧀',
-      'chicken': '🍗', 'meat': '🥩', 'beef': '🥩',
-      'fish': '🐟', 'salmon': '🐟',
+      'chicken': '🍗', 'meat': '🥩', 'beef': '🥩', 'lamb': '🥩',
+      'fish': '🐟', 'salmon': '🐟', 'tuna': '🐟',
       'egg': '🥚', 'eggs': '🥚',
-      'bread': '🍞',
+      'bread': '🍞', 'cucumber': '🥒', 'chilli': '🌶️', 'capsicum': '🫑',
+      'corn': '🌽', 'avocado': '🥑', 'olives': '🫒', 'garlic': '🧄', 'onion': '🧅',
+      'potato': '🥔', 'ginger': '🫚', 'sweet potato': '🍠', 'grapes': '🍇',
+      'watermelon': '🍉', 'lime': '🍋', 'pear': '🍐', 'orange': '🍊', 'oranges': '🍊',
+      'blueberry': '🫐', 'lemon': '🍋' 'pears': '🍐'
       'apple': '🍎', 'banana': '🍌', 'orange': '🍊',
       'strawberry': '🍓', 'strawberries': '🍓',
       'carrot': '🥕', 'carrots': '🥕',
       'lettuce': '🥬', 'salad': '🥬', 'spinach': '🥬', 'kale': '🥬',
-      'tomato': '🍅', 'coriander': '🌱', 'parsley': '🌱',
-      'pasta': '🍝', 'rice': '🍚', 'pizza': '🍕', 'broccoli': '🥦'
+      'tomato': '🍅', 'coriander': '🌱', 'parsley': '🌱', 'kiwi': '🥝',
+      'pasta': '🍝', 'rice': '🍚', 'pizza': '🍕', 'broccoli': '🥦',
       'ice cream': '🍨'
     };
     

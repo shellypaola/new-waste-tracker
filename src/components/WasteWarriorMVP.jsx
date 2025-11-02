@@ -101,7 +101,7 @@ export default function WasteWarriorMVP() {
       'corn': '🌽', 'avocado': '🥑', 'olives': '🫒', 'garlic': '🧄', 'onion': '🧅',
       'potato': '🥔', 'ginger': '🫚', 'sweet potato': '🍠', 'grapes': '🍇',
       'watermelon': '🍉', 'lime': '🍋', 'pear': '🍐', 'orange': '🍊', 'oranges': '🍊',
-      'blueberry': '🫐', 'lemon': '🍋' 'pears': '🍐'
+      'blueberry': '🫐', 'lemon': '🍋' 'pears': '🍐',
       'apple': '🍎', 'banana': '🍌', 'orange': '🍊',
       'strawberry': '🍓', 'strawberries': '🍓',
       'carrot': '🥕', 'carrots': '🥕',

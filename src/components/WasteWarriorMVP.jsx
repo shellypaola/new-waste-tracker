@@ -994,57 +994,147 @@ export default function WasteWarriorMVP() {
         </div>
       )}
 
-      {addMethod === 'manual' && (
-        <div className="fixed inset-0 bg-white z-50 flex flex-col">
-          <div className="px-4 pt-6 pb-4 border-b" style={{ borderColor: colors.border }}>
-            <div className="flex items-center gap-3 mb-2">
-              <button onClick={() => setAddMethod(null)} className="p-2 -ml-2">
-                <span className="text-2xl">←</span>
-              </button>
-              <h2 className="text-xl font-bold" style={{ color: colors.text }}>Manual Entry</h2>
-            </div>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4">
-            <div className="space-y-4 max-w-md mx-auto">
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Item Name</label>
-                <input type="text" value={newItem.name} onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} placeholder="e.g., Milk, Bread, Apples" className="w-full px-4 py-3 rounded-xl border-2 text-base" style={{ borderColor: colors.border }} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Emoji</label>
-                <input type="text" value={newItem.emoji} onChange={(e) => setNewItem({ ...newItem, emoji: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 text-2xl text-center" style={{ borderColor: colors.border }} maxLength={2} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Category</label>
-                <select value={newItem.category} onChange={(e) => { const cat = e.target.value; const defaultDays = cat === 'fridge' ? 7 : cat === 'freezer' ? 90 : 365; setNewItem({ ...newItem, category: cat, daysUntilExpiry: defaultDays }); }} className="w-full px-4 py-3 rounded-xl border-2 text-base" style={{ borderColor: colors.border }}>
-                  <option value="fridge">Fridge (7 days default)</option>
-                  <option value="freezer">Freezer (90 days default)</option>
-                  <option value="pantry">Pantry (365 days default)</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Cost ($)</label>
-                <input type="number" step="0.01" value={newItem.cost} onChange={(e) => setNewItem({ ...newItem, cost: e.target.value })} placeholder="0.00" className="w-full px-4 py-3 rounded-xl border-2 text-base" style={{ borderColor: colors.border }} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Quantity</label>
-                <input type="number" min="1" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} placeholder="1" className="w-full px-4 py-3 rounded-xl border-2 text-base" style={{ borderColor: colors.border }} />
-                <p className="text-xs mt-1" style={{ color: colors.textLight }}>How many units? (e.g., 10 cartons of milk)</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>Days Until Expiry</label>
-                <input type="number" value={newItem.daysUntilExpiry} onChange={(e) => setNewItem({ ...newItem, daysUntilExpiry: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 text-base" style={{ borderColor: colors.border }} />
-                <p className="text-xs mt-1" style={{ color: colors.textLight }}>Expires on {new Date(Date.now() + newItem.daysUntilExpiry * 24 * 60 * 60 * 1000).toLocaleDateString()}</p>
-              </div>
-            </div>
-          </div>
-          <div className="p-4 border-t" style={{ borderColor: colors.border }}>
-            <button onClick={handleAddNewItem} disabled={!newItem.name || !newItem.cost} className="w-full py-3.5 rounded-xl font-semibold text-white text-base" style={{ backgroundColor: (!newItem.name || !newItem.cost) ? colors.textLight : colors.fresh, opacity: (!newItem.name || !newItem.cost) ? 0.5 : 1 }}>
-              Add Item
-            </button>
-          </div>
+      <div className="flex-1 overflow-y-auto p-4">
+  <div className="space-y-5 max-w-md mx-auto">
+    
+    {/* Item Name & Cost - Side by Side */}
+    <div>
+      <label className="block text-base font-semibold mb-2" style={{ color: colors.text }}>
+        Item Details
+      </label>
+      <div className="flex gap-3">
+        <input
+          type="text"
+          value={newItem.name}
+          onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+          placeholder="Item name"
+          className="flex-1 px-4 py-4 rounded-xl border-2 text-base"
+          style={{ borderColor: colors.border, minHeight: '56px' }}
+        />
+        <input
+          type="text"
+          inputMode="decimal"
+          value={newItem.cost}
+          onChange={(e) => {
+            const value = e.target.value.replace(/[^0-9.]/g, '');
+            setNewItem({ ...newItem, cost: value });
+          }}
+          placeholder="$0.00"
+          className="px-4 py-4 rounded-xl border-2 text-base text-center"
+          style={{ borderColor: colors.border, minHeight: '56px', width: '120px' }}
+        />
+      </div>
+    </div>
+
+    {/* Quantity */}
+    <div>
+      <label className="block text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
+        Quantity
+      </label>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setNewItem({ ...newItem, quantity: Math.max(1, (parseInt(newItem.quantity) || 1) - 1) })}
+          className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl font-bold"
+          style={{ backgroundColor: colors.bgGray, color: colors.text, border: `1px solid ${colors.border}` }}
+        >
+          −
+        </button>
+        <div
+          className="flex-1 px-4 py-3 rounded-xl text-lg text-center font-semibold"
+          style={{ 
+            backgroundColor: colors.bgGray, 
+            color: colors.text,
+            border: `1px solid ${colors.border}`,
+            minHeight: '56px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          {newItem.quantity}
         </div>
-      )}
+        <button
+          type="button"
+          onClick={() => setNewItem({ ...newItem, quantity: (parseInt(newItem.quantity) || 1) + 1 })}
+          className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl font-bold"
+          style={{ backgroundColor: colors.bgGray, color: colors.text, border: `1px solid ${colors.border}` }}
+        >
+          +
+        </button>
+      </div>
+    </div>
+
+    {/* Category */}
+    <div>
+      <label className="block text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
+        Category
+      </label>
+      <div style={{ position: 'relative' }}>
+        <select
+          value={newItem.category}
+          onChange={(e) => {
+            const cat = e.target.value;
+            const defaultDays = cat === 'fridge' ? 7 : cat === 'freezer' ? 90 : 365;
+            setNewItem({ ...newItem, category: cat, expiryDate: getDefaultExpiryDate(defaultDays) });
+          }}
+          className="w-full px-4 py-3 rounded-xl text-base"
+          style={{
+            borderColor: colors.border,
+            backgroundColor: colors.bgGray,
+            border: `1px solid ${colors.border}`,
+            minHeight: '56px',
+            appearance: 'none',
+            paddingRight: '48px'
+          }}
+        >
+          <option value="fridge">🧊 Fridge (7 days)</option>
+          <option value="freezer">❄️ Freezer (90 days)</option>
+          <option value="pantry">📦 Pantry (1 year)</option>
+        </select>
+        <div style={{
+          position: 'absolute',
+          right: '16px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          pointerEvents: 'none'
+        }}>
+          <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+            <path d="M1 1.5L6 6.5L11 1.5" stroke={colors.textSecondary} strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    {/* Expiry Date */}
+    <div>
+      <label className="block text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
+        Expiry Date
+      </label>
+      <input
+        type="date"
+        value={newItem.expiryDate}
+        onChange={(e) => setNewItem({ ...newItem, expiryDate: e.target.value })}
+        className="w-full px-4 py-3 rounded-xl text-base"
+        style={{
+          borderColor: colors.border,
+          backgroundColor: colors.bgGray,
+          border: `1px solid ${colors.border}`,
+          minHeight: '56px'
+        }}
+      />
+      <p className="text-xs mt-1" style={{ color: colors.textLight }}>
+        {(() => {
+          const daysLeft = getDaysUntilExpiry(newItem.expiryDate);
+          if (daysLeft > 0) return `✓ ${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} from now`;
+          if (daysLeft === 0) return '⚠️ Expires today';
+          return `⚠️ Expired ${Math.abs(daysLeft)} ${Math.abs(daysLeft) === 1 ? 'day' : 'days'} ago`;
+        })()}
+      </p>
+    </div>
+
+  </div>
+</div>
 
       {addMethod === 'scan' && (
         <div className="fixed inset-0 bg-white z-50 flex flex-col">

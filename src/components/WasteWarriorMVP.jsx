@@ -321,7 +321,6 @@ export default function WasteWarriorMVP() {
           <h1 className="text-2xl font-bold" style={{ color: colors.text }}>Hello, {userName} 👋</h1>
           <button className="p-2 rounded-full" style={{ backgroundColor: colors.bgGray }}>   
           <p className="text-sm mb-6" style={{ color: colors.textSecondary }}>Here's this week's impact</p>
-        </div>
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="p-4 rounded-2xl" style={{ backgroundColor: '#EFF6FF' }}>
             <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: colors.primaryLight }}>

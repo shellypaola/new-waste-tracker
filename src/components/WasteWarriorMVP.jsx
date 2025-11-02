@@ -63,14 +63,57 @@ export default function WasteWarriorMVP() {
   const [showSignUp, setShowSignUp] = useState(!localStorage.getItem('userName'));
   const [newItem, setNewItem] = useState({
     name: '',
-    emoji: '🍎',
     category: 'fridge',
     cost: '',
-    daysUntilExpiry: 7,
+    expiryDate: getDefaultExpiryDate(7),
     quantity: 1
   });
 
   const [consumedItems, setConsumedItems] = useState([]);
+  
+  // Function to get default expiry date
+  const getDefaultExpiryDate = (days = 7) => {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date.toISOString().split('T')[0];
+  };
+  
+  // Function to calculate days until expiry from date
+  const getDaysUntilExpiry = (expiryDate) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const expiry = new Date(expiryDate);
+    const diffTime = expiry - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+  
+  // Function to auto-assign emoji based on item name
+  const getEmojiForItem = (itemName, category) => {
+    const name = itemName.toLowerCase().trim();
+    
+    const emojiMap = {
+      'milk': '🥛', 'yogurt': '🥛', 'cheese': '🧀',
+      'chicken': '🍗', 'meat': '🥩', 'beef': '🥩',
+      'fish': '🐟', 'salmon': '🐟',
+      'egg': '🥚', 'eggs': '🥚',
+      'bread': '🍞',
+      'apple': '🍎', 'banana': '🍌', 'orange': '🍊',
+      'strawberry': '🍓', 'strawberries': '🍓',
+      'carrot': '🥕', 'carrots': '🥕',
+      'lettuce': '🥬', 'salad': '🥬', 'spinach': '🥬', 'kale': '🥬',
+      'tomato': '🍅', 'coriander': '🌱', 'parsley': '🌱',
+      'pasta': '🍝', 'rice': '🍚', 'pizza': '🍕', 'broccoli': '🥦'
+      'ice cream': '🍨'
+    };
+    
+    for (const [key, emoji] of Object.entries(emojiMap)) {
+      if (name.includes(key)) return emoji;
+    }
+    
+    // Fall back to category emoji
+    return category === 'fridge' ? '🧊' : category === 'freezer' ? '❄️' : '📦';
+  };
   // Calculate total consumed value
   const totalConsumed = consumedItems.reduce((sum, item) => sum + item.consumedAmount, 0);
 
@@ -227,21 +270,29 @@ export default function WasteWarriorMVP() {
   };
   
   const handleAddNewItem = () => {
-    const item = {
-      id: Date.now(),
-      name: newItem.name,
-      emoji: newItem.emoji,
-      category: newItem.category,
-      cost: parseFloat(newItem.cost) || 0,
-      daysUntilExpiry: parseInt(newItem.daysUntilExpiry) || 7,
-      status: 'sealed',
-      quantity: parseInt(newItem.quantity) || 1
+  const daysUntilExpiry = getDaysUntilExpiry(newItem.expiryDate);
+  const autoEmoji = getEmojiForItem(newItem.name, newItem.category);
+  
+  const item = {
+    id: Date.now(),
+    name: newItem.name,
+    emoji: autoEmoji,
+    category: newItem.category,
+    cost: parseFloat(newItem.cost) || 0,
+    daysUntilExpiry: daysUntilExpiry,
+    status: 'sealed',
+    quantity: parseInt(newItem.quantity) || 1
     };
     setInventory([...inventory, item]);
     setAddMethod(null);
-    setNewItem({ name: '', emoji: '🍎', category: 'fridge', cost: '', daysUntilExpiry: 7, quantity: 1 });
-  };
-  
+    setNewItem({ 
+      name: '', 
+      category: 'fridge', 
+      cost: '', 
+      expiryDate: getDefaultExpiryDate(7), 
+      quantity: 1 
+    });
+  };  
   const handleScanBarcode = () => {
     const scannedItem = {
       name: 'Organic Milk',

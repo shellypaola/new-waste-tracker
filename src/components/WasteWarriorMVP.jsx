@@ -40,6 +40,27 @@ const expiredItems = [
 ];
 
 export default function WasteWarriorMVP() {
+  // Function to get default expiry date
+  const getDefaultExpiryDate = (days = 7) => {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date.toISOString().split('T')[0];
+  };
+  
+  // Function to calculate days until expiry from date
+  const getDaysUntilExpiry = (expiryDate) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const expiry = new Date(expiryDate);
+    const diffTime = expiry - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+  
+  // Function to auto-assign emoji based on item name
+  const getEmojiForItem = (itemName, category) => {
+    const name = itemName.toLowerCase().trim();
+    
   const [activeScreen, setActiveScreen] = useState('dashboard');
   const [inventory, setInventory] = useState(initialInventory);
   const [expired, setExpired] = useState(expiredItems);
@@ -70,28 +91,6 @@ export default function WasteWarriorMVP() {
   });
 
   const [consumedItems, setConsumedItems] = useState([]);
-  
-  // Function to get default expiry date
-  const getDefaultExpiryDate = (days = 7) => {
-    const date = new Date();
-    date.setDate(date.getDate() + days);
-    return date.toISOString().split('T')[0];
-  };
-  
-  // Function to calculate days until expiry from date
-  const getDaysUntilExpiry = (expiryDate) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const expiry = new Date(expiryDate);
-    const diffTime = expiry - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-  
-  // Function to auto-assign emoji based on item name
-  const getEmojiForItem = (itemName, category) => {
-    const name = itemName.toLowerCase().trim();
-    
     const emojiMap = {
       'milk': '🥛', 'yogurt': '🥛', 'cheese': '🧀',
       'chicken': '🍗', 'meat': '🥩', 'beef': '🥩', 'lamb': '🥩',

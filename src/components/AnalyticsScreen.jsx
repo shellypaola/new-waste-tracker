@@ -344,10 +344,9 @@ if (maxSpent > 0) {
             {/* Hero Stats Cards */}
             <div className="grid grid-cols-2 gap-3 mb-6">
               {/* Wasted Cost Card */}
-              <div className="p-5 rounded-2xl shadow-sm" style={{ backgroundColor: '#FEF2F2' }}>
+              <div className="p-4 rounded-2xl" style={{ backgroundColor: '#FEF2F2' }}>
                 <div className="flex items-center gap-2 mb-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(239, 68, 68, 0.2)' }}>
-                      <TrendingDown size={16} style={{ color: colors.critical }} />
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)' }}>                        <TrendingDown size={16} style={{ color: colors.critical }} />
                     </div>
                     <span className="text-xs font-bold tracking-wide" style={{ color: colors.critical }}>WASTED</span>
                   </div>
@@ -364,10 +363,9 @@ if (maxSpent > 0) {
             </div>
 
               {/* Money Saved Card */}
-              <div className="p-5 rounded-2xl shadow-sm" style={{ backgroundColor: '#DCFCE7' }}>
+              <div className="p-4 rounded-2xl" style={{ backgroundColor: '#DCFCE7' }}>
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(16, 185, 129, 0.2)' }}>
-                      <TrendingUp size={16} style={{ color: colors.fresh }} />
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)' }}>                        <TrendingUp size={16} style={{ color: colors.fresh }} />
                     </div>
                     <span className="text-xs font-bold tracking-wide" style={{ color: colors.fresh }}>CONSUMED</span>
                   </div>

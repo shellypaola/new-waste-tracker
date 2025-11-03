@@ -1151,8 +1151,6 @@ export default function WasteWarriorMVP() {
   </div>
 </div>
 
-          </div>
-        </div>
         <div className="p-4 border-t" style={{ borderColor: colors.border }}>
           <button
             onClick={handleAddNewItem}

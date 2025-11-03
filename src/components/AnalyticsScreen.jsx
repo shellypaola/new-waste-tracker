@@ -360,7 +360,6 @@ if (maxSpent > 0) {
                     <span className="text-xs" style={{ color: colors.textSecondary }}>vs last {analyticsPeriod.toLowerCase()}</span>
                   </div>
               </div>
-            </div>
 
               {/* Money Saved Card */}
               <div className="p-4 rounded-2xl" style={{ backgroundColor: '#DCFCE7' }}>
@@ -379,7 +378,7 @@ if (maxSpent > 0) {
                     <span className="text-xs" style={{ color: colors.textSecondary }}>vs last {analyticsPeriod.toLowerCase()}</span>
                   </div>
                 </div>
-              
+               </div>
 
             {/* Trend Chart */}
             <div className="mb-6">

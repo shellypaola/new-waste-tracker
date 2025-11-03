@@ -344,10 +344,8 @@ if (maxSpent > 0) {
             {/* Hero Stats Cards */}
             <div className="grid grid-cols-2 gap-3 mb-6">
               {/* Wasted Cost Card */}
-              <div className="p-5 rounded-2xl relative overflow-hidden shadow-sm" style={{ background: 'linear-gradient(135deg, #FEE2E2 0%, #FEF2F2 100%)' }}>
-                <div className="absolute" style={{ right: '-16px', bottom: '-16px', opacity: 0.1 }}>
-                  <TrendingDown size={80} style={{ color: colors.critical }} />
-                </div>
+              <div className="p-5 rounded-2xl shadow-sm" style={{ backgroundColor: '#FEF2F2' }}>
+                <div>    
                 <div className="relative">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(239, 68, 68, 0.2)' }}>
@@ -368,11 +366,8 @@ if (maxSpent > 0) {
               </div>
 
               {/* Money Saved Card */}
-              <div className="p-5 rounded-2xl relative overflow-hidden shadow-sm" style={{ background: 'linear-gradient(135deg, #DCFCE7 0%, #F0FDF4 100%)' }}>
-                <div className="absolute" style={{ right: '-16px', bottom: '-16px', opacity: 0.1 }}>
-                  <DollarSign size={80} style={{ color: colors.fresh }} />
-                </div>
-                <div className="relative">
+              <div className="p-5 rounded-2xl shadow-sm" style={{ backgroundColor: '#DCFCE7' }}>
+                <div>
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(16, 185, 129, 0.2)' }}>
                       <TrendingUp size={16} style={{ color: colors.fresh }} />

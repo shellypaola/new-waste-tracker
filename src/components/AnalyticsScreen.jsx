@@ -345,9 +345,7 @@ if (maxSpent > 0) {
             <div className="grid grid-cols-2 gap-3 mb-6">
               {/* Wasted Cost Card */}
               <div className="p-5 rounded-2xl shadow-sm" style={{ backgroundColor: '#FEF2F2' }}>
-                <div>    
-                <div className="relative">
-                  <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-2 mb-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(239, 68, 68, 0.2)' }}>
                       <TrendingDown size={16} style={{ color: colors.critical }} />
                     </div>
@@ -362,12 +360,11 @@ if (maxSpent > 0) {
                     </span>
                     <span className="text-xs" style={{ color: colors.textSecondary }}>vs last {analyticsPeriod.toLowerCase()}</span>
                   </div>
-                </div>
               </div>
+            </div>
 
               {/* Money Saved Card */}
               <div className="p-5 rounded-2xl shadow-sm" style={{ backgroundColor: '#DCFCE7' }}>
-                <div>
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(16, 185, 129, 0.2)' }}>
                       <TrendingUp size={16} style={{ color: colors.fresh }} />
@@ -384,8 +381,7 @@ if (maxSpent > 0) {
                     <span className="text-xs" style={{ color: colors.textSecondary }}>vs last {analyticsPeriod.toLowerCase()}</span>
                   </div>
                 </div>
-              </div>
-            </div>
+              
 
             {/* Trend Chart */}
             <div className="mb-6">

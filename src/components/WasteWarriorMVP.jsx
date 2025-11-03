@@ -60,7 +60,34 @@ export default function WasteWarriorMVP() {
   // Function to auto-assign emoji based on item name
   const getEmojiForItem = (itemName, category) => {
     const name = itemName.toLowerCase().trim();
+
+    const emojiMap = {
+      'milk': '🥛', 'yogurt': '🥛', 'cheese': '🧀',
+      'chicken': '🍗', 'meat': '🥩', 'beef': '🥩', 'lamb': '🥩',
+      'fish': '🐟', 'salmon': '🐟', 'tuna': '🐟',
+      'egg': '🥚', 'eggs': '🥚',
+      'bread': '🍞', 'cucumber': '🥒', 'chilli': '🌶️', 'capsicum': '🫑',
+      'corn': '🌽', 'avocado': '🥑', 'olives': '🫒', 'garlic': '🧄', 'onion': '🧅',
+      'potato': '🥔', 'ginger': '🫚', 'sweet potato': '🍠', 'grapes': '🍇',
+      'watermelon': '🍉', 'lime': '🍋', 'pear': '🍐', 'orange': '🍊', 'oranges': '🍊',
+      'blueberry': '🫐', 'lemon': '🍋', 'pears': '🍐',
+      'apple': '🍎', 'banana': '🍌', 'orange': '🍊',
+      'strawberry': '🍓', 'strawberries': '🍓',
+      'carrot': '🥕', 'carrots': '🥕',
+      'lettuce': '🥬', 'salad': '🥬', 'spinach': '🥬', 'kale': '🥬',
+      'tomato': '🍅', 'coriander': '🌱', 'parsley': '🌱', 'kiwi': '🥝',
+      'pasta': '🍝', 'rice': '🍚', 'pizza': '🍕', 'broccoli': '🥦',
+      'ice cream': '🍨'
+    };
     
+    for (const [key, emoji] of Object.entries(emojiMap)) {
+      if (name.includes(key)) return emoji;
+    }
+    
+    // Fall back to category emoji
+    return category === 'fridge' ? '🧊' : category === 'freezer' ? '❄️' : '📦';
+  };
+  
   const [activeScreen, setActiveScreen] = useState('dashboard');
   const [inventory, setInventory] = useState(initialInventory);
   const [expired, setExpired] = useState(expiredItems);
@@ -89,34 +116,8 @@ export default function WasteWarriorMVP() {
     expiryDate: getDefaultExpiryDate(7),
     quantity: 1
   });
-
   const [consumedItems, setConsumedItems] = useState([]);
-    const emojiMap = {
-      'milk': '🥛', 'yogurt': '🥛', 'cheese': '🧀',
-      'chicken': '🍗', 'meat': '🥩', 'beef': '🥩', 'lamb': '🥩',
-      'fish': '🐟', 'salmon': '🐟', 'tuna': '🐟',
-      'egg': '🥚', 'eggs': '🥚',
-      'bread': '🍞', 'cucumber': '🥒', 'chilli': '🌶️', 'capsicum': '🫑',
-      'corn': '🌽', 'avocado': '🥑', 'olives': '🫒', 'garlic': '🧄', 'onion': '🧅',
-      'potato': '🥔', 'ginger': '🫚', 'sweet potato': '🍠', 'grapes': '🍇',
-      'watermelon': '🍉', 'lime': '🍋', 'pear': '🍐', 'orange': '🍊', 'oranges': '🍊',
-      'blueberry': '🫐', 'lemon': '🍋', 'pears': '🍐',
-      'apple': '🍎', 'banana': '🍌', 'orange': '🍊',
-      'strawberry': '🍓', 'strawberries': '🍓',
-      'carrot': '🥕', 'carrots': '🥕',
-      'lettuce': '🥬', 'salad': '🥬', 'spinach': '🥬', 'kale': '🥬',
-      'tomato': '🍅', 'coriander': '🌱', 'parsley': '🌱', 'kiwi': '🥝',
-      'pasta': '🍝', 'rice': '🍚', 'pizza': '🍕', 'broccoli': '🥦',
-      'ice cream': '🍨'
-    };
-    
-    for (const [key, emoji] of Object.entries(emojiMap)) {
-      if (name.includes(key)) return emoji;
-    }
-    
-    // Fall back to category emoji
-    return category === 'fridge' ? '🧊' : category === 'freezer' ? '❄️' : '📦';
-  };
+  
   // Calculate total consumed value
   const totalConsumed = consumedItems.reduce((sum, item) => sum + item.consumedAmount, 0);
 

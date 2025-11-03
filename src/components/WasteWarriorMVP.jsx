@@ -998,6 +998,17 @@ export default function WasteWarriorMVP() {
         </div>
       )}
 
+      {addMethod === 'manual' && (
+        <div className="fixed inset-0 bg-white z-50 flex flex-col">
+          <div className="px-4 pt-6 pb-4 border-b" style={{ borderColor: colors.border }}>
+            <div className="flex items-center gap-3 mb-2">
+              <button onClick={() => setAddMethod(null)} className="p-2 -ml-2">
+                <span className="text-2xl">←</span>
+              </button>
+              <h2 className="text-xl font-bold" style={{ color: colors.text }}>Add Item</h2>
+            </div>
+          </div>
+          
       <div className="flex-1 overflow-y-auto p-4">
   <div className="space-y-5 max-w-md mx-auto">
     
@@ -1139,6 +1150,24 @@ export default function WasteWarriorMVP() {
 
   </div>
 </div>
+
+          </div>
+        </div>
+        <div className="p-4 border-t" style={{ borderColor: colors.border }}>
+          <button
+            onClick={handleAddNewItem}
+            disabled={!newItem.name || !newItem.cost}
+            className="w-full py-3.5 rounded-xl font-semibold text-white text-base"
+            style={{
+              backgroundColor: (!newItem.name || !newItem.cost) ? colors.textLight : colors.fresh,
+              opacity: (!newItem.name || !newItem.cost) ? 0.5 : 1
+            }}
+          >
+            Add Item
+          </button>
+        </div>
+      </div>
+    )}
 
       {addMethod === 'scan' && (
         <div className="fixed inset-0 bg-white z-50 flex flex-col">

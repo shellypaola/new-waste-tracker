@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AnalyticsScreen from './AnalyticsScreen';
 import SignUpScreen from './SignUpScreen'; // Adjust path if needed
+import RewardsScreenV2 from './RewardsScreenV2';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign } from 'lucide-react';
 
 const colors = {
@@ -487,158 +488,6 @@ export default function WasteWarriorMVP() {
     </div>
   );
 
-  const RewardsScreen = () => {
-    // Level configuration
-    const levels = {
-      bronze: { name: 'Bronze', color: '#CD7F32', lightColor: '#E6C9A8', gradient: 'linear-gradient(135deg, #CD7F32 0%, #B8732E 100%)', next: 'Silver', pointsNeeded: 2000 },
-      silver: { name: 'Silver', color: '#C0C0C0', lightColor: '#E8E8E8', gradient: 'linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%)', next: 'Gold', pointsNeeded: 5000 },
-      gold: { name: 'Gold', color: '#FFD700', lightColor: '#FFF4CC', gradient: 'linear-gradient(135deg, #FFD700 0%, #FFC700 100%)', next: 'Platinum', pointsNeeded: 10000 },
-      platinum: { name: 'Platinum', color: '#E5E4E2', lightColor: '#F5F5F5', gradient: 'linear-gradient(135deg, #E5E4E2 0%, #D3D3D3 100%)', next: 'Diamond', pointsNeeded: 20000 }
-    };
-    
-    const currentLevel = 'silver';
-    const currentPoints = 3450;
-    const level = levels[currentLevel];
-    
-    return (
-    <div className="h-full overflow-y-auto pb-24" style={{ WebkitOverflowScrolling: 'touch' }}>
-      <div className="px-4 pt-6">
-        <h1 className="text-2xl font-bold mb-6" style={{ color: colors.text }}>Rewards</h1>
-
-        <div className="p-6 rounded-2xl mb-6 relative overflow-hidden" style={{ background: level.gradient }}>
-          <div className="absolute top-4 right-4 w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }}>
-            <Trophy size={32} color="white" />
-          </div>
-          <div className="text-sm font-medium mb-1" style={{ color: 'rgba(255,255,255,0.9)' }}>Current Level</div>
-          <div className="text-4xl font-bold mb-4 text-white">{level.name}</div>
-          <div className="mb-2">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.9)' }}>Progress to {level.next}</span>
-              <span className="text-sm font-bold text-white">{currentPoints.toLocaleString()} / {level.pointsNeeded.toLocaleString()}</span>
-            </div>
-            <div className="w-full h-2 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }}>
-              <div className="h-2 rounded-full" style={{ width: `${(currentPoints / level.pointsNeeded) * 100}%`, backgroundColor: 'rgba(255,255,255,0.9)' }} />
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="bg-white p-4 rounded-2xl border text-center" style={{ borderColor: colors.border }}>
-            <div className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl" style={{ backgroundColor: colors.secondaryLight }}>
-              🎯
-            </div>
-            <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>12</div>
-            <div className="text-sm" style={{ color: colors.textSecondary }}>Earned</div>
-          </div>
-          <div className="bg-white p-4 rounded-2xl border text-center" style={{ borderColor: colors.border }}>
-            <div className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl" style={{ backgroundColor: '#FEE2E2' }}>
-              🔥
-            </div>
-            <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>7</div>
-            <div className="text-sm" style={{ color: colors.textSecondary }}>Streak</div>
-          </div>
-          <div className="bg-white p-4 rounded-2xl border text-center" style={{ borderColor: colors.border }}>
-            <div className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl" style={{ backgroundColor: colors.primaryLight }}>
-              ⭐
-            </div>
-            <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>23</div>
-            <div className="text-sm" style={{ color: colors.textSecondary }}>Challenges</div>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold" style={{ color: colors.text }}>Achievements</h2>
-          <button className="p-2">
-            <Filter size={20} style={{ color: colors.textSecondary }} />
-          </button>
-        </div>
-
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-          {['All', 'Milestone', 'Performance', 'Consistency'].map((cat, idx) => (
-            <button key={cat} className="px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap" style={{ backgroundColor: idx === 0 ? colors.primary : 'white', color: idx === 0 ? 'white' : colors.text, border: idx === 0 ? 'none' : `1px solid ${colors.border}` }}>
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div className="space-y-3 mb-6">
-          <div className="bg-white p-4 rounded-2xl border" style={{ borderColor: colors.primary, borderWidth: '2px' }}>
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl" style={{ backgroundColor: colors.freshBg }}>
-                🌱
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-base mb-1" style={{ color: colors.text }}>First Week</div>
-                <div className="text-sm mb-2" style={{ color: colors.textSecondary }}>7 days active</div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: colors.bgGray, color: colors.textSecondary }}>common</span>
-                  <span className="text-sm font-bold" style={{ color: colors.secondary }}>+100 pts</span>
-                </div>
-              </div>
-              <button className="p-2 rounded-full" style={{ backgroundColor: colors.primaryLight }}>
-                <Share2 size={18} style={{ color: colors.primary }} />
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-2xl border" style={{ borderColor: colors.border }}>
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl" style={{ backgroundColor: colors.secondaryLight }}>
-                🎯
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-base mb-1" style={{ color: colors.text }}>Goal Setter</div>
-                <div className="text-sm mb-2" style={{ color: colors.textSecondary }}>Set your first waste reduction goal</div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: colors.secondaryLight, color: colors.secondary }}>rare</span>
-                  <span className="text-sm font-bold" style={{ color: colors.secondary }}>+250 pts</span>
-                </div>
-              </div>
-              <button className="p-2 rounded-full" style={{ backgroundColor: colors.primaryLight }}>
-                <Share2 size={18} style={{ color: colors.primary }} />
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-2xl border" style={{ borderColor: colors.border }}>
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl" style={{ backgroundColor: colors.primaryLight }}>
-                ⚡
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-base mb-1" style={{ color: colors.text }}>Quick Start</div>
-                <div className="text-sm mb-2" style={{ color: colors.textSecondary }}>Add 10 items in your first day</div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: colors.bgGray, color: colors.textSecondary }}>common</span>
-                  <span className="text-sm font-bold" style={{ color: colors.primary }}>+50 pts</span>
-                </div>
-              </div>
-              <button className="p-2 rounded-full" style={{ backgroundColor: colors.primaryLight }}>
-                <Share2 size={18} style={{ color: colors.primary }} />
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-2xl border opacity-60" style={{ borderColor: colors.border }}>
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl" style={{ backgroundColor: colors.bgGray }}>
-                🔒
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-base mb-1" style={{ color: colors.textSecondary }}>Zero Waste Week</div>
-                <div className="text-sm mb-2" style={{ color: colors.textSecondary }}>Consume all items before expiry for 7 days</div>
-                <div className="w-full h-2 rounded-full mt-2" style={{ backgroundColor: colors.bgGray }}>
-                  <div className="h-2 rounded-full" style={{ width: '40%', backgroundColor: colors.primary }} />
-                </div>
-                <div className="text-xs mt-1" style={{ color: colors.textSecondary }}>3/7 days</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    );
-  };
   
   if (showSignUp) {
     return <SignUpScreen onComplete={handleSignUpComplete} />;
@@ -663,7 +512,14 @@ export default function WasteWarriorMVP() {
       <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         {activeScreen === 'dashboard' && <DashboardScreen />}
         {activeScreen === 'inventory' && <InventoryScreen />}
-        {activeScreen === 'rewards' && <RewardsScreen />}
+        {activeScreen === 'rewards' && (
+        <RewardsScreenV2 
+          consumedItems={consumedItems}
+          inventory={inventory}
+          totalWasted={totalWasted}
+          colors={colors}
+        />
+      )}
         {activeScreen === 'analytics' && (
         <AnalyticsScreen 
           inventory={inventory}

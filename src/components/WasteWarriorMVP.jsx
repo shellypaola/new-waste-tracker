@@ -18,7 +18,7 @@ const colors = {
   text: '#374151',
   textSecondary: '#6B7280',
   textLight: '#9CA3AF',
-  bg: '#FFFFFF',
+  bg: ''#F9FAFB',
   bgGray: '#F9FAFB',
   border: '#E5E7EB',
 };

@@ -378,16 +378,10 @@ export default function WasteWarriorMVP() {
   const DashboardScreen = () => (
     <div className="h-full overflow-y-auto pb-24" style={{ WebkitOverflowScrolling: 'touch' }}>
       <div className="pt-6 pb-4">
-      <div className="flex items-center justify-between mb-1 px-4">
-        <div>
-          <h1 className="text-2xl font-bold" style={{ color: colors.text }}>Hello, {userName} 👋</h1>
-          <p className="text-xs mt-0.5" style={{ color: colors.textLight }}>Eat fresh, waste less</p>
-        </div>
-        <button className="p-2 rounded-full" style={{ backgroundColor: colors.bgGray }}>
-          <Bell size={20} style={{ color: colors.text }} />
-        </button>
+      <div className="px-4 mb-1">
+        <h1 className="text-2xl font-bold" style={{ color: colors.text }}>Hello, {userName} 👋</h1>
       </div>
-      <p className="text-sm mb-3 px-4" style={{ color: colors.textSecondary }}>Here's this week's impact</p>
+      <p className="text-sm px-4" style={{ color: colors.textSecondary }}>Save food, save money</p>
       <div className="grid grid-cols-3 gap-3 mb-6 px-4">
           <div className="p-4 rounded-2xl" style={{ backgroundColor: '#EFF6FF' }}>
             <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: colors.primaryLight }}>

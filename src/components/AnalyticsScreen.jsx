@@ -319,7 +319,7 @@ if (maxSpent > 0) {
             {/* Header */}
             <div className="mb-6">
               <h1 className="text-2xl font-bold mb-1" style={{ color: colors.text }}>Analytics</h1>
-              <p className="text-sm mb-3" style={{ color: colors.textSecondary }}>Your waste insights</p>
+              <p className="text-sm mb-3" style={{ color: colors.textSecondary }}>Your food waste insights</p>
             </div>
 
             {/* Time Period Selector */}

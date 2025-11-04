@@ -318,8 +318,8 @@ if (maxSpent > 0) {
       <div className="px-4 pt-6 pb-20">
             {/* Header */}
             <div className="mb-6">
-              <h1 className="text-2xl font-bold mb-1" style={{ color: colors.text }}>Inventory</h1>
-              <p className="text-sm mb-3" style={{ color: colors.textSecondary }}>{inventory.length} items tracked</p>
+              <h1 className="text-2xl font-bold mb-1" style={{ color: colors.text }}>Analytics</h1>
+              <p className="text-sm mb-3" style={{ color: colors.textSecondary }}>Your waste insights</p>
             </div>
 
             {/* Time Period Selector */}

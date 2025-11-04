@@ -402,7 +402,6 @@ export default function WasteWarriorMVP() {
             <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>${totalWasted.toFixed(0)}</div>
             <div className="text-xs" style={{ color: colors.critical }}>This week</div>
           </div>
-          <div className="p-4 rounded-2xl" style={{ backgroundColor: '#FEF3C7' }}>
           <div className="p-4 rounded-2xl" style={{ backgroundColor: colors.freshBg }}>
             <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: '#D1FAE5' }}>
               <TrendingUp size={20} style={{ color: colors.fresh }} />

@@ -1,10 +1,7 @@
 import React, { useMemo } from 'react';
 import { Trophy, Filter, Share2 } from 'lucide-react';
 
-// ============================================
-// CONFIGURATION - Easy to modify
-// ============================================
-
+// CONFIGURATION
 const LEVELS_CONFIG = {
   bronze: {
     name: 'Bronze',
@@ -41,23 +38,16 @@ const LEVELS_CONFIG = {
 };
 
 const POINTS_CONFIG = {
-  // Inventory actions
   itemAdded: 5,
   itemConsumed: 10,
-  itemSavedFromExpiry: 25, // consumed with <2 days left
-  perfectConsumption: 50, // 100% consumed
-  
-  // Streaks
+  itemSavedFromExpiry: 25,
+  perfectConsumption: 50,
   dailyStreak: 15,
   weekStreak: 100,
   monthStreak: 500,
-  
-  // Special achievements
   firstWeek: 100,
   zeroWasteDay: 100,
   perfectWeek: 500,
-  
-  // Social
   shareAchievement: 25,
 };
 
@@ -167,13 +157,6 @@ const RARITY_CONFIG = {
   legendary: { label: 'legendary', color: '#F59E0B', bgColor: '#FEF3C7' },
 };
 
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
-
-/**
- * Calculate current level based on total points
- */
 const getLevelFromPoints = (points) => {
   const levels = Object.keys(LEVELS_CONFIG);
   for (let i = levels.length - 1; i >= 0; i--) {
@@ -186,9 +169,6 @@ const getLevelFromPoints = (points) => {
   return { key: 'bronze', ...LEVELS_CONFIG.bronze };
 };
 
-/**
- * Get next level info
- */
 const getNextLevel = (currentLevelKey) => {
   const levels = Object.keys(LEVELS_CONFIG);
   const currentIndex = levels.indexOf(currentLevelKey);
@@ -199,47 +179,22 @@ const getNextLevel = (currentLevelKey) => {
   return null;
 };
 
-/**
- * Calculate user metrics from app data
- */
 const calculateMetrics = (consumedItems, inventory, totalWasted) => {
-  // Days active (simplified - in real app, track from user creation date)
-  const daysActive = 12; // This would be calculated from account creation
-  
-  // Current streak (simplified - in real app, track daily check-ins)
-  const currentStreak = 7; // Calculate from consecutive zero-waste days
-  
-  // Longest streak
-  const longestStreak = 7; // Track historically
-  
-  // Items consumed
+  const daysActive = 12;
+  const currentStreak = 7;
+  const longestStreak = 7;
   const itemsConsumed = consumedItems.length;
-  
-  // Perfect consumptions (100% consumed)
   const perfectConsumptions = consumedItems.filter(
     item => item.percentageConsumed === 100
   ).length;
-  
-  // Zero waste days (days with zero waste)
-  // In real app: track daily waste totals
-  const zeroWasteDays = 3; // Simplified
-  
-  // Money saved (total consumed value)
+  const zeroWasteDays = 3;
   const moneySaved = consumedItems.reduce((sum, item) => sum + item.consumedAmount, 0);
-  
-  // Items saved from expiry (consumed with <2 days left)
   const itemsSavedFromExpiry = consumedItems.filter(
     item => item.daysUntilExpiryAtConsumption <= 2 && item.daysUntilExpiryAtConsumption >= 0
   ).length;
-  
-  // Items added (total inventory + consumed)
   const itemsAdded = inventory.length + consumedItems.length;
-  
-  // Goals set (simplified - in real app, have a goals feature)
-  const goalsSet = 1; // Track when user sets waste reduction goals
-  
-  // Challenges completed (simplified - in real app, have challenges feature)
-  const challengesCompleted = 5; // Track from challenges module
+  const goalsSet = 1;
+  const challengesCompleted = 5;
   
   return {
     daysActive,
@@ -256,36 +211,21 @@ const calculateMetrics = (consumedItems, inventory, totalWasted) => {
   };
 };
 
-/**
- * Calculate total points earned from metrics
- */
 const calculateTotalPoints = (metrics, consumedItems) => {
   let points = 0;
-  
-  // Base points from actions
   points += metrics.itemsAdded * POINTS_CONFIG.itemAdded;
   points += metrics.itemsConsumed * POINTS_CONFIG.itemConsumed;
   points += metrics.itemsSavedFromExpiry * POINTS_CONFIG.itemSavedFromExpiry;
   points += metrics.perfectConsumptions * POINTS_CONFIG.perfectConsumption;
-  
-  // Streak bonuses
   points += Math.floor(metrics.currentStreak / 7) * POINTS_CONFIG.weekStreak;
   points += Math.floor(metrics.currentStreak / 30) * POINTS_CONFIG.monthStreak;
-  
-  // Zero waste day bonuses
   points += metrics.zeroWasteDays * POINTS_CONFIG.zeroWasteDay;
-  
-  // Milestone bonuses
   if (metrics.daysActive >= 7) {
     points += POINTS_CONFIG.firstWeek;
   }
-  
   return points;
 };
 
-/**
- * Get unlocked achievements
- */
 const getUnlockedAchievements = (metrics) => {
   return ACHIEVEMENTS_CONFIG.map(achievement => ({
     ...achievement,
@@ -294,47 +234,37 @@ const getUnlockedAchievements = (metrics) => {
   }));
 };
 
-// ============================================
-// MAIN COMPONENT
-// ============================================
-
 export default function RewardsScreenV2({ 
   consumedItems = [], 
   inventory = [], 
   totalWasted = 0,
   colors 
 }) {
-  // Calculate all metrics
   const metrics = useMemo(
     () => calculateMetrics(consumedItems, inventory, totalWasted),
     [consumedItems, inventory, totalWasted]
   );
   
-  // Calculate total points
   const totalPoints = useMemo(
     () => calculateTotalPoints(metrics, consumedItems),
     [metrics, consumedItems]
   );
   
-  // Get current level
   const currentLevel = useMemo(
     () => getLevelFromPoints(totalPoints),
     [totalPoints]
   );
   
-  // Get next level
   const nextLevel = useMemo(
     () => getNextLevel(currentLevel.key),
     [currentLevel]
   );
   
-  // Get achievements
   const achievements = useMemo(
     () => getUnlockedAchievements(metrics),
     [metrics]
   );
   
-  // Filter achievements
   const [achievementFilter, setAchievementFilter] = React.useState('All');
   const filteredAchievements = useMemo(() => {
     if (achievementFilter === 'All') return achievements;
@@ -344,7 +274,6 @@ export default function RewardsScreenV2({
     );
   }, [achievements, achievementFilter]);
   
-  // Calculate progress to next level
   const progressToNext = nextLevel 
     ? ((totalPoints - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints)) * 100
     : 100;
@@ -354,7 +283,6 @@ export default function RewardsScreenV2({
       <div className="px-4 pt-6">
         <h1 className="text-2xl font-bold mb-6" style={{ color: colors.text }}>Rewards</h1>
 
-        {/* Current Level Card */}
         <div 
           className="p-6 rounded-2xl mb-6 relative overflow-hidden" 
           style={{ background: currentLevel.gradient }}
@@ -393,12 +321,11 @@ export default function RewardsScreenV2({
             </div>
           ) : (
             <div className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.9)' }}>
-              🎉 Max level reached!
+              Max level reached!
             </div>
           )}
         </div>
 
-        {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="bg-white p-4 rounded-2xl border text-center" style={{ borderColor: colors.border }}>
             <div 
@@ -444,7 +371,6 @@ export default function RewardsScreenV2({
           </div>
         </div>
 
-        {/* Achievements Section */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold" style={{ color: colors.text }}>
             Achievements
@@ -454,7 +380,6 @@ export default function RewardsScreenV2({
           </button>
         </div>
 
-        {/* Achievement Filters */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
           {['All', 'Unlocked', 'Milestone', 'Performance', 'Consistency', 'Savings'].map((cat) => (
             <button 
@@ -472,7 +397,6 @@ export default function RewardsScreenV2({
           ))}
         </div>
 
-        {/* Achievement Cards */}
         <div className="space-y-3 mb-6">
           {filteredAchievements.map((achievement) => (
             <div 

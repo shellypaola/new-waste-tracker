@@ -14,7 +14,7 @@ const colors = {
   warning: '#F59E0B',
   warningBg: '#FFFBEB',
   fresh: '#10B981',
-  freshBg: '#F0FDF4',
+  freshBg: '#E6FBF0',
   text: '#374151',
   textSecondary: '#6B7280',
   textLight: '#9CA3AF',
@@ -399,7 +399,7 @@ export default function WasteWarriorMVP() {
             <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>${totalWasted.toFixed(0)}</div>
             <div className="text-xs" style={{ color: colors.critical }}>This week</div>
           </div>
-          <div className="p-4 rounded-2xl" style={{ backgroundColor: '#F0FDF4' }}>
+          <div className="p-4 rounded-2xl" style={{ backgroundColor: '#E6FBF0' }}>
             <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)' }}>
               <TrendingUp size={20} style={{ color: colors.fresh }} />
             </div>

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { TrendingDown, TrendingUp, DollarSign } from 'lucide-react';
 
 const colors = {
-  primary: '#60A5FA',
-  primaryDark: '#3B82F6',
+  primary: '#3B82F6',
+  primaryDark: '#2563EB',
   primaryLight: '#DBEAFE',
   secondary: '#FBBF24',
   secondaryLight: '#FEF3C7',

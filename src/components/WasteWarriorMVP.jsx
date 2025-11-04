@@ -381,7 +381,7 @@ export default function WasteWarriorMVP() {
       <div className="flex items-center justify-between mb-1 px-4">
         <div>
           <h1 className="text-2xl font-bold" style={{ color: colors.text }}>Hello, {userName} 👋</h1>
-          <p className="text-xs mt-0.5" style={{ color: colors.textLight }}>Track smart, waste less</p>
+          <p className="text-xs mt-0.5" style={{ color: colors.textLight }}>Eat fresh, waste less</p>
         </div>
         <button className="p-2 rounded-full" style={{ backgroundColor: colors.bgGray }}>
           <Bell size={20} style={{ color: colors.text }} />

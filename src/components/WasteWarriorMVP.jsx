@@ -379,7 +379,10 @@ export default function WasteWarriorMVP() {
     <div className="h-full overflow-y-auto pb-24" style={{ WebkitOverflowScrolling: 'touch' }}>
       <div className="pt-6 pb-4">
       <div className="flex items-center justify-between mb-1 px-4">
-        <h1 className="text-2xl font-bold" style={{ color: colors.text }}>Hello, {userName} 👋</h1>
+        <div>
+          <h1 className="text-2xl font-bold" style={{ color: colors.text }}>Hello, {userName} 👋</h1>
+          <p className="text-xs mt-0.5" style={{ color: colors.textLight }}>Track smart, waste less</p>
+        </div>
         <button className="p-2 rounded-full" style={{ backgroundColor: colors.bgGray }}>
           <Bell size={20} style={{ color: colors.text }} />
         </button>

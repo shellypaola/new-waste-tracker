@@ -403,12 +403,14 @@ export default function WasteWarriorMVP() {
             <div className="text-xs" style={{ color: colors.critical }}>This week</div>
           </div>
           <div className="p-4 rounded-2xl" style={{ backgroundColor: '#FEF3C7' }}>
-            <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: colors.secondaryLight }}>
-              <Heart size={20} style={{ color: colors.secondary }} />
+          <div className="p-4 rounded-2xl" style={{ backgroundColor: colors.freshBg }}>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: '#D1FAE5' }}>
+              <TrendingUp size={20} style={{ color: colors.fresh }} />
             </div>
-            <div className="text-sm font-semibold mb-1" style={{ color: colors.secondary }}>Donated</div>
-            <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>$12</div>
-            <div className="text-xs" style={{ color: colors.secondary }}>2 meals</div>
+            <div className="text-sm font-semibold mb-1" style={{ color: colors.fresh }}>Consumed</div>
+            <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>${totalConsumed.toFixed(0)}</div>
+            <div className="text-xs" style={{ color: colors.fresh }}>This week</div>
+          </div>
           </div>
         </div>
       </div>

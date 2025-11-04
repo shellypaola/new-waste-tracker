@@ -12,7 +12,7 @@ const colors = {
   warning: '#F59E0B',
   warningBg: '#FFFBEB',
   fresh: '#10B981',
-  freshBg: '#DCFCE7',
+  freshBg: '##E6FBF0',
   text: '#374151',
   textSecondary: '#6B7280',
   textLight: '#9CA3AF',
@@ -362,7 +362,7 @@ if (maxSpent > 0) {
               </div>
 
               {/* Money Saved Card */}
-              <div className="p-4 rounded-2xl" style={{ backgroundColor: '#DCFCE7' }}>
+              <div className="p-4 rounded-2xl" style={{ backgroundColor: '#E6FBF0' }}>
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)' }}>                        <TrendingUp size={16} style={{ color: colors.fresh }} />
                     </div>

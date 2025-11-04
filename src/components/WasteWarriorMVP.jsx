@@ -409,8 +409,6 @@ export default function WasteWarriorMVP() {
             <div className="text-sm font-semibold mb-1" style={{ color: colors.fresh }}>Consumed</div>
             <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>${totalConsumed.toFixed(0)}</div>
             <div className="text-xs" style={{ color: colors.fresh }}>This week</div>
-          </div>
-          </div>
         </div>
       </div>
       <div className="mb-6">

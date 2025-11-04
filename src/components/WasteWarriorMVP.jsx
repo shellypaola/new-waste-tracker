@@ -454,6 +454,7 @@ export default function WasteWarriorMVP() {
         </div>
       )}
     </div>
+   </div>
   );
 
   const InventoryScreen = () => (

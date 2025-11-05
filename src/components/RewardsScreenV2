@@ -7,354 +7,196 @@ export default function RewardsScreenV2({
   totalWasted = 0,
   colors 
 }) {
-  // Emergency safe mode - absolute minimal rendering
-  
-  const safeColors = {
-    text: (colors && colors.text) || '#374151',
-    textSecondary: (colors && colors.textSecondary) || '#6B7280',
-    primary: (colors && colors.primary) || '#3B82F6',
-    secondary: (colors && colors.secondary) || '#FBBF24',
-    border: (colors && colors.border) || '#E5E7EB',
-    bg: (colors && colors.bg) || '#F9FAFB',
-    primaryLight: (colors && colors.primaryLight) || '#DBEAFE',
-    secondaryLight: (colors && colors.secondaryLight) || '#FEF3C7',
-    bgGray: (colors && colors.bgGray) || '#F9FAFB',
+  // Fallback colors if not provided
+  const safeColors = colors || {
+    text: '#374151',
+    textSecondary: '#6B7280',
+    primary: '#60A5FA',
+    secondary: '#FBBF24',
+    border: '#E5E7EB',
+    bg: '#F9FAFB',
+    primaryLight: '#DBEAFE',
+    secondaryLight: '#FEF3C7',
+    bgGray: '#F9FAFB',
   };
-
-  const totalConsumed = consumedItems.reduce((sum, item) => {
-    const val = item.consumedAmount || 0;
-    return sum + (typeof val === 'number' ? val : 0);
-  }, 0);
-
-  const itemsCount = consumedItems.length || 0;
-  const streakCount = 7;
-  const challengesCount = 5;
 
   return (
     <div 
-      style={{
-        height: '100%',
-        overflowY: 'auto',
-        paddingBottom: '96px',
-        WebkitOverflowScrolling: 'touch'
-      }}
+      className="h-full overflow-y-auto pb-24"
+      style={{ WebkitOverflowScrolling: 'touch' }}
     >
-      <div style={{ padding: '16px' }}>
-        {/* Header */}
+      <div className="px-4 pt-6">
         <h1 
-          style={{
-            fontSize: '24px',
-            fontWeight: 'bold',
-            marginBottom: '24px',
-            color: safeColors.text
-          }}
+          className="text-2xl font-bold mb-6" 
+          style={{ color: safeColors.text }}
         >
           Rewards
         </h1>
 
         {/* Level Card */}
-        <div
-          style={{
-            padding: '24px',
-            borderRadius: '16px',
-            marginBottom: '24px',
-            background: 'linear-gradient(135deg, rgb(205, 127, 50) 0%, rgb(184, 115, 46) 100%)',
-            position: 'relative',
-            overflow: 'hidden'
-          }}
+        <div 
+          className="p-6 rounded-2xl mb-6 relative overflow-hidden" 
+          style={{ background: 'linear-gradient(135deg, #CD7F32 0%, #B8732E 100%)' }}
         >
-          <div
-            style={{
-              position: 'absolute',
-              top: '16px',
-              right: '16px',
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'rgba(255, 255, 255, 0.3)'
-            }}
+          <div 
+            className="absolute top-4 right-4 w-16 h-16 rounded-full flex items-center justify-center" 
+            style={{ backgroundColor: 'rgba(255,255,255,0.3)' }}
           >
             <Trophy size={32} color="white" />
           </div>
-          
-          <div
-            style={{
-              fontSize: '14px',
-              fontWeight: '500',
-              marginBottom: '4px',
-              color: 'rgba(255, 255, 255, 0.9)'
-            }}
+          <div 
+            className="text-sm font-medium mb-1" 
+            style={{ color: 'rgba(255,255,255,0.9)' }}
           >
             Current Level
           </div>
-          
-          <div
-            style={{
-              fontSize: '36px',
-              fontWeight: 'bold',
-              marginBottom: '16px',
-              color: 'white'
-            }}
-          >
+          <div className="text-4xl font-bold mb-4 text-white">
             Bronze
           </div>
-
-          <div style={{ marginBottom: '8px' }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '8px'
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: 'rgba(255, 255, 255, 0.9)'
-                }}
+          <div className="mb-2">
+            <div className="flex items-center justify-between mb-2">
+              <span 
+                className="text-sm font-medium" 
+                style={{ color: 'rgba(255,255,255,0.9)' }}
               >
                 Progress to Silver
               </span>
-              <span
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  color: 'white'
-                }}
-              >
+              <span className="text-sm font-bold text-white">
                 350 / 2,000
               </span>
             </div>
-            <div
-              style={{
-                width: '100%',
-                height: '8px',
-                borderRadius: '999px',
-                backgroundColor: 'rgba(255, 255, 255, 0.3)'
-              }}
+            <div 
+              className="w-full h-2 rounded-full" 
+              style={{ backgroundColor: 'rgba(255,255,255,0.3)' }}
             >
-              <div
-                style={{
-                  height: '8px',
-                  borderRadius: '999px',
-                  width: '17.5%',
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                  transition: 'width 0.5s'
-                }}
+              <div 
+                className="h-2 rounded-full transition-all duration-500" 
+                style={{ 
+                  width: '17%', 
+                  backgroundColor: 'rgba(255,255,255,0.9)' 
+                }} 
               />
             </div>
           </div>
         </div>
 
         {/* Stats Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '12px',
-            marginBottom: '24px'
-          }}
-        >
-          {/* Earned */}
-          <div
-            style={{
-              backgroundColor: 'white',
-              padding: '16px',
-              borderRadius: '16px',
-              border: '1px solid ' + safeColors.border,
-              textAlign: 'center'
-            }}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          <div 
+            className="bg-white p-4 rounded-2xl border text-center" 
+            style={{ borderColor: safeColors.border }}
           >
-            <div
-              style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                margin: '0 auto 8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: safeColors.secondaryLight
-              }}
+            <div 
+              className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center" 
+              style={{ backgroundColor: safeColors.secondaryLight }}
             >
               <Target size={24} style={{ color: safeColors.secondary }} />
             </div>
-            <div
-              style={{
-                fontSize: '24px',
-                fontWeight: 'bold',
-                marginBottom: '4px',
-                color: safeColors.text
-              }}
+            <div 
+              className="text-2xl font-bold mb-1" 
+              style={{ color: safeColors.text }}
             >
-              {itemsCount}
+              {consumedItems.length}
             </div>
-            <div style={{ fontSize: '14px', color: safeColors.textSecondary }}>
+            <div 
+              className="text-sm" 
+              style={{ color: safeColors.textSecondary }}
+            >
               Earned
             </div>
           </div>
-
-          {/* Streak */}
-          <div
-            style={{
-              backgroundColor: 'white',
-              padding: '16px',
-              borderRadius: '16px',
-              border: '1px solid ' + safeColors.border,
-              textAlign: 'center'
-            }}
+          <div 
+            className="bg-white p-4 rounded-2xl border text-center" 
+            style={{ borderColor: safeColors.border }}
           >
-            <div
-              style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                margin: '0 auto 8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#FEE2E2'
-              }}
+            <div 
+              className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center" 
+              style={{ backgroundColor: '#FEE2E2' }}
             >
               <Flame size={24} style={{ color: '#EF4444' }} />
             </div>
-            <div
-              style={{
-                fontSize: '24px',
-                fontWeight: 'bold',
-                marginBottom: '4px',
-                color: safeColors.text
-              }}
+            <div 
+              className="text-2xl font-bold mb-1" 
+              style={{ color: safeColors.text }}
             >
-              {streakCount}
+              7
             </div>
-            <div style={{ fontSize: '14px', color: safeColors.textSecondary }}>
+            <div 
+              className="text-sm" 
+              style={{ color: safeColors.textSecondary }}
+            >
               Streak
             </div>
           </div>
-
-          {/* Challenges */}
-          <div
-            style={{
-              backgroundColor: 'white',
-              padding: '16px',
-              borderRadius: '16px',
-              border: '1px solid ' + safeColors.border,
-              textAlign: 'center'
-            }}
+          <div 
+            className="bg-white p-4 rounded-2xl border text-center" 
+            style={{ borderColor: safeColors.border }}
           >
-            <div
-              style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                margin: '0 auto 8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: safeColors.primaryLight
-              }}
+            <div 
+              className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center" 
+              style={{ backgroundColor: safeColors.primaryLight }}
             >
               <Star size={24} style={{ color: safeColors.primary }} />
             </div>
-            <div
-              style={{
-                fontSize: '24px',
-                fontWeight: 'bold',
-                marginBottom: '4px',
-                color: safeColors.text
-              }}
+            <div 
+              className="text-2xl font-bold mb-1" 
+              style={{ color: safeColors.text }}
             >
-              {challengesCount}
+              5
             </div>
-            <div style={{ fontSize: '14px', color: safeColors.textSecondary }}>
+            <div 
+              className="text-sm" 
+              style={{ color: safeColors.textSecondary }}
+            >
               Challenges
             </div>
           </div>
         </div>
 
         {/* Achievements Section */}
-        <div style={{ marginBottom: '16px' }}>
-          <h2
-            style={{
-              fontSize: '18px',
-              fontWeight: 'bold',
-              color: safeColors.text,
-              marginBottom: '16px'
-            }}
+        <div className="mb-4">
+          <h2 
+            className="text-lg font-bold mb-4" 
+            style={{ color: safeColors.text }}
           >
             Achievements
           </h2>
 
-          {/* Achievement Card 1 */}
-          <div
-            style={{
-              backgroundColor: 'white',
-              padding: '16px',
-              borderRadius: '16px',
-              border: '2px solid ' + safeColors.primary,
-              marginBottom: '12px'
-            }}
+          {/* Achievement 1 - Unlocked */}
+          <div 
+            className="bg-white p-4 rounded-2xl mb-3" 
+            style={{ border: `2px solid ${safeColors.primary}` }}
           >
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-              <div
-                style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                  flexShrink: 0
-                }}
+            <div className="flex items-start gap-4">
+              <div 
+                className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" 
+                style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)' }}
               >
                 <Trophy size={32} style={{ color: '#10B981' }} />
               </div>
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: '16px',
-                    marginBottom: '4px',
-                    color: safeColors.text
-                  }}
+              <div className="flex-1">
+                <div 
+                  className="font-bold text-base mb-1" 
+                  style={{ color: safeColors.text }}
                 >
                   First Week
                 </div>
-                <div
-                  style={{
-                    fontSize: '14px',
-                    marginBottom: '8px',
-                    color: safeColors.textSecondary
-                  }}
+                <div 
+                  className="text-sm mb-2" 
+                  style={{ color: safeColors.textSecondary }}
                 >
                   7 days active
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontWeight: '500',
-                      backgroundColor: '#F3F4F6',
-                      color: '#9CA3AF'
-                    }}
+                <div className="flex items-center gap-2">
+                  <span 
+                    className="text-xs px-2 py-1 rounded font-medium" 
+                    style={{ backgroundColor: '#F3F4F6', color: '#9CA3AF' }}
                   >
                     common
                   </span>
-                  <span
-                    style={{
-                      fontSize: '14px',
-                      fontWeight: 'bold',
-                      color: safeColors.secondary
-                    }}
+                  <span 
+                    className="text-sm font-bold" 
+                    style={{ color: safeColors.secondary }}
                   >
                     +100 pts
                   </span>
@@ -363,79 +205,92 @@ export default function RewardsScreenV2({
             </div>
           </div>
 
-          {/* Achievement Card 2 */}
-          <div
-            style={{
-              backgroundColor: 'white',
-              padding: '16px',
-              borderRadius: '16px',
-              border: '1px solid ' + safeColors.border,
-              marginBottom: '12px',
-              opacity: 0.7
-            }}
+          {/* Achievement 2 - Locked */}
+          <div 
+            className="bg-white p-4 rounded-2xl mb-3" 
+            style={{ border: `1px solid ${safeColors.border}`, opacity: 0.7 }}
           >
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-              <div
-                style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                  flexShrink: 0
-                }}
+            <div className="flex items-start gap-4">
+              <div 
+                className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" 
+                style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}
               >
                 <Star size={32} style={{ color: '#3B82F6' }} />
               </div>
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: '16px',
-                    marginBottom: '4px',
-                    color: safeColors.text
-                  }}
+              <div className="flex-1">
+                <div 
+                  className="font-bold text-base mb-1" 
+                  style={{ color: safeColors.text }}
                 >
                   Quick Start
                 </div>
-                <div
-                  style={{
-                    fontSize: '14px',
-                    marginBottom: '8px',
-                    color: safeColors.textSecondary
-                  }}
+                <div 
+                  className="text-sm mb-2" 
+                  style={{ color: safeColors.textSecondary }}
                 >
                   Add 10 items in your first day
                 </div>
-                <div style={{ marginTop: '8px' }}>
-                  <div
-                    style={{
-                      width: '100%',
-                      height: '8px',
-                      borderRadius: '999px',
-                      backgroundColor: safeColors.bgGray
-                    }}
+                <div className="mt-2">
+                  <div 
+                    className="w-full h-2 rounded-full" 
+                    style={{ backgroundColor: safeColors.bgGray }}
                   >
-                    <div
-                      style={{
-                        height: '8px',
-                        borderRadius: '999px',
-                        width: '60%',
-                        backgroundColor: safeColors.primary,
-                        transition: 'width 0.5s'
-                      }}
+                    <div 
+                      className="h-2 rounded-full transition-all duration-500" 
+                      style={{ width: '60%', backgroundColor: safeColors.primary }} 
                     />
                   </div>
-                  <div
-                    style={{
-                      fontSize: '12px',
-                      marginTop: '4px',
-                      color: safeColors.textSecondary
-                    }}
+                  <div 
+                    className="text-xs mt-1" 
+                    style={{ color: safeColors.textSecondary }}
                   >
                     60% complete
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Achievement 3 - Locked */}
+          <div 
+            className="bg-white p-4 rounded-2xl" 
+            style={{ border: `1px solid ${safeColors.border}`, opacity: 0.7 }}
+          >
+            <div className="flex items-start gap-4">
+              <div 
+                className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" 
+                style={{ backgroundColor: 'rgba(251, 191, 36, 0.1)' }}
+              >
+                <Flame size={32} style={{ color: '#FBBF24' }} />
+              </div>
+              <div className="flex-1">
+                <div 
+                  className="font-bold text-base mb-1" 
+                  style={{ color: safeColors.text }}
+                >
+                  Streak Warrior
+                </div>
+                <div 
+                  className="text-sm mb-2" 
+                  style={{ color: safeColors.textSecondary }}
+                >
+                  Maintain a 7-day streak
+                </div>
+                <div className="mt-2">
+                  <div 
+                    className="w-full h-2 rounded-full" 
+                    style={{ backgroundColor: safeColors.bgGray }}
+                  >
+                    <div 
+                      className="h-2 rounded-full transition-all duration-500" 
+                      style={{ width: '100%', backgroundColor: safeColors.primary }} 
+                    />
+                  </div>
+                  <div 
+                    className="text-xs mt-1" 
+                    style={{ color: safeColors.textSecondary }}
+                  >
+                    100% complete - Ready to unlock!
                   </div>
                 </div>
               </div>

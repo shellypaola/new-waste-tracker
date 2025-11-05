@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Trophy, Filter, Share2, Target, Flame, Star, Sprout, Goal, Zap, Lock, DollarSign, Leaf } from 'lucide-react';
+import { Trophy, Filter, Share2, Target, Flame, Star, Sprout, Zap, Lock, DollarSign, Leaf } from 'lucide-react';
 
 // CONFIGURATION
 const LEVELS_CONFIG = {

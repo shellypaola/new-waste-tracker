@@ -1,5 +1,302 @@
-import React from 'react';
-import { Trophy, Target, Flame, Star } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { Trophy, Filter, Share2 } from 'lucide-react';
+
+// ============================================
+// CONFIGURATION - Easy to modify
+// ============================================
+
+const LEVELS_CONFIG = {
+  bronze: {
+    name: 'Bronze',
+    minPoints: 0,
+    maxPoints: 1999,
+    color: '#CD7F32',
+    lightColor: '#E6C9A8',
+    gradient: 'linear-gradient(135deg, #CD7F32 0%, #B8732E 100%)',
+  },
+  silver: {
+    name: 'Silver',
+    minPoints: 2000,
+    maxPoints: 4999,
+    color: '#C0C0C0',
+    lightColor: '#E8E8E8',
+    gradient: 'linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%)',
+  },
+  gold: {
+    name: 'Gold',
+    minPoints: 5000,
+    maxPoints: 9999,
+    color: '#FFD700',
+    lightColor: '#FFF4CC',
+    gradient: 'linear-gradient(135deg, #FFD700 0%, #FFC700 100%)',
+  },
+  platinum: {
+    name: 'Platinum',
+    minPoints: 10000,
+    maxPoints: Infinity,
+    color: '#E5E4E2',
+    lightColor: '#F5F5F5',
+    gradient: 'linear-gradient(135deg, #E5E4E2 0%, #D3D3D3 100%)',
+  },
+};
+
+const POINTS_CONFIG = {
+  // Inventory actions
+  itemAdded: 5,
+  itemConsumed: 10,
+  itemSavedFromExpiry: 25, // consumed with <2 days left
+  perfectConsumption: 50, // 100% consumed
+  
+  // Streaks
+  dailyStreak: 15,
+  weekStreak: 100,
+  monthStreak: 500,
+  
+  // Special achievements
+  firstWeek: 100,
+  zeroWasteDay: 100,
+  perfectWeek: 500,
+  
+  // Social
+  shareAchievement: 25,
+};
+
+const ACHIEVEMENTS_CONFIG = [
+  {
+    id: 'first_week',
+    name: 'First Week',
+    description: '7 days active',
+    emoji: '🌱',
+    category: 'milestone',
+    rarity: 'common',
+    points: 100,
+    bgColor: 'rgba(16, 185, 129, 0.1)',
+    checkUnlocked: (metrics) => metrics.daysActive >= 7,
+    getProgress: (metrics) => Math.min(100, (metrics.daysActive / 7) * 100),
+  },
+  {
+    id: 'goal_setter',
+    name: 'Goal Setter',
+    description: 'Set your first waste reduction goal',
+    emoji: '🎯',
+    category: 'milestone',
+    rarity: 'rare',
+    points: 250,
+    bgColor: 'rgba(251, 191, 36, 0.1)',
+    checkUnlocked: (metrics) => metrics.goalsSet > 0,
+    getProgress: (metrics) => metrics.goalsSet > 0 ? 100 : 0,
+  },
+  {
+    id: 'quick_start',
+    name: 'Quick Start',
+    description: 'Add 10 items in your first day',
+    emoji: '⚡',
+    category: 'performance',
+    rarity: 'common',
+    points: 50,
+    bgColor: 'rgba(59, 130, 246, 0.1)',
+    checkUnlocked: (metrics) => metrics.itemsAdded >= 10 && metrics.daysActive === 1,
+    getProgress: (metrics) => Math.min(100, (metrics.itemsAdded / 10) * 100),
+  },
+  {
+    id: 'zero_waste_week',
+    name: 'Zero Waste Week',
+    description: 'Consume all items before expiry for 7 days',
+    emoji: '🔒',
+    category: 'performance',
+    rarity: 'epic',
+    points: 1000,
+    bgColor: 'rgba(139, 92, 246, 0.1)',
+    checkUnlocked: (metrics) => metrics.zeroWasteDays >= 7,
+    getProgress: (metrics) => Math.min(100, (metrics.zeroWasteDays / 7) * 100),
+  },
+  {
+    id: 'streak_warrior',
+    name: 'Streak Warrior',
+    description: 'Maintain a 7-day streak',
+    emoji: '🔥',
+    category: 'consistency',
+    rarity: 'rare',
+    points: 200,
+    bgColor: 'rgba(239, 68, 68, 0.1)',
+    checkUnlocked: (metrics) => metrics.currentStreak >= 7,
+    getProgress: (metrics) => Math.min(100, (metrics.currentStreak / 7) * 100),
+  },
+  {
+    id: 'penny_pincher',
+    name: 'Penny Pincher',
+    description: 'Save $50 from waste',
+    emoji: '💰',
+    category: 'savings',
+    rarity: 'rare',
+    points: 300,
+    bgColor: 'rgba(16, 185, 129, 0.1)',
+    checkUnlocked: (metrics) => metrics.moneySaved >= 50,
+    getProgress: (metrics) => Math.min(100, (metrics.moneySaved / 50) * 100),
+  },
+  {
+    id: 'eco_champion',
+    name: 'Eco Champion',
+    description: 'Prevent 100 items from being wasted',
+    emoji: '🌍',
+    category: 'performance',
+    rarity: 'epic',
+    points: 500,
+    bgColor: 'rgba(16, 185, 129, 0.1)',
+    checkUnlocked: (metrics) => metrics.itemsConsumed >= 100,
+    getProgress: (metrics) => Math.min(100, (metrics.itemsConsumed / 100) * 100),
+  },
+  {
+    id: 'perfect_consumer',
+    name: 'Perfect Consumer',
+    description: 'Consume 10 items at 100%',
+    emoji: '⭐',
+    category: 'performance',
+    rarity: 'rare',
+    points: 250,
+    bgColor: 'rgba(251, 191, 36, 0.1)',
+    checkUnlocked: (metrics) => metrics.perfectConsumptions >= 10,
+    getProgress: (metrics) => Math.min(100, (metrics.perfectConsumptions / 10) * 100),
+  },
+];
+
+const RARITY_CONFIG = {
+  common: { label: 'common', color: '#9CA3AF', bgColor: '#F3F4F6' },
+  rare: { label: 'rare', color: '#FBBF24', bgColor: '#FEF3C7' },
+  epic: { label: 'epic', color: '#8B5CF6', bgColor: '#EDE9FE' },
+  legendary: { label: 'legendary', color: '#F59E0B', bgColor: '#FEF3C7' },
+};
+
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+
+/**
+ * Calculate current level based on total points
+ */
+const getLevelFromPoints = (points) => {
+  const levels = Object.keys(LEVELS_CONFIG);
+  for (let i = levels.length - 1; i >= 0; i--) {
+    const levelKey = levels[i];
+    const level = LEVELS_CONFIG[levelKey];
+    if (points >= level.minPoints) {
+      return { key: levelKey, ...level };
+    }
+  }
+  return { key: 'bronze', ...LEVELS_CONFIG.bronze };
+};
+
+/**
+ * Get next level info
+ */
+const getNextLevel = (currentLevelKey) => {
+  const levels = Object.keys(LEVELS_CONFIG);
+  const currentIndex = levels.indexOf(currentLevelKey);
+  if (currentIndex < levels.length - 1) {
+    const nextLevelKey = levels[currentIndex + 1];
+    return { key: nextLevelKey, ...LEVELS_CONFIG[nextLevelKey] };
+  }
+  return null;
+};
+
+/**
+ * Calculate user metrics from app data
+ */
+const calculateMetrics = (consumedItems, inventory, totalWasted) => {
+  // Days active (simplified - in real app, track from user creation date)
+  const daysActive = 12; // This would be calculated from account creation
+  
+  // Current streak (simplified - in real app, track daily check-ins)
+  const currentStreak = 7; // Calculate from consecutive zero-waste days
+  
+  // Longest streak
+  const longestStreak = 7; // Track historically
+  
+  // Items consumed
+  const itemsConsumed = consumedItems.length;
+  
+  // Perfect consumptions (100% consumed)
+  const perfectConsumptions = consumedItems.filter(
+    item => item.percentageConsumed === 100
+  ).length;
+  
+  // Zero waste days (days with zero waste)
+  // In real app: track daily waste totals
+  const zeroWasteDays = 3; // Simplified
+  
+  // Money saved (total consumed value)
+  const moneySaved = consumedItems.reduce((sum, item) => sum + item.consumedAmount, 0);
+  
+  // Items saved from expiry (consumed with <2 days left)
+  const itemsSavedFromExpiry = consumedItems.filter(
+    item => item.daysUntilExpiryAtConsumption <= 2 && item.daysUntilExpiryAtConsumption >= 0
+  ).length;
+  
+  // Items added (total inventory + consumed)
+  const itemsAdded = inventory.length + consumedItems.length;
+  
+  // Goals set (simplified - in real app, have a goals feature)
+  const goalsSet = 1; // Track when user sets waste reduction goals
+  
+  // Challenges completed (simplified - in real app, have challenges feature)
+  const challengesCompleted = 5; // Track from challenges module
+  
+  return {
+    daysActive,
+    currentStreak,
+    longestStreak,
+    itemsConsumed,
+    perfectConsumptions,
+    zeroWasteDays,
+    moneySaved,
+    itemsSavedFromExpiry,
+    itemsAdded,
+    goalsSet,
+    challengesCompleted,
+  };
+};
+
+/**
+ * Calculate total points earned from metrics
+ */
+const calculateTotalPoints = (metrics, consumedItems) => {
+  let points = 0;
+  
+  // Base points from actions
+  points += metrics.itemsAdded * POINTS_CONFIG.itemAdded;
+  points += metrics.itemsConsumed * POINTS_CONFIG.itemConsumed;
+  points += metrics.itemsSavedFromExpiry * POINTS_CONFIG.itemSavedFromExpiry;
+  points += metrics.perfectConsumptions * POINTS_CONFIG.perfectConsumption;
+  
+  // Streak bonuses
+  points += Math.floor(metrics.currentStreak / 7) * POINTS_CONFIG.weekStreak;
+  points += Math.floor(metrics.currentStreak / 30) * POINTS_CONFIG.monthStreak;
+  
+  // Zero waste day bonuses
+  points += metrics.zeroWasteDays * POINTS_CONFIG.zeroWasteDay;
+  
+  // Milestone bonuses
+  if (metrics.daysActive >= 7) {
+    points += POINTS_CONFIG.firstWeek;
+  }
+  
+  return points;
+};
+
+/**
+ * Get unlocked achievements
+ */
+const getUnlockedAchievements = (metrics) => {
+  return ACHIEVEMENTS_CONFIG.map(achievement => ({
+    ...achievement,
+    unlocked: achievement.checkUnlocked(metrics),
+    progress: achievement.getProgress(metrics),
+  }));
+};
+
+// ============================================
+// MAIN COMPONENT
+// ============================================
 
 export default function RewardsScreenV2({ 
   consumedItems = [], 
@@ -7,36 +304,60 @@ export default function RewardsScreenV2({
   totalWasted = 0,
   colors 
 }) {
-  // Fallback colors if not provided
-  const safeColors = colors || {
-    text: '#374151',
-    textSecondary: '#6B7280',
-    primary: '#60A5FA',
-    secondary: '#FBBF24',
-    border: '#E5E7EB',
-    bg: '#F9FAFB',
-    primaryLight: '#DBEAFE',
-    secondaryLight: '#FEF3C7',
-    bgGray: '#F9FAFB',
-  };
+  // Calculate all metrics
+  const metrics = useMemo(
+    () => calculateMetrics(consumedItems, inventory, totalWasted),
+    [consumedItems, inventory, totalWasted]
+  );
+  
+  // Calculate total points
+  const totalPoints = useMemo(
+    () => calculateTotalPoints(metrics, consumedItems),
+    [metrics, consumedItems]
+  );
+  
+  // Get current level
+  const currentLevel = useMemo(
+    () => getLevelFromPoints(totalPoints),
+    [totalPoints]
+  );
+  
+  // Get next level
+  const nextLevel = useMemo(
+    () => getNextLevel(currentLevel.key),
+    [currentLevel]
+  );
+  
+  // Get achievements
+  const achievements = useMemo(
+    () => getUnlockedAchievements(metrics),
+    [metrics]
+  );
+  
+  // Filter achievements
+  const [achievementFilter, setAchievementFilter] = React.useState('All');
+  const filteredAchievements = useMemo(() => {
+    if (achievementFilter === 'All') return achievements;
+    return achievements.filter(a => 
+      a.category === achievementFilter.toLowerCase() ||
+      (achievementFilter === 'Unlocked' && a.unlocked)
+    );
+  }, [achievements, achievementFilter]);
+  
+  // Calculate progress to next level
+  const progressToNext = nextLevel 
+    ? ((totalPoints - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints)) * 100
+    : 100;
 
   return (
-    <div 
-      className="h-full overflow-y-auto pb-24"
-      style={{ WebkitOverflowScrolling: 'touch' }}
-    >
+    <div className="h-full overflow-y-auto pb-24" style={{ WebkitOverflowScrolling: 'touch' }}>
       <div className="px-4 pt-6">
-        <h1 
-          className="text-2xl font-bold mb-6" 
-          style={{ color: safeColors.text }}
-        >
-          Rewards
-        </h1>
+        <h1 className="text-2xl font-bold mb-6" style={{ color: colors.text }}>Rewards</h1>
 
-        {/* Level Card */}
+        {/* Current Level Card */}
         <div 
           className="p-6 rounded-2xl mb-6 relative overflow-hidden" 
-          style={{ background: 'linear-gradient(135deg, #CD7F32 0%, #B8732E 100%)' }}
+          style={{ background: currentLevel.gradient }}
         >
           <div 
             className="absolute top-4 right-4 w-16 h-16 rounded-full flex items-center justify-center" 
@@ -44,258 +365,178 @@ export default function RewardsScreenV2({
           >
             <Trophy size={32} color="white" />
           </div>
-          <div 
-            className="text-sm font-medium mb-1" 
-            style={{ color: 'rgba(255,255,255,0.9)' }}
-          >
+          <div className="text-sm font-medium mb-1" style={{ color: 'rgba(255,255,255,0.9)' }}>
             Current Level
           </div>
           <div className="text-4xl font-bold mb-4 text-white">
-            Bronze
+            {currentLevel.name}
           </div>
-          <div className="mb-2">
-            <div className="flex items-center justify-between mb-2">
-              <span 
-                className="text-sm font-medium" 
-                style={{ color: 'rgba(255,255,255,0.9)' }}
-              >
-                Progress to Silver
-              </span>
-              <span className="text-sm font-bold text-white">
-                350 / 2,000
-              </span>
+          {nextLevel ? (
+            <div className="mb-2">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                  Progress to {nextLevel.name}
+                </span>
+                <span className="text-sm font-bold text-white">
+                  {totalPoints.toLocaleString()} / {nextLevel.minPoints.toLocaleString()}
+                </span>
+              </div>
+              <div className="w-full h-2 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }}>
+                <div 
+                  className="h-2 rounded-full transition-all duration-500" 
+                  style={{ 
+                    width: `${progressToNext}%`, 
+                    backgroundColor: 'rgba(255,255,255,0.9)' 
+                  }} 
+                />
+              </div>
             </div>
-            <div 
-              className="w-full h-2 rounded-full" 
-              style={{ backgroundColor: 'rgba(255,255,255,0.3)' }}
-            >
-              <div 
-                className="h-2 rounded-full transition-all duration-500" 
-                style={{ 
-                  width: '17%', 
-                  backgroundColor: 'rgba(255,255,255,0.9)' 
-                }} 
-              />
+          ) : (
+            <div className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.9)' }}>
+              🎉 Max level reached!
             </div>
-          </div>
+          )}
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-3 mb-6">
-          <div 
-            className="bg-white p-4 rounded-2xl border text-center" 
-            style={{ borderColor: safeColors.border }}
-          >
+          <div className="bg-white p-4 rounded-2xl border text-center" style={{ borderColor: colors.border }}>
             <div 
-              className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center" 
-              style={{ backgroundColor: safeColors.secondaryLight }}
+              className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl" 
+              style={{ backgroundColor: colors.secondaryLight }}
             >
-              <Target size={24} style={{ color: safeColors.secondary }} />
+              🎯
             </div>
-            <div 
-              className="text-2xl font-bold mb-1" 
-              style={{ color: safeColors.text }}
-            >
-              {consumedItems.length}
+            <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>
+              {achievements.filter(a => a.unlocked).length}
             </div>
-            <div 
-              className="text-sm" 
-              style={{ color: safeColors.textSecondary }}
-            >
+            <div className="text-sm" style={{ color: colors.textSecondary }}>
               Earned
             </div>
           </div>
-          <div 
-            className="bg-white p-4 rounded-2xl border text-center" 
-            style={{ borderColor: safeColors.border }}
-          >
+          <div className="bg-white p-4 rounded-2xl border text-center" style={{ borderColor: colors.border }}>
             <div 
-              className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center" 
+              className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl" 
               style={{ backgroundColor: '#FEE2E2' }}
             >
-              <Flame size={24} style={{ color: '#EF4444' }} />
+              🔥
             </div>
-            <div 
-              className="text-2xl font-bold mb-1" 
-              style={{ color: safeColors.text }}
-            >
-              7
+            <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>
+              {metrics.currentStreak}
             </div>
-            <div 
-              className="text-sm" 
-              style={{ color: safeColors.textSecondary }}
-            >
+            <div className="text-sm" style={{ color: colors.textSecondary }}>
               Streak
             </div>
           </div>
-          <div 
-            className="bg-white p-4 rounded-2xl border text-center" 
-            style={{ borderColor: safeColors.border }}
-          >
+          <div className="bg-white p-4 rounded-2xl border text-center" style={{ borderColor: colors.border }}>
             <div 
-              className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center" 
-              style={{ backgroundColor: safeColors.primaryLight }}
+              className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl" 
+              style={{ backgroundColor: colors.primaryLight }}
             >
-              <Star size={24} style={{ color: safeColors.primary }} />
+              ⭐
             </div>
-            <div 
-              className="text-2xl font-bold mb-1" 
-              style={{ color: safeColors.text }}
-            >
-              5
+            <div className="text-2xl font-bold mb-1" style={{ color: colors.text }}>
+              {metrics.challengesCompleted}
             </div>
-            <div 
-              className="text-sm" 
-              style={{ color: safeColors.textSecondary }}
-            >
+            <div className="text-sm" style={{ color: colors.textSecondary }}>
               Challenges
             </div>
           </div>
         </div>
 
         {/* Achievements Section */}
-        <div className="mb-4">
-          <h2 
-            className="text-lg font-bold mb-4" 
-            style={{ color: safeColors.text }}
-          >
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold" style={{ color: colors.text }}>
             Achievements
           </h2>
+          <button className="p-2">
+            <Filter size={20} style={{ color: colors.textSecondary }} />
+          </button>
+        </div>
 
-          {/* Achievement 1 - Unlocked */}
-          <div 
-            className="bg-white p-4 rounded-2xl mb-3" 
-            style={{ border: `2px solid ${safeColors.primary}` }}
-          >
-            <div className="flex items-start gap-4">
-              <div 
-                className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" 
-                style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)' }}
-              >
-                <Trophy size={32} style={{ color: '#10B981' }} />
-              </div>
-              <div className="flex-1">
+        {/* Achievement Filters */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+          {['All', 'Unlocked', 'Milestone', 'Performance', 'Consistency', 'Savings'].map((cat) => (
+            <button 
+              key={cat} 
+              onClick={() => setAchievementFilter(cat)}
+              className="px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all" 
+              style={{ 
+                backgroundColor: achievementFilter === cat ? colors.primary : 'white', 
+                color: achievementFilter === cat ? 'white' : colors.text, 
+                border: achievementFilter === cat ? 'none' : `1px solid ${colors.border}` 
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Achievement Cards */}
+        <div className="space-y-3 mb-6">
+          {filteredAchievements.map((achievement) => (
+            <div 
+              key={achievement.id}
+              className="bg-white p-4 rounded-2xl border transition-all" 
+              style={{ 
+                borderColor: achievement.unlocked ? colors.primary : colors.border,
+                borderWidth: achievement.unlocked ? '2px' : '1px',
+                opacity: achievement.unlocked ? 1 : 0.7,
+              }}
+            >
+              <div className="flex items-start gap-4">
                 <div 
-                  className="font-bold text-base mb-1" 
-                  style={{ color: safeColors.text }}
+                  className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl" 
+                  style={{ backgroundColor: achievement.bgColor }}
                 >
-                  First Week
+                  {achievement.emoji}
                 </div>
-                <div 
-                  className="text-sm mb-2" 
-                  style={{ color: safeColors.textSecondary }}
-                >
-                  7 days active
+                <div className="flex-1">
+                  <div className="font-bold text-base mb-1" style={{ color: colors.text }}>
+                    {achievement.name}
+                  </div>
+                  <div className="text-sm mb-2" style={{ color: colors.textSecondary }}>
+                    {achievement.description}
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span 
+                      className="text-xs px-2 py-1 rounded font-medium" 
+                      style={{ 
+                        backgroundColor: RARITY_CONFIG[achievement.rarity].bgColor,
+                        color: RARITY_CONFIG[achievement.rarity].color,
+                      }}
+                    >
+                      {RARITY_CONFIG[achievement.rarity].label}
+                    </span>
+                    <span className="text-sm font-bold" style={{ color: colors.secondary }}>
+                      +{achievement.points} pts
+                    </span>
+                  </div>
+                  {!achievement.unlocked && (
+                    <div className="mt-2">
+                      <div className="w-full h-2 rounded-full" style={{ backgroundColor: colors.bgGray }}>
+                        <div 
+                          className="h-2 rounded-full transition-all duration-500" 
+                          style={{ 
+                            width: `${achievement.progress}%`, 
+                            backgroundColor: colors.primary 
+                          }} 
+                        />
+                      </div>
+                      <div className="text-xs mt-1" style={{ color: colors.textSecondary }}>
+                        {Math.round(achievement.progress)}% complete
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-2">
-                  <span 
-                    className="text-xs px-2 py-1 rounded font-medium" 
-                    style={{ backgroundColor: '#F3F4F6', color: '#9CA3AF' }}
-                  >
-                    common
-                  </span>
-                  <span 
-                    className="text-sm font-bold" 
-                    style={{ color: safeColors.secondary }}
-                  >
-                    +100 pts
-                  </span>
-                </div>
+                {achievement.unlocked && (
+                  <button className="p-2 rounded-full" style={{ backgroundColor: colors.primaryLight }}>
+                    <Share2 size={18} style={{ color: colors.primary }} />
+                  </button>
+                )}
               </div>
             </div>
-          </div>
-
-          {/* Achievement 2 - Locked */}
-          <div 
-            className="bg-white p-4 rounded-2xl mb-3" 
-            style={{ border: `1px solid ${safeColors.border}`, opacity: 0.7 }}
-          >
-            <div className="flex items-start gap-4">
-              <div 
-                className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" 
-                style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}
-              >
-                <Star size={32} style={{ color: '#3B82F6' }} />
-              </div>
-              <div className="flex-1">
-                <div 
-                  className="font-bold text-base mb-1" 
-                  style={{ color: safeColors.text }}
-                >
-                  Quick Start
-                </div>
-                <div 
-                  className="text-sm mb-2" 
-                  style={{ color: safeColors.textSecondary }}
-                >
-                  Add 10 items in your first day
-                </div>
-                <div className="mt-2">
-                  <div 
-                    className="w-full h-2 rounded-full" 
-                    style={{ backgroundColor: safeColors.bgGray }}
-                  >
-                    <div 
-                      className="h-2 rounded-full transition-all duration-500" 
-                      style={{ width: '60%', backgroundColor: safeColors.primary }} 
-                    />
-                  </div>
-                  <div 
-                    className="text-xs mt-1" 
-                    style={{ color: safeColors.textSecondary }}
-                  >
-                    60% complete
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Achievement 3 - Locked */}
-          <div 
-            className="bg-white p-4 rounded-2xl" 
-            style={{ border: `1px solid ${safeColors.border}`, opacity: 0.7 }}
-          >
-            <div className="flex items-start gap-4">
-              <div 
-                className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" 
-                style={{ backgroundColor: 'rgba(251, 191, 36, 0.1)' }}
-              >
-                <Flame size={32} style={{ color: '#FBBF24' }} />
-              </div>
-              <div className="flex-1">
-                <div 
-                  className="font-bold text-base mb-1" 
-                  style={{ color: safeColors.text }}
-                >
-                  Streak Warrior
-                </div>
-                <div 
-                  className="text-sm mb-2" 
-                  style={{ color: safeColors.textSecondary }}
-                >
-                  Maintain a 7-day streak
-                </div>
-                <div className="mt-2">
-                  <div 
-                    className="w-full h-2 rounded-full" 
-                    style={{ backgroundColor: safeColors.bgGray }}
-                  >
-                    <div 
-                      className="h-2 rounded-full transition-all duration-500" 
-                      style={{ width: '100%', backgroundColor: safeColors.primary }} 
-                    />
-                  </div>
-                  <div 
-                    className="text-xs mt-1" 
-                    style={{ color: safeColors.textSecondary }}
-                  >
-                    100% complete - Ready to unlock!
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

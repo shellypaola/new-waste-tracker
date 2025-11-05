@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AnalyticsScreen from './AnalyticsScreen';
 import SignUpScreen from './SignUpScreen'; // Adjust path if needed
-import RewardsScreenV2 from './RewardsScreenV2';
+//import RewardsScreenV2 from './RewardsScreenV2';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign } from 'lucide-react';
 
 const colors = {
@@ -513,12 +513,85 @@ export default function WasteWarriorMVP() {
         {activeScreen === 'dashboard' && <DashboardScreen />}
         {activeScreen === 'inventory' && <InventoryScreen />}
         {activeScreen === 'rewards' && (
-       <RewardsScreenV2
-         consumedItems={consumedItems}
-         inventory={inventory}
-         totalWasted={totalWasted}
-         colors={colors}
-       />
+       // PASTE THIS DIRECTLY INTO YOUR MAIN COMPONENT FILE
+      // Replace the entire RewardsScreenV2 section with this inline component
+      
+      // DELETE OR COMMENT OUT THIS LINE:
+      // import RewardsScreenV2 from './RewardsScreenV2';
+      
+      // Then in your render section, replace:
+      // {activeScreen === 'rewards' && (
+      //   <RewardsScreenV2 ... />
+      // )}
+      
+      // WITH THIS INLINE VERSION:
+      
+      {activeScreen === 'rewards' && (
+        <div 
+          style={{
+            height: '100%',
+            overflowY: 'auto',
+            paddingBottom: '96px',
+            backgroundColor: '#F9FAFB'
+          }}
+        >
+          <div style={{ padding: '16px' }}>
+            <h1 style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              marginBottom: '24px',
+              color: '#374151'
+            }}>
+              Rewards (Inline Test)
+            </h1>
+            
+            <div style={{
+              padding: '24px',
+              borderRadius: '16px',
+              marginBottom: '24px',
+              background: 'linear-gradient(135deg, rgb(205, 127, 50) 0%, rgb(184, 115, 46) 100%)',
+              position: 'relative'
+            }}>
+              <div style={{
+                fontSize: '14px',
+                fontWeight: '500',
+                marginBottom: '4px',
+                color: 'rgba(255, 255, 255, 0.9)'
+              }}>
+                Current Level
+              </div>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: 'bold',
+                color: 'white'
+              }}>
+                Bronze
+              </div>
+            </div>
+      
+            <div style={{
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '12px',
+              border: '1px solid #E5E7EB'
+            }}>
+              <p style={{ color: '#374151', marginBottom: '12px' }}>
+                ✅ If you can see this, React rendering works perfectly!
+              </p>
+              <p style={{ color: '#6B7280', fontSize: '14px' }}>
+                This means the issue is with importing/using the RewardsScreenV2 component file.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      // IF THIS WORKS:
+      // The issue is with your RewardsScreenV2.jsx file itself or how it's imported.
+      // Try creating a completely NEW file with a DIFFERENT name like "RewardsScreen.jsx"
+      
+      // IF THIS DOESN'T WORK:
+      // The issue is in your main component file itself - there's a corrupted character somewhere
       )}
         {activeScreen === 'analytics' && (
         <AnalyticsScreen 

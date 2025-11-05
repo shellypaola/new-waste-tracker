@@ -196,7 +196,7 @@ const calculateMetrics = (consumedItems, inventory, totalWasted) => {
     item => item.percentageConsumed === 100
   ).length;
   const zeroWasteDays = 3;
-  const moneySaved = consumedItems.reduce((sum, item) => sum + item.consumedAmount, 0);
+  const moneySaved = consumedItems.reduce((sum, item) => sum + (item.consumedAmount || 0), 0);
   const itemsSavedFromExpiry = consumedItems.filter(
     item => item.daysUntilExpiryAtConsumption <= 2 && item.daysUntilExpiryAtConsumption >= 0
   ).length;
@@ -221,13 +221,13 @@ const calculateMetrics = (consumedItems, inventory, totalWasted) => {
 
 const calculateTotalPoints = (metrics, consumedItems) => {
   let points = 0;
-  points += metrics.itemsAdded * POINTS_CONFIG.itemAdded;
-  points += metrics.itemsConsumed * POINTS_CONFIG.itemConsumed;
-  points += metrics.itemsSavedFromExpiry * POINTS_CONFIG.itemSavedFromExpiry;
-  points += metrics.perfectConsumptions * POINTS_CONFIG.perfectConsumption;
-  points += Math.floor(metrics.currentStreak / 7) * POINTS_CONFIG.weekStreak;
-  points += Math.floor(metrics.currentStreak / 30) * POINTS_CONFIG.monthStreak;
-  points += metrics.zeroWasteDays * POINTS_CONFIG.zeroWasteDay;
+  points += (metrics.itemsAdded || 0) * POINTS_CONFIG.itemAdded;
+  points += (metrics.itemsConsumed || 0) * POINTS_CONFIG.itemConsumed;
+  points += (metrics.itemsSavedFromExpiry || 0) * POINTS_CONFIG.itemSavedFromExpiry;
+  points += (metrics.perfectConsumptions || 0) * POINTS_CONFIG.perfectConsumption;
+  points += Math.floor((metrics.currentStreak || 0) / 7) * POINTS_CONFIG.weekStreak;
+  points += Math.floor((metrics.currentStreak || 0) / 30) * POINTS_CONFIG.monthStreak;
+  points += (metrics.zeroWasteDays || 0) * POINTS_CONFIG.zeroWasteDay;
   if (metrics.daysActive >= 7) {
     points += POINTS_CONFIG.firstWeek;
   }
@@ -248,6 +248,15 @@ export default function RewardsScreenV2({
   totalWasted = 0,
   colors 
 }) {
+  // Safety check for colors prop
+  if (!colors) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <p>Loading rewards...</p>
+      </div>
+    );
+  }
+
   const metrics = useMemo(
     () => calculateMetrics(consumedItems, inventory, totalWasted),
     [consumedItems, inventory, totalWasted]
@@ -274,6 +283,7 @@ export default function RewardsScreenV2({
   );
   
   const [achievementFilter, setAchievementFilter] = React.useState('All');
+  
   const filteredAchievements = useMemo(() => {
     if (achievementFilter === 'All') return achievements;
     return achievements.filter(a => 
@@ -283,7 +293,7 @@ export default function RewardsScreenV2({
   }, [achievements, achievementFilter]);
   
   const progressToNext = nextLevel 
-    ? ((totalPoints - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints)) * 100
+    ? Math.min(100, Math.max(0, ((totalPoints - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints)) * 100))
     : 100;
 
   return (
@@ -291,6 +301,7 @@ export default function RewardsScreenV2({
       <div className="px-4 pt-6">
         <h1 className="text-2xl font-bold mb-6" style={{ color: colors.text }}>Rewards</h1>
 
+        {/* Level Card */}
         <div 
           className="p-6 rounded-2xl mb-6 relative overflow-hidden" 
           style={{ background: currentLevel.gradient }}
@@ -334,6 +345,7 @@ export default function RewardsScreenV2({
           )}
         </div>
 
+        {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="bg-white p-4 rounded-2xl border text-center" style={{ borderColor: colors.border }}>
             <div 
@@ -379,6 +391,7 @@ export default function RewardsScreenV2({
           </div>
         </div>
 
+        {/* Achievements Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold" style={{ color: colors.text }}>
             Achievements
@@ -388,6 +401,7 @@ export default function RewardsScreenV2({
           </button>
         </div>
 
+        {/* Filter Buttons */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
           {['All', 'Unlocked', 'Milestone', 'Performance', 'Consistency', 'Savings'].map((cat) => (
             <button 
@@ -405,9 +419,12 @@ export default function RewardsScreenV2({
           ))}
         </div>
 
+        {/* Achievements List */}
         <div className="space-y-3 mb-6">
           {filteredAchievements.map((achievement) => {
             const IconComponent = achievement.icon;
+            const rarityInfo = RARITY_CONFIG[achievement.rarity] || RARITY_CONFIG.common;
+            
             return (
               <div 
                 key={achievement.id}
@@ -420,12 +437,12 @@ export default function RewardsScreenV2({
               >
                 <div className="flex items-start gap-4">
                   <div 
-                    className="w-16 h-16 rounded-xl flex items-center justify-center" 
+                    className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" 
                     style={{ backgroundColor: achievement.bgColor }}
                   >
                     <IconComponent size={32} style={{ color: achievement.iconColor }} />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <div className="font-bold text-base mb-1" style={{ color: colors.text }}>
                       {achievement.name}
                     </div>
@@ -436,11 +453,11 @@ export default function RewardsScreenV2({
                       <span 
                         className="text-xs px-2 py-1 rounded font-medium" 
                         style={{ 
-                          backgroundColor: RARITY_CONFIG[achievement.rarity].bgColor,
-                          color: RARITY_CONFIG[achievement.rarity].color,
+                          backgroundColor: rarityInfo.bgColor,
+                          color: rarityInfo.color,
                         }}
                       >
-                        {RARITY_CONFIG[achievement.rarity].label}
+                        {rarityInfo.label}
                       </span>
                       <span className="text-sm font-bold" style={{ color: colors.secondary }}>
                         +{achievement.points} pts
@@ -452,7 +469,7 @@ export default function RewardsScreenV2({
                           <div 
                             className="h-2 rounded-full transition-all duration-500" 
                             style={{ 
-                              width: `${achievement.progress}%`, 
+                              width: `${Math.min(100, Math.max(0, achievement.progress))}%`, 
                               backgroundColor: colors.primary 
                             }} 
                           />
@@ -464,7 +481,7 @@ export default function RewardsScreenV2({
                     )}
                   </div>
                   {achievement.unlocked && (
-                    <button className="p-2 rounded-full" style={{ backgroundColor: colors.primaryLight }}>
+                    <button className="p-2 rounded-full flex-shrink-0" style={{ backgroundColor: colors.primaryLight }}>
                       <Share2 size={18} style={{ color: colors.primary }} />
                     </button>
                   )}

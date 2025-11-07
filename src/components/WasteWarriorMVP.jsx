@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AnalyticsScreen from './AnalyticsScreen';
 import SignUpScreen from './SignUpScreen'; // Adjust path if needed
-import RewardsScreenV2 from './RewardsScreenV2';
+import RewardsScreenTest from './RewardsScreenTest';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign } from 'lucide-react';
 
 const colors = {
@@ -513,7 +513,7 @@ export default function WasteWarriorMVP() {
         {activeScreen === 'dashboard' && <DashboardScreen />}
         {activeScreen === 'inventory' && <InventoryScreen />}
         {activeScreen === 'rewards' && (
-        <RewardsScreenV2
+        <RewardsScreenTest
           consumedItems={consumedItems}
           inventory={inventory}
           totalWasted={totalWasted}

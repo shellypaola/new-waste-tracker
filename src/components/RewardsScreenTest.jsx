@@ -1,17 +1,16 @@
 import React from 'react';
-import { Target } from 'lucide-react';
+import { Target, DollarSign, Leaf } from 'lucide-react';
 
-// Challenge definitions
+// Challenge definitions with Lucide icons
 const CHALLENGES = [
   {
     id: 'weekly_warrior',
     name: 'Weekly Warrior',
-    emoji: '💪',
+    icon: Target,
     description: 'Waste less than $15 this week',
     difficulty: 'beginner',
-    points: 200,
     duration: 7,
-    bgColor: '#DBEAFE',
+    gradient: 'linear-gradient(135deg, #DBEAFE 0%, #EEF2FF 100%)',
     iconColor: '#3B82F6',
     criteria: {
       type: 'waste_threshold',
@@ -22,12 +21,11 @@ const CHALLENGES = [
   {
     id: 'budget_boss',
     name: 'Budget Boss',
-    emoji: '🏆',
+    icon: DollarSign,
     description: 'Waste less than $10 this week',
     difficulty: 'intermediate',
-    points: 500,
     duration: 7,
-    bgColor: '#FEF3C7',
+    gradient: 'linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%)',
     iconColor: '#F59E0B',
     criteria: {
       type: 'waste_threshold',
@@ -38,12 +36,11 @@ const CHALLENGES = [
   {
     id: 'eco_champion',
     name: 'Eco Champion',
-    emoji: '🌍',
+    icon: Leaf,
     description: 'Prevent 100 items from being wasted',
     difficulty: 'epic',
-    points: 500,
     duration: 30,
-    bgColor: '#D1FAE5',
+    gradient: 'linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%)',
     iconColor: '#10B981',
     criteria: {
       type: 'items_saved',
@@ -54,9 +51,9 @@ const CHALLENGES = [
 ];
 
 const DIFFICULTY_LABELS = {
-  beginner: { text: 'Beginner', color: '#3B82F6', bg: '#EFF6FF' },
-  intermediate: { text: 'Intermediate', color: '#F59E0B', bg: '#FFFBEB' },
-  epic: { text: 'Epic', color: '#10B981', bg: '#ECFDF5' }
+  beginner: 'Beginner',
+  intermediate: 'Intermediate',
+  epic: 'Epic'
 };
 
 export default function RewardsScreenSimple({ 
@@ -69,11 +66,8 @@ export default function RewardsScreenSimple({
   onCancelChallenge,
   onCompleteChallenge
 }) {
-  // Track points silently in background (not displayed)
-  const totalPoints = completedChallenges.reduce((sum, c) => {
-    const challenge = CHALLENGES.find(ch => ch.id === c.id);
-    return sum + (challenge?.points || 0);
-  }, 0);
+  // Points tracked silently (200 for beginner, 500 for intermediate/epic)
+  // Not displayed in UI but stored for future tier system
   
   // Calculate progress for active challenge
   const getActiveProgress = () => {
@@ -143,17 +137,20 @@ export default function RewardsScreenSimple({
         {activeChallenge && activeProgress ? (
           <div className="mb-6">
             <div 
-              className="p-5 rounded-2xl bg-white"
-              style={{ border: `2px solid ${colors.primary}` }}
+              className="p-6 rounded-2xl bg-white"
+              style={{ border: `1px solid ${colors.border}` }}
             >
-              <div className="flex items-start gap-4 mb-4">
+              <div className="flex items-start gap-4 mb-5">
                 <div 
-                  className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ 
-                    backgroundColor: CHALLENGES.find(c => c.id === activeChallenge.id)?.bgColor 
+                    background: CHALLENGES.find(c => c.id === activeChallenge.id)?.gradient 
                   }}
                 >
-                  {CHALLENGES.find(c => c.id === activeChallenge.id)?.emoji}
+                  {React.createElement(
+                    CHALLENGES.find(c => c.id === activeChallenge.id)?.icon,
+                    { size: 24, style: { color: CHALLENGES.find(c => c.id === activeChallenge.id)?.iconColor } }
+                  )}
                 </div>
                 <div className="flex-1">
                   <div className="font-bold text-lg mb-1" style={{ color: colors.text }}>
@@ -162,54 +159,54 @@ export default function RewardsScreenSimple({
                   <div className="text-sm mb-2" style={{ color: colors.textSecondary }}>
                     {CHALLENGES.find(c => c.id === activeChallenge.id)?.description}
                   </div>
-                  <div className="text-xs font-medium" style={{ color: colors.textLight }}>
+                  <div className="text-xs" style={{ color: colors.textLight }}>
                     {daysRemaining} {daysRemaining === 1 ? 'day' : 'days'} remaining
                   </div>
                 </div>
               </div>
 
               {/* Progress Bar */}
-              <div className="mb-3">
+              <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium" style={{ color: colors.text }}>
                     Progress
                   </span>
-                  <span className="text-sm font-bold" style={{ 
+                  <span className="text-sm font-semibold" style={{ 
                     color: activeProgress.isOnTrack ? colors.fresh : colors.warning 
                   }}>
                     {activeProgress.displayText}
                   </span>
                 </div>
-                <div className="w-full h-3 rounded-full" style={{ backgroundColor: colors.bgGray }}>
+                <div className="w-full h-2 rounded-full" style={{ backgroundColor: colors.bgGray }}>
                   <div 
-                    className="h-3 rounded-full transition-all duration-500"
+                    className="h-2 rounded-full transition-all duration-500"
                     style={{ 
                       width: `${activeProgress.percentage}%`,
                       backgroundColor: activeProgress.isOnTrack ? colors.fresh : colors.warning
                     }}
                   />
                 </div>
-                <div className="text-xs mt-1" style={{ color: colors.textSecondary }}>
+                <div className="text-xs mt-1.5" style={{ color: colors.textLight }}>
                   {Math.round(activeProgress.percentage)}% complete
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 mt-4">
+              <div className="flex gap-2 justify-end">
                 <button
                   onClick={() => onCancelChallenge && onCancelChallenge()}
-                  className="flex-1 py-2.5 rounded-lg font-medium text-sm"
-                  style={{ backgroundColor: colors.bgGray, color: colors.text }}
+                  className="px-4 py-2 rounded-lg text-sm font-medium"
+                  style={{ backgroundColor: colors.bgGray, color: colors.textSecondary }}
                 >
                   Cancel
                 </button>
                 {activeProgress.percentage >= 100 && (
                   <button
                     onClick={() => onCompleteChallenge && onCompleteChallenge(activeChallenge)}
-                    className="flex-1 py-2.5 rounded-lg font-medium text-white text-sm"
+                    className="px-5 py-2 rounded-lg text-white text-sm font-medium"
                     style={{ backgroundColor: colors.fresh }}
                   >
-                    Complete Challenge 🎉
+                    Complete
                   </button>
                 )}
               </div>
@@ -228,23 +225,23 @@ export default function RewardsScreenSimple({
           /* Empty State - No Active Challenge */
           <div className="mb-6">
             <div 
-              className="p-6 rounded-2xl bg-white flex flex-col items-center"
+              className="p-8 rounded-2xl bg-white flex flex-col items-center"
               style={{ border: `1px solid ${colors.border}` }}
             >
               <div 
-                className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4"
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
                 style={{ background: 'linear-gradient(135deg, #DBEAFE 0%, #EEF2FF 100%)' }}
               >
-                <Target size={40} style={{ color: colors.primary }} />
+                <Target size={32} style={{ color: colors.primary }} />
               </div>
-              <h3 className="text-lg font-bold mb-2" style={{ color: colors.text }}>
+              <h3 className="text-base font-semibold mb-2" style={{ color: colors.text }}>
                 No Active Challenge
               </h3>
-              <p className="text-sm text-center mb-4" style={{ color: colors.textSecondary }}>
-                Start a challenge below to earn rewards and reduce waste!
+              <p className="text-sm text-center mb-0" style={{ color: colors.textSecondary, maxWidth: '280px' }}>
+                Start a challenge below to track your progress
               </p>
               {completedChallenges.length > 0 && (
-                <div className="text-sm" style={{ color: colors.textSecondary }}>
+                <div className="text-sm mt-4 pt-4 border-t" style={{ color: colors.textSecondary, borderColor: colors.border, width: '100%', textAlign: 'center' }}>
                   {completedChallenges.length} {completedChallenges.length === 1 ? 'challenge' : 'challenges'} completed
                 </div>
               )}
@@ -254,13 +251,13 @@ export default function RewardsScreenSimple({
 
         {/* Available Challenges */}
         <div className="mb-6">
-          <h2 className="text-lg font-bold mb-3" style={{ color: colors.text }}>
+          <h2 className="text-lg font-bold mb-4" style={{ color: colors.text }}>
             {activeChallenge ? 'More Challenges' : 'Start a Challenge'}
           </h2>
           
           <div className="space-y-3">
             {availableChallenges.map((challenge) => {
-              const difficultyInfo = DIFFICULTY_LABELS[challenge.difficulty];
+              const IconComponent = challenge.icon;
               
               return (
                 <div
@@ -268,53 +265,42 @@ export default function RewardsScreenSimple({
                   className="p-5 rounded-2xl bg-white"
                   style={{ border: `1px solid ${colors.border}` }}
                 >
-                  <div className="flex items-start gap-4 mb-4">
+                  <div className="flex items-start gap-4">
                     <div 
-                      className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl"
-                      style={{ backgroundColor: challenge.bgColor }}
+                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: challenge.gradient }}
                     >
-                      {challenge.emoji}
+                      <IconComponent size={24} style={{ color: challenge.iconColor }} />
                     </div>
                     <div className="flex-1">
-                      <div className="font-bold text-base mb-1" style={{ color: colors.text }}>
+                      <div className="font-semibold text-base mb-1" style={{ color: colors.text }}>
                         {challenge.name}
                       </div>
-                      <div className="text-sm mb-2" style={{ color: colors.textSecondary }}>
+                      <div className="text-sm mb-3" style={{ color: colors.textSecondary }}>
                         {challenge.description}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span 
-                          className="text-xs px-2 py-1 rounded font-medium"
-                          style={{ 
-                            backgroundColor: difficultyInfo.bg,
-                            color: difficultyInfo.color
-                          }}
-                        >
-                          {difficultyInfo.text}
-                        </span>
-                        <span className="text-xs" style={{ color: colors.textLight }}>
-                          {challenge.duration} days
-                        </span>
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs" style={{ color: colors.textLight }}>
+                          {DIFFICULTY_LABELS[challenge.difficulty]} · {challenge.duration} days
+                        </div>
+                        {!activeChallenge && (
+                          <button
+                            onClick={() => onStartChallenge && onStartChallenge(challenge)}
+                            className="px-4 py-1.5 rounded-lg text-white text-sm font-medium"
+                            style={{ backgroundColor: colors.primary }}
+                          >
+                            Start
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
-
-                  {!activeChallenge && (
-                    <button
-                      onClick={() => onStartChallenge && onStartChallenge(challenge)}
-                      className="w-full py-2.5 rounded-lg font-medium text-white text-sm"
-                      style={{ backgroundColor: challenge.iconColor }}
-                    >
-                      Start Challenge
-                    </button>
-                  )}
                   
                   {activeChallenge && (
-                    <div 
-                      className="w-full py-2.5 rounded-lg font-medium text-sm text-center"
-                      style={{ backgroundColor: colors.bgGray, color: colors.textSecondary }}
-                    >
-                      Complete current challenge first
+                    <div className="mt-3 pt-3 border-t text-center">
+                      <span className="text-xs" style={{ color: colors.textLight }}>
+                        Complete current challenge first
+                      </span>
                     </div>
                   )}
                 </div>

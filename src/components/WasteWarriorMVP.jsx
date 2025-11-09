@@ -513,7 +513,7 @@ export default function WasteWarriorMVP() {
         {activeScreen === 'dashboard' && <DashboardScreen />}
         {activeScreen === 'inventory' && <InventoryScreen />}
         {activeScreen === 'rewards' && (
-        <RewardsScreenTest
+        <RewardsScreenProd
           consumedItems={consumedItems}
           inventory={inventory}
           totalWasted={totalWasted}

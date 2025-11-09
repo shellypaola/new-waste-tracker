@@ -1,5 +1,5 @@
 import React from 'react';
-import { Target, DollarSign, Leaf, Zap } from 'lucide-react';
+import { Target, DollarSign, Leaf, Zap, Award, Calendar } from 'lucide-react';
 
 // Challenge definitions with vibrant styling
 const CHALLENGES = [
@@ -263,7 +263,7 @@ export default function RewardsScreenExciting({
                         boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)'
                       }}
                     >
-                      🎉 Complete Challenge
+                      Complete Challenge
                     </button>
                   )}
                 </div>
@@ -272,13 +272,13 @@ export default function RewardsScreenExciting({
             
             {completedChallenges.length > 0 && (
               <div className="mt-3 text-center">
-                <span className="text-sm font-medium px-3 py-1 rounded-full inline-block"
+                <span className="text-sm font-medium px-3 py-1 rounded-full inline-flex items-center gap-1.5"
                   style={{ 
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
                     color: colors.fresh 
                   }}
                 >
-                  ✨ {completedChallenges.length} {completedChallenges.length === 1 ? 'challenge' : 'challenges'} completed
+                  <Award size={14} /> {completedChallenges.length} {completedChallenges.length === 1 ? 'challenge' : 'challenges'} completed
                 </span>
               </div>
             )}
@@ -309,11 +309,11 @@ export default function RewardsScreenExciting({
                   Ready for a Challenge?
                 </h3>
                 <p className="text-sm text-center mb-0" style={{ color: colors.textSecondary, maxWidth: '280px' }}>
-                  Pick your first challenge and start your journey to zero waste! 🚀
+                  Pick your first challenge and start your journey to zero waste!
                 </p>
                 {completedChallenges.length > 0 && (
-                  <div className="text-sm mt-4 pt-4 border-t" style={{ color: colors.fresh, borderColor: 'rgba(0,0,0,0.1)', width: '100%', textAlign: 'center' }}>
-                    ✨ {completedChallenges.length} {completedChallenges.length === 1 ? 'challenge' : 'challenges'} completed
+                  <div className="text-sm mt-4 pt-4 border-t flex items-center justify-center gap-1.5" style={{ color: colors.fresh, borderColor: 'rgba(0,0,0,0.1)', width: '100%' }}>
+                    <Award size={14} /> {completedChallenges.length} {completedChallenges.length === 1 ? 'challenge' : 'challenges'} completed
                   </div>
                 )}
               </div>
@@ -369,8 +369,8 @@ export default function RewardsScreenExciting({
                         {challenge.description}
                       </div>
                       <div className="flex items-center justify-between">
-                        <div className="text-xs font-medium" style={{ color: colors.textLight }}>
-                          📅 {challenge.duration} days
+                        <div className="text-xs font-medium flex items-center gap-1" style={{ color: colors.textLight }}>
+                          <Calendar size={12} /> {challenge.duration} days
                         </div>
                         {!activeChallenge && (
                           <button

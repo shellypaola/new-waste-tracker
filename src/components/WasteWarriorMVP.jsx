@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AnalyticsScreen from './AnalyticsScreen';
 import SignUpScreen from './SignUpScreen'; // Adjust path if needed
-import RewardsScreenTest from './RewardsScreenTest';
+import RewardsScreenProd from './RewardsScreenProd';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign } from 'lucide-react';
 
 const colors = {

@@ -1,172 +1,8 @@
 import React from 'react';
-import { Target, DollarSign, Leaf, Zap, Award, Calendar } from 'lucide-react';
+import { Target, DollarSign, Leaf, Zap, Award, Calendar, CheckCircle, XCircle } from 'lucide-react';
 
-// ============================================
-// COLOR SCHEME OPTIONS - PICK YOUR FAVORITE!
-// ============================================
-
-// OPTION 1: Purple, Orange, Teal
-const COLOR_SCHEME_1 = [
-  {
-    id: 'weekly_warrior',
-    name: 'Weekly Warrior',
-    icon: Target,
-    description: 'Waste less than $15 this week',
-    difficulty: 'beginner',
-    duration: 7,
-    cardGradient: 'linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%)',
-    iconGradient: 'linear-gradient(135deg, #A855F7 0%, #9333EA 100%)',
-    accentColor: '#A855F7',
-    criteria: { type: 'waste_threshold', threshold: 15, period: 'week' }
-  },
-  {
-    id: 'budget_boss',
-    name: 'Budget Boss',
-    icon: DollarSign,
-    description: 'Waste less than $10 this week',
-    difficulty: 'intermediate',
-    duration: 7,
-    cardGradient: 'linear-gradient(135deg, #FFEDD5 0%, #FED7AA 100%)',
-    iconGradient: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
-    accentColor: '#F97316',
-    criteria: { type: 'waste_threshold', threshold: 10, period: 'week' }
-  },
-  {
-    id: 'eco_champion',
-    name: 'Eco Champion',
-    icon: Leaf,
-    description: 'Prevent 100 items from being wasted',
-    difficulty: 'epic',
-    duration: 30,
-    cardGradient: 'linear-gradient(135deg, #CCFBF1 0%, #99F6E4 100%)',
-    iconGradient: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)',
-    accentColor: '#14B8A6',
-    criteria: { type: 'items_saved', target: 100, period: 'ongoing' }
-  }
-];
-
-// OPTION 2: Pink, Amber, Emerald
-const COLOR_SCHEME_2 = [
-  {
-    id: 'weekly_warrior',
-    name: 'Weekly Warrior',
-    icon: Target,
-    description: 'Waste less than $15 this week',
-    difficulty: 'beginner',
-    duration: 7,
-    cardGradient: 'linear-gradient(135deg, #FCE7F3 0%, #FBCFE8 100%)',
-    iconGradient: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)',
-    accentColor: '#EC4899',
-    criteria: { type: 'waste_threshold', threshold: 15, period: 'week' }
-  },
-  {
-    id: 'budget_boss',
-    name: 'Budget Boss',
-    icon: DollarSign,
-    description: 'Waste less than $10 this week',
-    difficulty: 'intermediate',
-    duration: 7,
-    cardGradient: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
-    iconGradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-    accentColor: '#F59E0B',
-    criteria: { type: 'waste_threshold', threshold: 10, period: 'week' }
-  },
-  {
-    id: 'eco_champion',
-    name: 'Eco Champion',
-    icon: Leaf,
-    description: 'Prevent 100 items from being wasted',
-    difficulty: 'epic',
-    duration: 30,
-    cardGradient: 'linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%)',
-    iconGradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-    accentColor: '#10B981',
-    criteria: { type: 'items_saved', target: 100, period: 'ongoing' }
-  }
-];
-
-// OPTION 3: Indigo, Coral, Lime
-const COLOR_SCHEME_3 = [
-  {
-    id: 'weekly_warrior',
-    name: 'Weekly Warrior',
-    icon: Target,
-    description: 'Waste less than $15 this week',
-    difficulty: 'beginner',
-    duration: 7,
-    cardGradient: 'linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%)',
-    iconGradient: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
-    accentColor: '#6366F1',
-    criteria: { type: 'waste_threshold', threshold: 15, period: 'week' }
-  },
-  {
-    id: 'budget_boss',
-    name: 'Budget Boss',
-    icon: DollarSign,
-    description: 'Waste less than $10 this week',
-    difficulty: 'intermediate',
-    duration: 7,
-    cardGradient: 'linear-gradient(135deg, #FED7D7 0%, #FCA5A5 100%)',
-    iconGradient: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
-    accentColor: '#EF4444',
-    criteria: { type: 'waste_threshold', threshold: 10, period: 'week' }
-  },
-  {
-    id: 'eco_champion',
-    name: 'Eco Champion',
-    icon: Leaf,
-    description: 'Prevent 100 items from being wasted',
-    difficulty: 'epic',
-    duration: 30,
-    cardGradient: 'linear-gradient(135deg, #ECFCCB 0%, #D9F99D 100%)',
-    iconGradient: 'linear-gradient(135deg, #84CC16 0%, #65A30D 100%)',
-    accentColor: '#84CC16',
-    criteria: { type: 'items_saved', target: 100, period: 'ongoing' }
-  }
-];
-
-// OPTION 4: Rose, Gold, Sky
-const COLOR_SCHEME_4 = [
-  {
-    id: 'weekly_warrior',
-    name: 'Weekly Warrior',
-    icon: Target,
-    description: 'Waste less than $15 this week',
-    difficulty: 'beginner',
-    duration: 7,
-    cardGradient: 'linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%)',
-    iconGradient: 'linear-gradient(135deg, #F43F5E 0%, #E11D48 100%)',
-    accentColor: '#F43F5E',
-    criteria: { type: 'waste_threshold', threshold: 15, period: 'week' }
-  },
-  {
-    id: 'budget_boss',
-    name: 'Budget Boss',
-    icon: DollarSign,
-    description: 'Waste less than $10 this week',
-    difficulty: 'intermediate',
-    duration: 7,
-    cardGradient: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
-    iconGradient: 'linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%)',
-    accentColor: '#FBBF24',
-    criteria: { type: 'waste_threshold', threshold: 10, period: 'week' }
-  },
-  {
-    id: 'eco_champion',
-    name: 'Eco Champion',
-    icon: Leaf,
-    description: 'Prevent 100 items from being wasted',
-    difficulty: 'epic',
-    duration: 30,
-    cardGradient: 'linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%)',
-    iconGradient: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)',
-    accentColor: '#0EA5E9',
-    criteria: { type: 'items_saved', target: 100, period: 'ongoing' }
-  }
-];
-
-// OPTION 5: Violet, Orange, Cyan (My Recommendation!)
-const COLOR_SCHEME_5 = [
+// Color Scheme 5: Violet, Orange, Cyan
+const CHALLENGES = [
   {
     id: 'weekly_warrior',
     name: 'Weekly Warrior',
@@ -205,11 +41,6 @@ const COLOR_SCHEME_5 = [
   }
 ];
 
-// ============================================
-// SELECT YOUR COLOR SCHEME HERE:
-// ============================================
-const CHALLENGES = COLOR_SCHEME_5; // Change this number to try different schemes!
-
 const DIFFICULTY_LABELS = {
   beginner: 'Beginner',
   intermediate: 'Intermediate',
@@ -222,10 +53,10 @@ const DIFFICULTY_BADGES = {
   epic: { bg: '#CFFAFE', text: '#155E75' }
 };
 
-export default function RewardsScreenColorful({ 
+export default function RewardsScreen({ 
   colors,
   activeChallenge = null,
-  completedChallenges = [],
+  challengeHistory = [],
   thisWeekWaste = 0,
   itemsSavedFromExpiry = 0,
   onStartChallenge,
@@ -250,7 +81,8 @@ export default function RewardsScreenColorful({
         target: target,
         percentage: percentage,
         isOnTrack: isOnTrack,
-        displayText: `$${current.toFixed(2)} / $${target}`
+        displayText: `$${current.toFixed(2)} / $${target}`,
+        isSuccess: current <= target
       };
     }
     
@@ -258,14 +90,14 @@ export default function RewardsScreenColorful({
       const current = itemsSavedFromExpiry;
       const target = challenge.criteria.target;
       const percentage = Math.min(100, (current / target) * 100);
-      const isComplete = current >= target;
       
       return {
         current: current,
         target: target,
         percentage: percentage,
         isOnTrack: current >= target * 0.5,
-        displayText: `${current} / ${target} items`
+        displayText: `${current} / ${target} items`,
+        isSuccess: current >= target
       };
     }
     
@@ -284,10 +116,16 @@ export default function RewardsScreenColorful({
   };
   
   const daysRemaining = getDaysRemaining();
+  const challengeComplete = daysRemaining === 0;
   
   const availableChallenges = CHALLENGES.filter(
     c => !activeChallenge || c.id !== activeChallenge.id
   );
+
+  // Calculate stats
+  const totalCompleted = challengeHistory.length;
+  const totalSuccessful = challengeHistory.filter(c => c.successful).length;
+  const successRate = totalCompleted > 0 ? Math.round((totalSuccessful / totalCompleted) * 100) : 0;
 
   return (
     <div className="h-full overflow-y-auto pb-24" style={{ 
@@ -298,6 +136,38 @@ export default function RewardsScreenColorful({
         <h1 className="text-2xl font-bold mb-6" style={{ color: colors.text }}>
           Rewards
         </h1>
+
+        {/* Stats Summary */}
+        {totalCompleted > 0 && (
+          <div className="mb-4 p-4 bg-white rounded-2xl" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Award size={20} style={{ color: colors.fresh }} />
+                <span className="text-sm font-semibold" style={{ color: colors.text }}>
+                  {totalCompleted} Challenges Completed
+                </span>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-bold" style={{ color: colors.fresh }}>
+                  {successRate}%
+                </div>
+                <div className="text-xs" style={{ color: colors.textLight }}>
+                  Success Rate
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 flex items-center gap-4 text-xs">
+              <div className="flex items-center gap-1">
+                <CheckCircle size={14} style={{ color: colors.fresh }} />
+                <span style={{ color: colors.textSecondary }}>{totalSuccessful} Successful</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <XCircle size={14} style={{ color: colors.textLight }} />
+                <span style={{ color: colors.textSecondary }}>{totalCompleted - totalSuccessful} Not Met</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Active Challenge Section */}
         {activeChallenge && activeProgress ? (
@@ -387,7 +257,7 @@ export default function RewardsScreenColorful({
                     </div>
                     <div className="flex items-center justify-between mt-2">
                       <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>
-                        {Math.round(activeProgress.percentage)}% complete
+                        {Math.round(activeProgress.percentage)}% {activeProgress.isOnTrack ? '✓ on track' : '⚠ over budget'}
                       </span>
                       <span className="text-xs font-medium" style={{ color: colors.textLight }}>
                         {daysRemaining} {daysRemaining === 1 ? 'day' : 'days'} left
@@ -409,68 +279,63 @@ export default function RewardsScreenColorful({
                   >
                     Cancel
                   </button>
-                  {activeProgress.percentage >= 100 && (
-                    <button
-                      onClick={() => onCompleteChallenge && onCompleteChallenge(activeChallenge)}
-                      className="flex-1 px-5 py-3 rounded-xl text-white text-sm font-bold transition-all active:scale-95"
-                      style={{ 
-                        background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)'
-                      }}
-                    >
-                      Complete Challenge
-                    </button>
+                  {challengeComplete && (
+                    <>
+                      {activeProgress.isSuccess ? (
+                        <button
+                          onClick={() => onCompleteChallenge && onCompleteChallenge(true)}
+                          className="flex-1 px-5 py-3 rounded-xl text-white text-sm font-bold transition-all active:scale-95"
+                          style={{ 
+                            background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)'
+                          }}
+                        >
+                          Complete - Success!
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => onCompleteChallenge && onCompleteChallenge(false)}
+                          className="flex-1 px-5 py-3 rounded-xl text-white text-sm font-bold transition-all active:scale-95"
+                          style={{ 
+                            background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                            boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)'
+                          }}
+                        >
+                          Complete - Try Again
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
             </div>
-            
-            {completedChallenges.length > 0 && (
-              <div className="mt-3 text-center">
-                <span className="text-sm font-medium px-3 py-1 rounded-full inline-flex items-center gap-1.5"
-                  style={{ 
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    color: colors.fresh 
-                  }}
-                >
-                  <Award size={14} /> {completedChallenges.length} {completedChallenges.length === 1 ? 'challenge' : 'challenges'} completed
-                </span>
-              </div>
-            )}
           </div>
         ) : (
-          /* Empty State - Now with different color! */
+          /* Empty State */
           <div className="mb-6">
             <div 
               className="p-8 rounded-3xl flex flex-col items-center relative overflow-hidden"
               style={{ 
-                background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 50%, #FBBF24 100%)',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.07)'
+                background: '#FFFFFF',
+                border: '1px solid #E5E7EB',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
               }}
             >
-              <div 
-                className="absolute top-0 right-0 w-40 h-40 opacity-20 rounded-full blur-3xl"
-                style={{ background: '#F59E0B' }}
-              />
-              
               <div className="relative">
                 <div 
-                  className="w-24 h-24 rounded-3xl flex items-center justify-center mb-4 shadow-xl"
-                  style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)' }}
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4"
+                  style={{ 
+                    background: '#F3F4F6'
+                  }}
                 >
-                  <Target size={48} color="white" strokeWidth={2.5} />
+                  <Award size={40} style={{ color: '#9CA3AF' }} strokeWidth={2} />
                 </div>
                 <h3 className="text-xl font-bold mb-2 text-center" style={{ color: colors.text }}>
                   Ready for a Challenge?
                 </h3>
-                <p className="text-sm text-center mb-0" style={{ color: colors.text, opacity: 0.8, maxWidth: '280px' }}>
+                <p className="text-sm text-center mb-0" style={{ color: colors.textSecondary, maxWidth: '280px' }}>
                   Pick your first challenge and start your journey to zero waste!
                 </p>
-                {completedChallenges.length > 0 && (
-                  <div className="text-sm mt-4 pt-4 border-t flex items-center justify-center gap-1.5" style={{ color: colors.fresh, borderColor: 'rgba(0,0,0,0.1)', width: '100%' }}>
-                    <Award size={14} /> {completedChallenges.length} {completedChallenges.length === 1 ? 'challenge' : 'challenges'} completed
-                  </div>
-                )}
               </div>
             </div>
           </div>

@@ -530,12 +530,7 @@ export default function WasteWarriorMVP() {
         />
       )}
       </div>
-      // Modern Apple-Style Bottom Navigation
-// Replace your current bottom nav with this code
-
-      {/* Modern Apple-Style Bottom Navigation */}
       <div className="relative">
-        {/* Floating Add Button */}
         <div className="absolute left-1/2 -translate-x-1/2 -top-8 z-10">
           <button 
             onClick={() => setShowAddItemModal(true)} 
@@ -549,7 +544,6 @@ export default function WasteWarriorMVP() {
           </button>
         </div>
       
-        {/* Tab Bar Container */}
         <div 
           className="border-t" 
           style={{ 
@@ -560,7 +554,6 @@ export default function WasteWarriorMVP() {
           }}
         >
           <div className="flex items-center justify-around px-2 pt-3 pb-2">
-            {/* Home Tab */}
             <button 
               onClick={() => setActiveScreen('dashboard')} 
               className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
@@ -584,7 +577,6 @@ export default function WasteWarriorMVP() {
               </span>
             </button>
       
-            {/* Inventory Tab */}
             <button 
               onClick={() => setActiveScreen('inventory')} 
               className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
@@ -608,10 +600,8 @@ export default function WasteWarriorMVP() {
               </span>
             </button>
       
-            {/* Spacer for floating button */}
             <div className="w-16" />
       
-            {/* Rewards Tab */}
             <button 
               onClick={() => setActiveScreen('rewards')} 
               className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
@@ -635,7 +625,6 @@ export default function WasteWarriorMVP() {
               </span>
             </button>
       
-            {/* Stats Tab */}
             <button 
               onClick={() => setActiveScreen('analytics')} 
               className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"

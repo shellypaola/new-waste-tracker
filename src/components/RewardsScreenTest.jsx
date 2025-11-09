@@ -439,7 +439,7 @@ export default function RewardsScreenColorful({
             )}
           </div>
         ) : (
-          /* Empty State - Now with different color! */}
+          /* Empty State - Now with different color! */
           <div className="mb-6">
             <div 
               className="p-8 rounded-3xl flex flex-col items-center relative overflow-hidden"

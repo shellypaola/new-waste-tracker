@@ -537,7 +537,7 @@ export default function WasteWarriorMVP() {
             className="w-16 h-16 rounded-full shadow-xl flex items-center justify-center transition-transform active:scale-95"
             style={{ 
               backgroundColor: colors.primary,
-              boxShadow: '0 8px 24px rgba(59, 130, 246, 0.4)'
+              boxShadow: '0 8px 24px rgba(59, 130, 246, 0.5)'
             }}
           >
             <Plus size={32} strokeWidth={2.5} color="white" />
@@ -545,32 +545,33 @@ export default function WasteWarriorMVP() {
         </div>
       
         <div 
-          className="border-t" 
           style={{ 
-            borderColor: 'rgba(0,0,0,0.05)',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)'
+            borderTop: '0.5px solid rgba(255, 255, 255, 0.2)',
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(40px)',
+            WebkitBackdropFilter: 'blur(40px)',
+            boxShadow: '0 -1px 20px rgba(0, 0, 0, 0.08)'
           }}
         >
-          <div className="flex items-center justify-around px-2 pt-3 pb-2">
+          <div className="flex items-center justify-around px-3 pt-2 pb-2">
             <button 
               onClick={() => setActiveScreen('dashboard')} 
-              className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
+              className="flex flex-col items-center gap-1 py-2 px-5 rounded-full transition-all"
               style={{ 
-                backgroundColor: activeScreen === 'dashboard' ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
-                minWidth: '70px'
+                backgroundColor: activeScreen === 'dashboard' ? 'rgba(59, 130, 246, 0.85)' : 'transparent',
+                minWidth: '65px',
+                backdropFilter: activeScreen === 'dashboard' ? 'blur(10px)' : 'none'
               }}
             >
               <Home 
-                size={26} 
-                strokeWidth={activeScreen === 'dashboard' ? 2.5 : 2} 
-                style={{ color: activeScreen === 'dashboard' ? colors.primary : '#8E8E93' }} 
+                size={24} 
+                strokeWidth={2.5} 
+                style={{ color: activeScreen === 'dashboard' ? 'white' : '#6B7280' }} 
               />
               <span 
-                className="text-[10px] font-medium"
+                className="text-[10px] font-semibold"
                 style={{ 
-                  color: activeScreen === 'dashboard' ? colors.primary : '#8E8E93'
+                  color: activeScreen === 'dashboard' ? 'white' : '#6B7280'
                 }}
               >
                 Home
@@ -579,21 +580,22 @@ export default function WasteWarriorMVP() {
       
             <button 
               onClick={() => setActiveScreen('inventory')} 
-              className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
+              className="flex flex-col items-center gap-1 py-2 px-5 rounded-full transition-all"
               style={{ 
-                backgroundColor: activeScreen === 'inventory' ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
-                minWidth: '70px'
+                backgroundColor: activeScreen === 'inventory' ? 'rgba(59, 130, 246, 0.85)' : 'transparent',
+                minWidth: '65px',
+                backdropFilter: activeScreen === 'inventory' ? 'blur(10px)' : 'none'
               }}
             >
               <Package 
-                size={26} 
-                strokeWidth={activeScreen === 'inventory' ? 2.5 : 2} 
-                style={{ color: activeScreen === 'inventory' ? colors.primary : '#8E8E93' }} 
+                size={24} 
+                strokeWidth={2.5} 
+                style={{ color: activeScreen === 'inventory' ? 'white' : '#6B7280' }} 
               />
               <span 
-                className="text-[10px] font-medium"
+                className="text-[10px] font-semibold"
                 style={{ 
-                  color: activeScreen === 'inventory' ? colors.primary : '#8E8E93'
+                  color: activeScreen === 'inventory' ? 'white' : '#6B7280'
                 }}
               >
                 Inventory
@@ -604,21 +606,22 @@ export default function WasteWarriorMVP() {
       
             <button 
               onClick={() => setActiveScreen('rewards')} 
-              className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
+              className="flex flex-col items-center gap-1 py-2 px-5 rounded-full transition-all"
               style={{ 
-                backgroundColor: activeScreen === 'rewards' ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
-                minWidth: '70px'
+                backgroundColor: activeScreen === 'rewards' ? 'rgba(59, 130, 246, 0.85)' : 'transparent',
+                minWidth: '65px',
+                backdropFilter: activeScreen === 'rewards' ? 'blur(10px)' : 'none'
               }}
             >
               <Trophy 
-                size={26} 
-                strokeWidth={activeScreen === 'rewards' ? 2.5 : 2} 
-                style={{ color: activeScreen === 'rewards' ? colors.primary : '#8E8E93' }} 
+                size={24} 
+                strokeWidth={2.5} 
+                style={{ color: activeScreen === 'rewards' ? 'white' : '#6B7280' }} 
               />
               <span 
-                className="text-[10px] font-medium"
+                className="text-[10px] font-semibold"
                 style={{ 
-                  color: activeScreen === 'rewards' ? colors.primary : '#8E8E93'
+                  color: activeScreen === 'rewards' ? 'white' : '#6B7280'
                 }}
               >
                 Rewards
@@ -627,21 +630,22 @@ export default function WasteWarriorMVP() {
       
             <button 
               onClick={() => setActiveScreen('analytics')} 
-              className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
+              className="flex flex-col items-center gap-1 py-2 px-5 rounded-full transition-all"
               style={{ 
-                backgroundColor: activeScreen === 'analytics' ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
-                minWidth: '70px'
+                backgroundColor: activeScreen === 'analytics' ? 'rgba(59, 130, 246, 0.85)' : 'transparent',
+                minWidth: '65px',
+                backdropFilter: activeScreen === 'analytics' ? 'blur(10px)' : 'none'
               }}
             >
               <BarChart3 
-                size={26} 
-                strokeWidth={activeScreen === 'analytics' ? 2.5 : 2} 
-                style={{ color: activeScreen === 'analytics' ? colors.primary : '#8E8E93' }} 
+                size={24} 
+                strokeWidth={2.5} 
+                style={{ color: activeScreen === 'analytics' ? 'white' : '#6B7280' }} 
               />
               <span 
-                className="text-[10px] font-medium"
+                className="text-[10px] font-semibold"
                 style={{ 
-                  color: activeScreen === 'analytics' ? colors.primary : '#8E8E93'
+                  color: activeScreen === 'analytics' ? 'white' : '#6B7280'
                 }}
               >
                 Stats

@@ -166,7 +166,7 @@ const COLOR_SCHEME_4 = [
 ];
 
 // OPTION 5: Violet, Orange, Cyan (My Recommendation!)
-const COLOR_SCHEME_2 = [
+const COLOR_SCHEME_5 = [
   {
     id: 'weekly_warrior',
     name: 'Weekly Warrior',
@@ -208,7 +208,7 @@ const COLOR_SCHEME_2 = [
 // ============================================
 // SELECT YOUR COLOR SCHEME HERE:
 // ============================================
-const CHALLENGES = COLOR_SCHEME_1; // Change this number to try different schemes!
+const CHALLENGES = COLOR_SCHEME_2; // Change this number to try different schemes!
 
 const DIFFICULTY_LABELS = {
   beginner: 'Beginner',

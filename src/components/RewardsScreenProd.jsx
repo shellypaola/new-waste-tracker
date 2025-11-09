@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Target, DollarSign, Leaf, Zap, Award, Calendar, CheckCircle, XCircle } from 'lucide-react';
 
 // Color Scheme 5: Violet, Orange, Cyan
@@ -55,14 +55,33 @@ const DIFFICULTY_BADGES = {
 
 export default function RewardsScreen({ 
   colors,
-  activeChallenge = null,
-  challengeHistory = [],
   thisWeekWaste = 0,
-  itemsSavedFromExpiry = 0,
-  onStartChallenge,
-  onCancelChallenge,
-  onCompleteChallenge
+  itemsSavedFromExpiry = 0
 }) {
+  // Load state from localStorage on mount
+  const [activeChallenge, setActiveChallenge] = useState(() => {
+    const saved = localStorage.getItem('wasteWarrior_activeChallenge');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const [challengeHistory, setChallengeHistory] = useState(() => {
+    const saved = localStorage.getItem('wasteWarrior_challengeHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Save to localStorage whenever state changes
+  useEffect(() => {
+    if (activeChallenge) {
+      localStorage.setItem('wasteWarrior_activeChallenge', JSON.stringify(activeChallenge));
+    } else {
+      localStorage.removeItem('wasteWarrior_activeChallenge');
+    }
+  }, [activeChallenge]);
+
+  useEffect(() => {
+    localStorage.setItem('wasteWarrior_challengeHistory', JSON.stringify(challengeHistory));
+  }, [challengeHistory]);
+
   // Calculate progress for active challenge
   const getActiveProgress = () => {
     if (!activeChallenge) return null;
@@ -126,6 +145,31 @@ export default function RewardsScreen({
   const totalCompleted = challengeHistory.length;
   const totalSuccessful = challengeHistory.filter(c => c.successful).length;
   const successRate = totalCompleted > 0 ? Math.round((totalSuccessful / totalCompleted) * 100) : 0;
+
+  // Event handlers
+  const handleStartChallenge = (challenge) => {
+    setActiveChallenge({
+      id: challenge.id,
+      startDate: new Date().toISOString()
+    });
+  };
+
+  const handleCancelChallenge = () => {
+    setActiveChallenge(null);
+  };
+
+  const handleCompleteChallenge = (successful) => {
+    const newEntry = {
+      id: activeChallenge.id,
+      completed: true,
+      successful: successful,
+      completedDate: new Date().toISOString(),
+      finalWaste: thisWeekWaste,
+      finalItemsSaved: itemsSavedFromExpiry
+    };
+    setChallengeHistory([...challengeHistory, newEntry]);
+    setActiveChallenge(null);
+  };
 
   return (
     <div className="h-full overflow-y-auto pb-24" style={{ 
@@ -269,7 +313,7 @@ export default function RewardsScreen({
                 {/* Action Buttons */}
                 <div className="flex gap-2">
                   <button
-                    onClick={() => onCancelChallenge && onCancelChallenge()}
+                    onClick={handleCancelChallenge}
                     className="flex-1 px-4 py-3 rounded-xl text-sm font-semibold transition-all active:scale-95"
                     style={{ 
                       backgroundColor: 'rgba(255,255,255,0.8)',
@@ -283,7 +327,7 @@ export default function RewardsScreen({
                     <>
                       {activeProgress.isSuccess ? (
                         <button
-                          onClick={() => onCompleteChallenge && onCompleteChallenge(true)}
+                          onClick={() => handleCompleteChallenge(true)}
                           className="flex-1 px-5 py-3 rounded-xl text-white text-sm font-bold transition-all active:scale-95"
                           style={{ 
                             background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
@@ -294,7 +338,7 @@ export default function RewardsScreen({
                         </button>
                       ) : (
                         <button
-                          onClick={() => onCompleteChallenge && onCompleteChallenge(false)}
+                          onClick={() => handleCompleteChallenge(false)}
                           className="flex-1 px-5 py-3 rounded-xl text-white text-sm font-bold transition-all active:scale-95"
                           style={{ 
                             background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
@@ -359,7 +403,7 @@ export default function RewardsScreen({
                     boxShadow: '0 2px 4px rgba(0,0,0,0.06)',
                     cursor: !activeChallenge ? 'pointer' : 'default'
                   }}
-                  onClick={() => !activeChallenge && onStartChallenge && onStartChallenge(challenge)}
+                  onClick={() => !activeChallenge && handleStartChallenge(challenge)}
                 >
                   <div className="flex items-start gap-4">
                     <div 
@@ -394,7 +438,7 @@ export default function RewardsScreen({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              onStartChallenge && onStartChallenge(challenge);
+                              handleStartChallenge(challenge);
                             }}
                             className="px-5 py-2 rounded-xl text-white text-sm font-bold transition-all active:scale-95"
                             style={{ 

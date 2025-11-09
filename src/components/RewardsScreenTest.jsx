@@ -314,29 +314,27 @@ export default function RewardsScreen({
           /* Empty State */
           <div className="mb-6">
             <div 
-              className="p-8 rounded-3xl flex flex-col items-center relative overflow-hidden"
+              className="p-6 rounded-3xl flex flex-col items-center"
               style={{ 
-                background: '#FFFFFF',
-                border: '1px solid #E5E7EB',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
+                background: 'linear-gradient(135deg, #F0F9FF 0%, #F8FAFC 100%)',
+                border: '1px solid #E0E7FF',
+                boxShadow: '0 1px 3px rgba(59, 130, 246, 0.08)'
               }}
             >
-              <div className="relative">
-                <div 
-                  className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4"
-                  style={{ 
-                    background: '#F3F4F6'
-                  }}
-                >
-                  <Award size={40} style={{ color: '#9CA3AF' }} strokeWidth={2} />
-                </div>
-                <h3 className="text-xl font-bold mb-2 text-center" style={{ color: colors.text }}>
-                  Ready for a Challenge?
-                </h3>
-                <p className="text-sm text-center mb-0" style={{ color: colors.textSecondary, maxWidth: '280px' }}>
-                  Pick your first challenge and start your journey to zero waste!
-                </p>
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-3"
+                style={{ 
+                  background: 'linear-gradient(135deg, #BFDBFE 0%, #93C5FD 100%)'
+                }}
+              >
+                <Award size={32} style={{ color: '#3B82F6' }} strokeWidth={2} />
               </div>
+              <h3 className="text-lg font-bold mb-1.5 text-center" style={{ color: colors.text }}>
+                Ready for a Challenge?
+              </h3>
+              <p className="text-sm text-center" style={{ color: colors.textSecondary, maxWidth: '260px' }}>
+                Pick your first challenge and start your journey to zero waste!
+              </p>
             </div>
           </div>
         )}

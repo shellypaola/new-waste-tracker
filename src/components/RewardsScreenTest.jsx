@@ -166,7 +166,7 @@ const COLOR_SCHEME_4 = [
 ];
 
 // OPTION 5: Violet, Orange, Cyan (My Recommendation!)
-const COLOR_SCHEME_5 = [
+const COLOR_SCHEME_2 = [
   {
     id: 'weekly_warrior',
     name: 'Weekly Warrior',

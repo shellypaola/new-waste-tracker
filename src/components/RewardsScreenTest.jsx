@@ -208,7 +208,7 @@ const COLOR_SCHEME_5 = [
 // ============================================
 // SELECT YOUR COLOR SCHEME HERE:
 // ============================================
-const CHALLENGES = COLOR_SCHEME_3; // Change this number to try different schemes!
+const CHALLENGES = COLOR_SCHEME_4; // Change this number to try different schemes!
 
 const DIFFICULTY_LABELS = {
   beginner: 'Beginner',

@@ -530,30 +530,133 @@ export default function WasteWarriorMVP() {
         />
       )}
       </div>
+      // Modern Apple-Style Bottom Navigation
+// Replace your current bottom nav with this code
+
+      {/* Modern Apple-Style Bottom Navigation */}
       <div className="relative">
-        <div className="absolute left-1/2 -translate-x-1/2 -top-7 z-10">
-          <button onClick={() => setShowAddItemModal(true)} className="w-14 h-14 rounded-full shadow-lg flex items-center justify-center" style={{ backgroundColor: colors.primary }}>
-            <Plus size={28} strokeWidth={2.5} color="white" />
+        {/* Floating Add Button */}
+        <div className="absolute left-1/2 -translate-x-1/2 -top-8 z-10">
+          <button 
+            onClick={() => setShowAddItemModal(true)} 
+            className="w-16 h-16 rounded-full shadow-xl flex items-center justify-center transition-transform active:scale-95"
+            style={{ 
+              backgroundColor: colors.primary,
+              boxShadow: '0 8px 24px rgba(59, 130, 246, 0.4)'
+            }}
+          >
+            <Plus size={32} strokeWidth={2.5} color="white" />
           </button>
         </div>
-        <div className="border-t" style={{ borderColor: colors.border, backgroundColor: colors.bg }}>
-          <div className="flex items-center justify-around px-4 pt-2 pb-1">
-            <button onClick={() => setActiveScreen('dashboard')} className="flex flex-col items-center gap-0.5 py-1" style={{ minWidth: '48px' }}>
-              <Home size={22} strokeWidth={2} style={{ color: activeScreen === 'dashboard' ? colors.primary : '#9CA3AF' }} />
-              <span className="text-[9px] font-medium" style={{ color: activeScreen === 'dashboard' ? colors.primary : '#9CA3AF' }}>Home</span>
+      
+        {/* Tab Bar Container */}
+        <div 
+          className="border-t" 
+          style={{ 
+            borderColor: 'rgba(0,0,0,0.05)',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)'
+          }}
+        >
+          <div className="flex items-center justify-around px-2 pt-3 pb-2">
+            {/* Home Tab */}
+            <button 
+              onClick={() => setActiveScreen('dashboard')} 
+              className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
+              style={{ 
+                backgroundColor: activeScreen === 'dashboard' ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
+                minWidth: '70px'
+              }}
+            >
+              <Home 
+                size={26} 
+                strokeWidth={activeScreen === 'dashboard' ? 2.5 : 2} 
+                style={{ color: activeScreen === 'dashboard' ? colors.primary : '#8E8E93' }} 
+              />
+              <span 
+                className="text-[10px] font-medium"
+                style={{ 
+                  color: activeScreen === 'dashboard' ? colors.primary : '#8E8E93'
+                }}
+              >
+                Home
+              </span>
             </button>
-            <button onClick={() => setActiveScreen('inventory')} className="flex flex-col items-center gap-0.5 py-1" style={{ minWidth: '48px' }}>
-              <Package size={22} strokeWidth={2} style={{ color: activeScreen === 'inventory' ? colors.primary : '#9CA3AF' }} />
-              <span className="text-[9px] font-medium" style={{ color: activeScreen === 'inventory' ? colors.primary : '#9CA3AF' }}>Inventory</span>
+      
+            {/* Inventory Tab */}
+            <button 
+              onClick={() => setActiveScreen('inventory')} 
+              className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
+              style={{ 
+                backgroundColor: activeScreen === 'inventory' ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
+                minWidth: '70px'
+              }}
+            >
+              <Package 
+                size={26} 
+                strokeWidth={activeScreen === 'inventory' ? 2.5 : 2} 
+                style={{ color: activeScreen === 'inventory' ? colors.primary : '#8E8E93' }} 
+              />
+              <span 
+                className="text-[10px] font-medium"
+                style={{ 
+                  color: activeScreen === 'inventory' ? colors.primary : '#8E8E93'
+                }}
+              >
+                Inventory
+              </span>
             </button>
-            <div className="w-8" />
-            <button onClick={() => setActiveScreen('rewards')} className="flex flex-col items-center gap-0.5 py-1" style={{ minWidth: '48px' }}>
-              <Trophy size={22} strokeWidth={2} style={{ color: activeScreen === 'rewards' ? colors.primary : '#9CA3AF' }} />
-              <span className="text-[9px] font-medium" style={{ color: activeScreen === 'rewards' ? colors.primary : '#9CA3AF' }}>Rewards</span>
+      
+            {/* Spacer for floating button */}
+            <div className="w-16" />
+      
+            {/* Rewards Tab */}
+            <button 
+              onClick={() => setActiveScreen('rewards')} 
+              className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
+              style={{ 
+                backgroundColor: activeScreen === 'rewards' ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
+                minWidth: '70px'
+              }}
+            >
+              <Trophy 
+                size={26} 
+                strokeWidth={activeScreen === 'rewards' ? 2.5 : 2} 
+                style={{ color: activeScreen === 'rewards' ? colors.primary : '#8E8E93' }} 
+              />
+              <span 
+                className="text-[10px] font-medium"
+                style={{ 
+                  color: activeScreen === 'rewards' ? colors.primary : '#8E8E93'
+                }}
+              >
+                Rewards
+              </span>
             </button>
-            <button onClick={() => setActiveScreen('analytics')} className="flex flex-col items-center gap-0.5 py-1" style={{ minWidth: '48px' }}>
-              <BarChart3 size={22} strokeWidth={2} style={{ color: activeScreen === 'analytics' ? colors.primary : '#9CA3AF' }} />
-              <span className="text-[9px] font-medium" style={{ color: activeScreen === 'analytics' ? colors.primary : '#9CA3AF' }}>Stats</span>
+      
+            {/* Stats Tab */}
+            <button 
+              onClick={() => setActiveScreen('analytics')} 
+              className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl transition-all"
+              style={{ 
+                backgroundColor: activeScreen === 'analytics' ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
+                minWidth: '70px'
+              }}
+            >
+              <BarChart3 
+                size={26} 
+                strokeWidth={activeScreen === 'analytics' ? 2.5 : 2} 
+                style={{ color: activeScreen === 'analytics' ? colors.primary : '#8E8E93' }} 
+              />
+              <span 
+                className="text-[10px] font-medium"
+                style={{ 
+                  color: activeScreen === 'analytics' ? colors.primary : '#8E8E93'
+                }}
+              >
+                Stats
+              </span>
             </button>
           </div>
         </div>

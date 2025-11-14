@@ -314,7 +314,7 @@ if (maxSpent > 0) {
   });
 
   return (
-    <div className="h-full overflow-y-auto" style={{ paddingRight: '4px' }}>
+    <div className="h-full overflow-y-auto pb-24" style={{ paddingRight: '4px' }}>
       <div className="px-4 pt-6 pb-20">
             {/* Header */}
             <div className="mb-6">

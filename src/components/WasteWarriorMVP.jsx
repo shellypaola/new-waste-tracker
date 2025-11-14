@@ -474,7 +474,7 @@ export default function WasteWarriorMVP() {
           </button>
         ))}
       </div>
-      <div className="flex-1 overflow-y-auto py-3" style={{ minHeight: 0, WebkitOverflowScrolling: 'touch' }}>
+      <div className="flex-1 overflow-y-auto py-3 pb-24" style={{ minHeight: 0, WebkitOverflowScrolling: 'touch' }}>
         {filteredInventory.length === 0 ? (
           <div className="text-center py-12 px-4">
             <div className="text-4xl mb-3">📦</div>
@@ -514,8 +514,8 @@ export default function WasteWarriorMVP() {
     `}</style>
       
     <div className="h-screen flex flex-col" style={{ backgroundColor: colors.bg, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', maxHeight: '100vh', overflow: 'hidden', position: 'relative' }}>
-      {/* Main content area with bottom padding for fixed nav */}
-      <div className="flex-1 overflow-hidden" style={{ minHeight: 0, paddingBottom: '80px' }}>
+      {/* Main content area - screens handle their own bottom padding */}
+      <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         {activeScreen === 'dashboard' && <DashboardScreen />}
         {activeScreen === 'inventory' && <InventoryScreen />}
         {activeScreen === 'rewards' && (

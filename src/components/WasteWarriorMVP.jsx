@@ -506,10 +506,16 @@ export default function WasteWarriorMVP() {
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
       }
+      
+      /* Ensure proper bottom padding for iOS safe area */
+      .bottom-nav-container {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
     `}</style>
       
-    <div className="h-screen flex flex-col" style={{ backgroundColor: colors.bg, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', maxHeight: '100vh', overflow: 'hidden' }}>
-      <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+    <div className="h-screen flex flex-col" style={{ backgroundColor: colors.bg, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', maxHeight: '100vh', overflow: 'hidden', position: 'relative' }}>
+      {/* Main content area with bottom padding for fixed nav */}
+      <div className="flex-1 overflow-hidden" style={{ minHeight: 0, paddingBottom: '80px' }}>
         {activeScreen === 'dashboard' && <DashboardScreen />}
         {activeScreen === 'inventory' && <InventoryScreen />}
         {activeScreen === 'rewards' && (
@@ -530,8 +536,28 @@ export default function WasteWarriorMVP() {
         />
       )}
       </div>
-      <div className="relative">
-        <div className="absolute left-1/2 -translate-x-1/2 -top-7 z-10">
+      
+      {/* Fixed bottom navigation */}
+      <div 
+        className="bottom-nav-container"
+        style={{ 
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50
+        }}
+      >
+        {/* FAB button positioned above nav */}
+        <div 
+          style={{
+            position: 'absolute',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            top: 0,
+            zIndex: 10
+          }}
+        >
           <button 
             onClick={() => setShowAddItemModal(true)} 
             className="w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all active:scale-95"
@@ -544,6 +570,7 @@ export default function WasteWarriorMVP() {
           </button>
         </div>
       
+        {/* Navigation bar */}
         <div 
           className="border-t" 
           style={{ 
@@ -551,11 +578,11 @@ export default function WasteWarriorMVP() {
             backgroundColor: 'white'
           }}
         >
-          <div className="flex items-center justify-around px-4 pt-2 pb-1">
+          <div className="flex items-center justify-around px-4 pt-2 pb-1" style={{ minHeight: '60px' }}>
             <button 
               onClick={() => setActiveScreen('dashboard')} 
               className="flex flex-col items-center gap-0.5 py-1 transition-all"
-              style={{ minWidth: '60px' }}
+              style={{ minWidth: '60px', minHeight: '48px' }}
             >
               <Home 
                 size={24} 
@@ -575,7 +602,7 @@ export default function WasteWarriorMVP() {
             <button 
               onClick={() => setActiveScreen('inventory')} 
               className="flex flex-col items-center gap-0.5 py-1 transition-all"
-              style={{ minWidth: '60px' }}
+              style={{ minWidth: '60px', minHeight: '48px' }}
             >
               <Package 
                 size={24} 
@@ -592,12 +619,12 @@ export default function WasteWarriorMVP() {
               </span>
             </button>
       
-            <div className="w-8" />
+            <div style={{ width: '32px' }} />
       
             <button 
               onClick={() => setActiveScreen('rewards')} 
               className="flex flex-col items-center gap-0.5 py-1 transition-all"
-              style={{ minWidth: '60px' }}
+              style={{ minWidth: '60px', minHeight: '48px' }}
             >
               <Trophy 
                 size={24} 
@@ -617,7 +644,7 @@ export default function WasteWarriorMVP() {
             <button 
               onClick={() => setActiveScreen('analytics')} 
               className="flex flex-col items-center gap-0.5 py-1 transition-all"
-              style={{ minWidth: '60px' }}
+              style={{ minWidth: '60px', minHeight: '48px' }}
             >
               <BarChart3 
                 size={24} 

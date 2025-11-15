@@ -552,12 +552,20 @@ useEffect(() => {
       </div>
       <div className="flex-1 overflow-y-auto py-3 pb-24" style={{ minHeight: 0, WebkitOverflowScrolling: 'touch' }}>
         {filteredInventory.length === 0 ? (
-          <div className="text-center py-12 px-4">
-            <div className="text-4xl mb-3">📦</div>
-            <div className="font-semibold mb-1" style={{ color: colors.text }}>No items yet</div>
-            <div className="text-sm" style={{ color: colors.textSecondary }}>Add your first item to get started</div>
-          </div>
-        ) : (
+      <div className="text-center py-12 px-6 mx-4">
+        <div className="w-24 h-24 mx-auto mb-6 rounded-3xl flex items-center justify-center" style={{ backgroundColor: colors.primaryLight }}>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={colors.primary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        </div>
+        <div className="text-xl font-bold mb-2" style={{ color: colors.text }}>No items yet</div>
+        <div className="text-base" style={{ color: colors.textSecondary }}>
+          Tap the <span style={{ color: colors.primary, fontWeight: '600' }}>+</span> button below to add<br />your first item and start tracking
+        </div>
+      </div>
+    ) : (
           filteredInventory.map(item => <ItemCard key={item.id} item={item} />)
         )}
       </div>

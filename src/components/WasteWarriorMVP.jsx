@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import AnalyticsScreen from './AnalyticsScreen';
 import SignUpScreen from './SignUpScreen'; // Adjust path if needed
 import RewardsScreenProd from './RewardsScreenProd';
-import FoodTipsDisplay from './FoodTipsDisplay';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign, X} from 'lucide-react';
 
 const colors = {
@@ -501,11 +500,6 @@ useEffect(() => {
         ) : (
           atRiskItems.map(item => <ItemCard key={item.id} item={item} />)
         )}
-
-        <FoodTipsDisplay 
-        mostWastedItem="tomato"  // Replace with actual data from your analytics
-        mostWastedCategory="vegetables"  // Replace with actual category data
-      />
         
       </div>
       {expired.length > 0 && (

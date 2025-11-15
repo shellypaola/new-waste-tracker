@@ -920,6 +920,13 @@ if (maxSpent > 0) {
                         </div>
                         <span className="font-bold" style={{ color: colors.text }}>${item.value.toFixed(2)}</span>
                       </div>
+                  
+                  <FoodTipsDisplay 
+                    mostWastedItem={topWastedItemName}  // e.g., "tomato"
+                    mostWastedCategory={topCategory}  // e.g., "vegetables"
+                  />
+                </div>
+                  
                     ))}
                   </div>
                 </div>
@@ -930,10 +937,6 @@ if (maxSpent > 0) {
     </div>
   );
 }
-    <FoodTipsDisplay 
-        mostWastedItem={topWastedItemName}  // e.g., "tomato"
-        mostWastedCategory={topCategory}  // e.g., "vegetables"
-      />
-    </div>
+    
 
 export default AnalyticsScreen;

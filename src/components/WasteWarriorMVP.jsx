@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AnalyticsScreen from './AnalyticsScreen';
 import SignUpScreen from './SignUpScreen'; // Adjust path if needed
 import RewardsScreenProd from './RewardsScreenProd';
-import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign } from 'lucide-react';
+import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign, X} from 'lucide-react';
 
 const colors = {
   primary: '#3B82F6',
@@ -38,6 +38,31 @@ const initialInventory = [
 const expiredItems = [
   { id: 101, name: 'Lettuce', emoji: '🥬', cost: 3.99, expiredDays: 2 },
   { id: 102, name: 'Yogurt', emoji: '🥛', cost: 4.49, expiredDays: 1 },
+];
+
+const sampleConsumedItems = [
+  {
+    id: 1001,
+    name: 'Bananas',
+    emoji: '🍌',
+    consumedAmount: 3.50,
+    wastedAmount: 0.50,
+    totalCost: 4.00,
+    consumedDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+    daysUntilExpiryAtConsumption: 1,
+    percentageConsumed: 87
+  },
+  {
+    id: 1002,
+    name: 'Bread',
+    emoji: '🍞',
+    consumedAmount: 4.50,
+    wastedAmount: 0,
+    totalCost: 4.50,
+    consumedDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+    daysUntilExpiryAtConsumption: 3,
+    percentageConsumed: 100
+  }
 ];
 
 export default function WasteWarriorMVP() {
@@ -90,10 +115,10 @@ export default function WasteWarriorMVP() {
   };
   
   const [activeScreen, setActiveScreen] = useState('dashboard');
-  const [inventory, setInventory] = useState(initialInventory);
-  const [expired, setExpired] = useState(expiredItems);
+  const [inventory, setInventory] = useState([]);
+  const [expired, setExpired] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
-  const [totalWasted, setTotalWasted] = useState(8.48);
+  const [totalWasted, setTotalWasted] = useState(0);
   const [showConsumeModal, setShowConsumeModal] = useState(false);
   const [showQuantityModal, setShowQuantityModal] = useState(false);
   const [showOpenPantryModal, setShowOpenPantryModal] = useState(false);
@@ -118,6 +143,8 @@ export default function WasteWarriorMVP() {
     quantity: 1
   });
   const [consumedItems, setConsumedItems] = useState([]);
+  const [usingSampleData, setUsingSampleData] = useState(false);
+  const [showSampleBanner, setShowSampleBanner] = useState(false);
   
   // Calculate total consumed value
   const totalConsumed = consumedItems.reduce((sum, item) => sum + item.consumedAmount, 0);
@@ -127,11 +154,35 @@ export default function WasteWarriorMVP() {
   
   const atRiskItems = inventory.filter(item => item.daysUntilExpiry <= 3).sort((a, b) => a.daysUntilExpiry - b.daysUntilExpiry);
   
-  const handleSignUpComplete = (name) => {
+  const handleSignUpComplete = (name, useSampleData) => {
   setUserName(name);
   setShowSignUp(false);
-};
   
+  if (useSampleData) {
+    setInventory(initialInventory);
+    setExpired(expiredItems);
+    setTotalWasted(8.48);
+    setConsumedItems(sampleConsumedItems);
+    setUsingSampleData(true);
+    setShowSampleBanner(true);
+  }
+};
+  const handleClearSampleData = () => {
+  if (window.confirm('Clear all sample data and start fresh? This cannot be undone.')) {
+    setInventory([]);
+    setExpired([]);
+    setTotalWasted(0);
+    setConsumedItems([]);
+    setUsingSampleData(false);
+    setShowSampleBanner(false);
+    localStorage.setItem('useSampleData', 'false');
+  }
+};
+
+  const handleDismissBanner = () => {
+    setShowSampleBanner(false);
+    localStorage.setItem('sampleBannerDismissed', 'true');
+  };
   const handleMarkAsOpen = (item) => {
     setSelectedItem(item);
     setOpenItemCategory('fridge');
@@ -514,6 +565,62 @@ export default function WasteWarriorMVP() {
     `}</style>
       
     <div className="h-screen flex flex-col" style={{ backgroundColor: colors.bg, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', maxHeight: '100vh', overflow: 'hidden', position: 'relative' }}>
+      {showSampleBanner && usingSampleData && (
+        <div style={{
+          backgroundColor: '#FFFBEB',
+          borderBottom: `1px solid ${colors.warning}`,
+          padding: '12px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+          zIndex: 100
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+            <span style={{ fontSize: '18px' }}>📦</span>
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: '600', color: colors.warning }}>
+                Viewing Sample Data
+              </div>
+              <div style={{ fontSize: '11px', color: colors.textSecondary }}>
+                Explore the app with example items
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              onClick={handleClearSampleData}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                fontWeight: '600',
+                backgroundColor: 'white',
+                color: colors.warning,
+                border: `1px solid ${colors.warning}`,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Clear & Start Fresh
+            </button>
+            <button
+              onClick={handleDismissBanner}
+              style={{
+                padding: '4px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <X size={18} style={{ color: colors.textSecondary }} />
+            </button>
+          </div>
+        </div>
+      )}
       {/* Main content area - screens handle their own bottom padding */}
       <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         {activeScreen === 'dashboard' && <DashboardScreen />}

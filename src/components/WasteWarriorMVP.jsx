@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AnalyticsScreen from './AnalyticsScreen';
 import SignUpScreen from './SignUpScreen'; // Adjust path if needed
 import RewardsScreenProd from './RewardsScreenProd';
@@ -145,6 +145,24 @@ export default function WasteWarriorMVP() {
   const [consumedItems, setConsumedItems] = useState([]);
   const [usingSampleData, setUsingSampleData] = useState(false);
   const [showSampleBanner, setShowSampleBanner] = useState(false);
+
+// Load sample data on mount if user chose it during onboarding
+useEffect(() => {
+  const useSampleData = localStorage.getItem('useSampleData') === 'true';
+  const hasUserName = localStorage.getItem('userName');
+  
+  if (useSampleData && hasUserName) {
+    setInventory(initialInventory);
+    setExpired(expiredItems);
+    setTotalWasted(8.48);
+    setConsumedItems(sampleConsumedItems);
+    setUsingSampleData(true);
+    
+    // Check if banner was dismissed
+    const bannerDismissed = localStorage.getItem('sampleBannerDismissed') === 'true';
+    setShowSampleBanner(!bannerDismissed);
+  }
+}, []);
   
   // Calculate total consumed value
   const totalConsumed = consumedItems.reduce((sum, item) => sum + item.consumedAmount, 0);
@@ -165,8 +183,13 @@ export default function WasteWarriorMVP() {
     setConsumedItems(sampleConsumedItems);
     setUsingSampleData(true);
     setShowSampleBanner(true);
+  } else {
+    // Clear rewards data when starting fresh
+    localStorage.removeItem('wasteWarrior_activeChallenge');
+    localStorage.removeItem('wasteWarrior_challengeHistory');
   }
 };
+  
   const handleClearSampleData = () => {
   if (window.confirm('Clear all sample data and start fresh? This cannot be undone.')) {
     setInventory([]);
@@ -176,6 +199,8 @@ export default function WasteWarriorMVP() {
     setUsingSampleData(false);
     setShowSampleBanner(false);
     localStorage.setItem('useSampleData', 'false');
+    localStorage.removeItem('wasteWarrior_activeChallenge');
+    localStorage.removeItem('wasteWarrior_challengeHistory');
   }
 };
 

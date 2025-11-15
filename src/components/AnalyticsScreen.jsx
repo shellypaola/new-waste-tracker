@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TrendingDown, TrendingUp, DollarSign } from 'lucide-react';
+import FoodTipsDisplay from './FoodTipsDisplay';
 
 const colors = {
   primary: '#3B82F6',
@@ -929,5 +930,10 @@ if (maxSpent > 0) {
     </div>
   );
 }
+    <FoodTipsDisplay 
+        mostWastedItem={topWastedItemName}  // e.g., "tomato"
+        mostWastedCategory={topCategory}  // e.g., "vegetables"
+      />
+    </div>
 
 export default AnalyticsScreen;

@@ -47,18 +47,10 @@ const FoodTipsDisplay = ({ mostWastedItem, mostWastedCategory }) => {
   if (!currentTip) return null;
 
   return (
-    <div className="mb-6">
-      <h2 
-        className="text-lg font-bold mb-3"
-        style={{ color: '#111827' }}
-      >
-        💡 Food Saving Tip
-      </h2>
-      <TipCard 
-        title={currentTip.title}
-        tip={currentTip.tip}
-      />
-    </div>
+    <TipCard 
+      title={currentTip.title}
+      tip={currentTip.tip}
+    />
   );
 };
 

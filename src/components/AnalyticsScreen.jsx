@@ -925,8 +925,7 @@ if (maxSpent > 0) {
                   <FoodTipsDisplay 
                         mostWastedItem={topWastedItemName}  // e.g., "tomato"
                         mostWastedCategory={topCategory}  // e.g., "vegetables"
-                      />
-                    </div>   
+                      />                  
                 </div>
               )}
               </div>

@@ -8,13 +8,17 @@ const SignUpScreen = ({ onComplete }) => {
   const handleContinue = () => {
     if (step === 1 && name.trim()) {
       setStep(2);
+    } else if (step === 2) {
+      setStep(3);
     }
   };
 
-  const handleFinish = () => {
+  const handleFinish = (useSampleData) => {
     if (name.trim()) {
       localStorage.setItem('userName', name.trim());
-      onComplete(name.trim());
+      localStorage.setItem('useSampleData', useSampleData ? 'true' : 'false');
+      localStorage.setItem('onboardingComplete', 'true');
+      onComplete(name.trim(), useSampleData);
     }
   };
 
@@ -24,6 +28,7 @@ const SignUpScreen = ({ onComplete }) => {
         <div style={{ display: 'flex', gap: '8px', maxWidth: '400px', margin: '0 auto' }}>
           <div style={{ height: '4px', flex: 1, borderRadius: '9999px', backgroundColor: step >= 1 ? '#3B82F6' : '#E5E7EB', transition: 'all 0.3s' }}></div>
           <div style={{ height: '4px', flex: 1, borderRadius: '9999px', backgroundColor: step >= 2 ? '#3B82F6' : '#E5E7EB', transition: 'all 0.3s' }}></div>
+          <div style={{ height: '4px', flex: 1, borderRadius: '9999px', backgroundColor: step >= 3 ? '#3B82F6' : '#E5E7EB', transition: 'all 0.3s' }}></div>
         </div>
       </div>
 
@@ -133,7 +138,7 @@ const SignUpScreen = ({ onComplete }) => {
               Continue →
             </button>
           </div>
-        ) : (
+        ) : step === 2 ? (
           <div>
             <div style={{ fontSize: '60px', marginBottom: '24px', textAlign: 'center' }}>👋</div>
             <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#111827', marginBottom: '16px', textAlign: 'center' }}>
@@ -188,7 +193,7 @@ const SignUpScreen = ({ onComplete }) => {
             </div>
 
             <button
-              onClick={handleFinish}
+              onClick={handleContinue}
               style={{ 
                 width: '100%', 
                 padding: '20px', 
@@ -205,12 +210,145 @@ const SignUpScreen = ({ onComplete }) => {
                 textAlign: 'center'
               }}
             >
-              Get Started →
+              Continue →
             </button>
             
             <button
               onClick={() => setStep(1)}
               style={{ width: '100%', padding: '12px', marginTop: '12px', borderRadius: '12px', fontWeight: '500', fontSize: '14px', backgroundColor: 'transparent', color: '#6B7280', border: '1px solid #E5E7EB', cursor: 'pointer' }}
+            >
+              Back
+            </button>
+          </div>
+        ) : (
+          <div>
+            <div style={{ fontSize: '60px', marginBottom: '24px', textAlign: 'center' }}>🚀</div>
+            <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#111827', marginBottom: '16px', textAlign: 'center' }}>
+              How would you like to start?
+            </h1>
+            <p style={{ fontSize: '16px', color: '#6B7280', textAlign: 'center', marginBottom: '40px' }}>
+              Choose the best way to get familiar with Waste Warrior
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+              {/* Explore Sample Data Option */}
+              <button
+                onClick={() => handleFinish(true)}
+                style={{ 
+                  width: '100%',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '20px',
+                  padding: '24px',
+                  border: '2px solid #3B82F6',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  WebkitTapHighlightColor: 'transparent',
+                  textAlign: 'left',
+                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.15)'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <div style={{ 
+                    width: '48px', 
+                    height: '48px', 
+                    borderRadius: '12px', 
+                    backgroundColor: '#DBEAFE', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    fontSize: '24px',
+                    flexShrink: 0
+                  }}>
+                    👀
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                      <h3 style={{ color: '#111827', fontWeight: '600', fontSize: '18px', margin: 0 }}>
+                        Explore with Sample Data
+                      </h3>
+                      <span style={{ 
+                        backgroundColor: '#DBEAFE', 
+                        color: '#3B82F6', 
+                        fontSize: '10px', 
+                        fontWeight: '600', 
+                        padding: '2px 8px', 
+                        borderRadius: '6px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}>
+                        Recommended
+                      </span>
+                    </div>
+                    <p style={{ color: '#6B7280', fontSize: '14px', margin: 0, lineHeight: '1.5' }}>
+                      See how the app works with example items. Perfect for learning before adding your own food.
+                    </p>
+                    <div style={{ marginTop: '12px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      <span style={{ fontSize: '11px', color: '#3B82F6', backgroundColor: '#EFF6FF', padding: '4px 8px', borderRadius: '6px' }}>
+                        ✓ Pre-loaded inventory
+                      </span>
+                      <span style={{ fontSize: '11px', color: '#3B82F6', backgroundColor: '#EFF6FF', padding: '4px 8px', borderRadius: '6px' }}>
+                        ✓ Clear anytime
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              {/* Start Fresh Option */}
+              <button
+                onClick={() => handleFinish(false)}
+                style={{ 
+                  width: '100%',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '20px',
+                  padding: '24px',
+                  border: '2px solid #E5E7EB',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  WebkitTapHighlightColor: 'transparent',
+                  textAlign: 'left'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <div style={{ 
+                    width: '48px', 
+                    height: '48px', 
+                    borderRadius: '12px', 
+                    backgroundColor: '#F3F4F6', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    fontSize: '24px',
+                    flexShrink: 0
+                  }}>
+                    ✨
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ color: '#111827', fontWeight: '600', fontSize: '18px', margin: '0 0 8px 0' }}>
+                      Start with a Clean Slate
+                    </h3>
+                    <p style={{ color: '#6B7280', fontSize: '14px', margin: 0, lineHeight: '1.5' }}>
+                      Jump right in and add your own items. Great if you're already familiar with food tracking apps.
+                    </p>
+                  </div>
+                </div>
+              </button>
+            </div>
+
+            <button
+              onClick={() => setStep(2)}
+              style={{ 
+                width: '100%', 
+                padding: '12px', 
+                marginTop: '8px', 
+                borderRadius: '12px', 
+                fontWeight: '500', 
+                fontSize: '14px', 
+                backgroundColor: 'transparent', 
+                color: '#6B7280', 
+                border: '1px solid #E5E7EB', 
+                cursor: 'pointer' 
+              }}
             >
               Back
             </button>

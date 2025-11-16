@@ -931,6 +931,8 @@ if (maxSpent > 0) {
             <FoodTipsDisplay 
               mostWastedItem={topItemsData.length > 0 ? topItemsData[0].name : null}
               mostWastedCategory={null}
+              mostWastedItemEmoji={topItemsData.length > 0 ? topItemsData[0].emoji : null}
+
             />
       </div>
     </div>

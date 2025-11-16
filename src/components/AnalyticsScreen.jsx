@@ -929,8 +929,8 @@ if (maxSpent > 0) {
 
             {/* Food Tip - Outside the card */}
             <FoodTipsDisplay 
-              mostWastedItem="tomato"
-              mostWastedCategory="vegetables"
+              mostWastedItem={topItemsData.length > 0 ? topItemsData[0].name : null}
+              mostWastedCategory={null}
             />
       </div>
     </div>

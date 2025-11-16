@@ -50,6 +50,7 @@ const FoodTipsDisplay = ({ mostWastedItem, mostWastedCategory }) => {
     <TipCard 
       title={currentTip.title}
       tip={currentTip.tip}
+      emoji={mostWastedItemEmoji}
     />
   );
 };

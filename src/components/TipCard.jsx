@@ -36,3 +36,5 @@ const TipCard = ({ title, tip, emoji }) => {
     </div>
   );
 };
+
+export default TipCard;

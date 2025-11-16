@@ -922,14 +922,16 @@ if (maxSpent > 0) {
                       </div>            
                     ))}
                   </div>
-                  <FoodTipsDisplay 
-                        mostWastedItem="tomato"
-                        mostWastedCategory="vegetables"
-                      />                  
                 </div>
               )}
               </div>
             </div>
+
+            {/* Food Tip - Outside the card */}
+            <FoodTipsDisplay 
+              mostWastedItem="tomato"
+              mostWastedCategory="vegetables"
+            />
       </div>
     </div>
   );

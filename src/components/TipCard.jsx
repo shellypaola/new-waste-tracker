@@ -1,6 +1,4 @@
-import React from 'react';
-
-const TipCard = ({ title, tip }) => {
+const TipCard = ({ title, tip, emoji }) => {
   return (
     <div 
       className="rounded-2xl p-5 mb-4"
@@ -11,12 +9,12 @@ const TipCard = ({ title, tip }) => {
       }}
     >
       <div className="flex items-start gap-4">
-        {/* Lightbulb emoji in white circle */}
+        {/* Use item emoji if provided, otherwise lightbulb */}
         <div 
           className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-xl"
           style={{ backgroundColor: '#FFFFFF' }}
         >
-          💡
+          {emoji || '💡'}
         </div>
         
         {/* Content */}
@@ -38,5 +36,3 @@ const TipCard = ({ title, tip }) => {
     </div>
   );
 };
-
-export default TipCard;

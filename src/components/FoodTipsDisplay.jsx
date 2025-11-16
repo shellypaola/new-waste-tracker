@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TipCard from './TipCard';
 import { foodTips } from './foodTips';
 
-const FoodTipsDisplay = ({ mostWastedItem, mostWastedCategory }) => {
+const FoodTipsDisplay = ({ mostWastedItem, mostWastedCategory, mostWastedItemEmoji }) => {
   const [currentTip, setCurrentTip] = useState(null);
 
   useEffect(() => {

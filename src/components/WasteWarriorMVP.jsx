@@ -3,6 +3,7 @@ import AnalyticsScreen from './AnalyticsScreen';
 import SignUpScreen from './SignUpScreen'; // Adjust path if needed
 import RewardsScreenProd from './RewardsScreenProd';
 import FoodTipsDisplay from './FoodTipsDisplay';
+import OverLimitBanner from './components/OverLimitBanner';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign, X} from 'lucide-react';
 
 const colors = {
@@ -136,6 +137,16 @@ export default function WasteWarriorMVP() {
   const [isPremium, setIsPremium] = useState(false);
   const [userName, setUserName] = useState(localStorage.getItem('userName') || '');
   const [showSignUp, setShowSignUp] = useState(!localStorage.getItem('userName'));
+  const canAddNewItem = () => {
+    if (userTier === 'free') {
+      return inventory.length < 50;
+    }
+    return true;
+  };
+
+  const isAtOrOverLimit = () => {
+    return userTier === 'free' && inventory.length >= 50;
+  };
   const [newItem, setNewItem] = useState({
     name: '',
     category: 'fridge',
@@ -455,6 +466,16 @@ useEffect(() => {
 
   const DashboardScreen = () => (
     <div className="h-full overflow-y-auto pb-24" style={{ WebkitOverflowScrolling: 'touch' }}>
+      {isAtOrOverLimit() && (
+        <OverLimitBanner
+          itemCount={inventory.length}
+          tierLimit={50}
+          onUpgrade={() => {
+            // Show upgrade modal or navigate to pricing
+            setShowPlanSelectionModal(true);
+          }}
+        />
+      )}
       <div className="pt-6 pb-4">
       <div className="px-4 mb-1">
         <h1 className="text-2xl font-bold" style={{ color: colors.text }}>Hello, {userName} 👋</h1>
@@ -535,6 +556,16 @@ useEffect(() => {
 
   const InventoryScreen = () => (
     <div className="h-full flex flex-col" style={{ minHeight: 0 }}>
+      {isAtOrOverLimit() && (
+        <OverLimitBanner
+          itemCount={inventory.length}
+          tierLimit={50}
+          onUpgrade={() => {
+            // Show upgrade modal or navigate to pricing
+            setShowPlanSelectionModal(true);
+          }}
+        />
+      )}
       <div className="px-4 pt-6 pb-3">
         <h1 className="text-2xl font-bold mb-1" style={{ color: colors.text }}>Inventory</h1>
         <p className="text-sm" style={{ color: colors.textSecondary }}>{inventory.length} items tracked</p>

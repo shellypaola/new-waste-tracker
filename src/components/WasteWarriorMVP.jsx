@@ -3,7 +3,7 @@ import AnalyticsScreen from './AnalyticsScreen';
 import SignUpScreen from './SignUpScreen'; // Adjust path if needed
 import RewardsScreenProd from './RewardsScreenProd';
 import FoodTipsDisplay from './FoodTipsDisplay';
-import OverLimitBanner from './components/OverLimitBanner';
+import OverLimitBanner from './OverLimitBanner';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign, X} from 'lucide-react';
 
 const colors = {

@@ -137,6 +137,7 @@ export default function WasteWarriorMVP() {
   const [isPremium, setIsPremium] = useState(false);
   const [userName, setUserName] = useState(localStorage.getItem('userName') || '');
   const [showSignUp, setShowSignUp] = useState(!localStorage.getItem('userName'));
+  const [userTier, setUserTier] = useState('premium-trial');
   const canAddNewItem = () => {
     if (userTier === 'free') {
       return inventory.length < 50;

@@ -179,3 +179,4 @@ export const foodTips = {
 //   title: "Catchy Tip Title",
 //   tip: "Your helpful tip text goes here. Keep it under 2-3 sentences for best display."
 // }
+export default foodTips;  // ← MUST HAVE THIS!

@@ -4,6 +4,9 @@ import SignUpScreen from './SignUpScreen'; // Adjust path if needed
 import RewardsScreenProd from './RewardsScreenProd';
 import FoodTipsDisplay from './FoodTipsDisplay';
 import OverLimitBanner from './OverLimitBanner';
+import TrialStatusBanner from './TrialStatusBanner';
+import TrialEndingModal from './TrialEndingModal';
+import PlanSelectionModal from './PlanSelectionModal';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign, X} from 'lucide-react';
 
 const colors = {
@@ -138,6 +141,9 @@ export default function WasteWarriorMVP() {
   const [userName, setUserName] = useState(localStorage.getItem('userName') || '');
   const [showSignUp, setShowSignUp] = useState(!localStorage.getItem('userName'));
   const [userTier, setUserTier] = useState('premium-trial');
+  const [trialStartDate, setTrialStartDate] = useState(new Date());
+  const [showTrialEndingModal, setShowTrialEndingModal] = useState(false);
+  const [showPlanSelectionModal, setShowPlanSelectionModal] = useState(false);
   const canAddNewItem = () => {
     if (userTier === 'free') {
       return inventory.length < 50;
@@ -156,6 +162,41 @@ export default function WasteWarriorMVP() {
   const isAtOrOverLimit = () => {
     return userTier === 'free' && inventory.length >= 50;
   };
+  
+  const handleTrialEndPlanSelection = (planId) => {
+    setUserTier(planId);
+    setShowTrialEndingModal(false);
+    
+    if (planId === 'free') {
+      console.log('User downgraded to FREE');
+      if (inventory.length > 50) {
+        alert(`You have ${inventory.length} items. You won't be able to add new items until you're under 50.`);
+      }
+    } else if (planId === 'premium-monthly') {
+      console.log('User chose Premium Monthly - $2.99/month');
+    } else if (planId === 'premium-annual') {
+      console.log('User chose Premium Annual - $24.99/year');
+    }
+  };
+  
+  const getDaysRemaining = () => {
+    if (!trialStartDate || userTier !== 'premium-trial') return 0;
+    const now = new Date();
+    const daysPassed = Math.floor((now - trialStartDate) / (1000 * 60 * 60 * 24));
+    const remaining = Math.max(0, 30 - daysPassed);
+    return remaining;
+  };
+
+  const daysRemaining = getDaysRemaining();
+
+  const calculateUserStats = () => {
+    const itemsTracked = inventory.length;
+    const totalValue = inventory.reduce((sum, item) => sum + (item.cost || 0), 0);
+    const wastedValue = inventory.filter(item => item.status === 'wasted').reduce((sum, item) => sum + (item.cost || 0), 0);
+    const consumedValue = inventory.filter(item => item.status === 'consumed').reduce((sum, item) => sum + (item.cost || 0), 0);
+    return { itemsTracked, totalValue, wastedValue, consumedValue };
+  };
+  
   const [newItem, setNewItem] = useState({
     name: '',
     category: 'fridge',
@@ -168,7 +209,11 @@ export default function WasteWarriorMVP() {
   const [showSampleBanner, setShowSampleBanner] = useState(false);
 
 // Load sample data on mount if user chose it during onboarding
-useEffect(() => {
+  useEffect(() => {
+    if (userTier === 'premium-trial' && daysRemaining === 0) {
+      setShowTrialEndingModal(true);
+    }
+  }, [userTier, daysRemaining]);
   const useSampleData = localStorage.getItem('useSampleData') === 'true';
   const hasUserName = localStorage.getItem('userName');
   
@@ -640,6 +685,13 @@ useEffect(() => {
     `}</style>
       
     <div className="h-screen flex flex-col" style={{ backgroundColor: colors.bg, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', maxHeight: '100vh', overflow: 'hidden', position: 'relative' }}>
+      {/* Trial Status Banner - Days 1-29 */}
+      {userTier === 'premium-trial' && daysRemaining > 0 && (
+        <TrialStatusBanner
+          daysRemaining={daysRemaining}
+          onChoosePlan={() => setShowPlanSelectionModal(true)}
+        />
+      )}
       {showSampleBanner && usingSampleData && (
         <div style={{
           backgroundColor: '#FFFBEB',
@@ -1367,7 +1419,29 @@ useEffect(() => {
           </div>
         </div>
       )}
-   </div>
+      
+      {/* ADD MODALS HERE - OUTSIDE all conditionals ⬇️ */}
+      {showTrialEndingModal && (
+        <TrialEndingModal
+          itemsTracked={calculateUserStats().itemsTracked}
+          totalValue={calculateUserStats().totalValue}
+          wastedValue={calculateUserStats().wastedValue}
+          consumedValue={calculateUserStats().consumedValue}
+          onSelectPlan={handleTrialEndPlanSelection}
+        />
+      )}
+      
+      {showPlanSelectionModal && (
+        <PlanSelectionModal
+          practiceItemsCount={0}
+          onSelectPlan={(planId) => {
+            setUserTier(planId);
+            setShowPlanSelectionModal(false);
+          }}
+        />
+      )}
+      
+    </div>
   </>
 );
 }

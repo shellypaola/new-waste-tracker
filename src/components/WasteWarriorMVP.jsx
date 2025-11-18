@@ -144,6 +144,14 @@ export default function WasteWarriorMVP() {
     return true;
   };
 
+  const handleAddItemClick = () => {
+    if (!canAddNewItem()) {
+      setShowPlanSelectionModal(true);
+      return;
+    }
+    setShowAddItemModal(true);
+  };
+  
   const isAtOrOverLimit = () => {
     return userTier === 'free' && inventory.length >= 50;
   };
@@ -732,7 +740,7 @@ useEffect(() => {
           }}
         >
           <button 
-            onClick={() => setShowAddItemModal(true)} 
+            onClick={handleAddItemClick} 
             className="w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all active:scale-95"
             style={{ 
               backgroundColor: colors.primary,

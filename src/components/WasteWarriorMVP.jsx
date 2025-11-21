@@ -225,8 +225,8 @@ export default function WasteWarriorMVP() {
     setUsingSampleData(true);
     
     // Check if banner was dismissed
-    const bannerDismissed = localStorage.getItem('sampleBannerDismissed') === 'true';
-    setShowSampleBanner(!bannerDismissed);
+  const bannerDismissed = localStorage.getItem('sampleBannerDismissed') === 'true';
+  setShowSampleBanner(!bannerDismissed);
   }
 }, []);
   

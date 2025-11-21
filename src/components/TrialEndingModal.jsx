@@ -160,7 +160,6 @@ const TrialEndingModal = ({ itemsTracked, totalValue, wastedValue, consumedValue
         </div>
       </div>
     </div>
-  </div>
   );
 };
 

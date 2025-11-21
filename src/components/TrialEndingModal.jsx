@@ -15,7 +15,7 @@ const TrialEndingModal = ({ itemsTracked, totalValue, wastedValue, consumedValue
         'Expiry alerts & tracking',
         'Weekly stats only'
       ],
-      cta: 'Continue Free',
+      cta: 'Switch to Free',
       buttonColor: 'bg-gray-600 hover:bg-gray-700',
       icon: Star
     },
@@ -31,7 +31,7 @@ const TrialEndingModal = ({ itemsTracked, totalValue, wastedValue, consumedValue
         'Advanced Analytics: Weekly, monthly & yearly trends, spending vs waste analysis, consumption patterns',
         'Full Rewards Access: Weekly challenges & budget goals'
       ],
-      cta: 'Unlock Premium',
+      cta: 'Continue with Premium',
       buttonColor: 'bg-blue-600 hover:bg-blue-700',
       icon: Zap,
       recommended: true
@@ -49,7 +49,7 @@ const TrialEndingModal = ({ itemsTracked, totalValue, wastedValue, consumedValue
         'Advanced Analytics: Weekly, monthly & yearly trends, spending vs waste analysis, consumption patterns',
         'Full Rewards Access: Weekly challenges & budget goals'
       ],
-      cta: 'Unlock Premium',
+      cta: 'Continue with Premium',
       buttonColor: 'bg-amber-600 hover:bg-amber-700',
       icon: TrendingUp
     }
@@ -160,6 +160,7 @@ const TrialEndingModal = ({ itemsTracked, totalValue, wastedValue, consumedValue
         </div>
       </div>
     </div>
+  </div>
   );
 };
 

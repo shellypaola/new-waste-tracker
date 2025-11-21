@@ -214,6 +214,8 @@ export default function WasteWarriorMVP() {
       setShowTrialEndingModal(true);
     }
   }, [userTier, daysRemaining]);
+  
+  useEffect(() => {
   const useSampleData = localStorage.getItem('useSampleData') === 'true';
   const hasUserName = localStorage.getItem('userName');
   
@@ -225,8 +227,8 @@ export default function WasteWarriorMVP() {
     setUsingSampleData(true);
     
     // Check if banner was dismissed
-  const bannerDismissed = localStorage.getItem('sampleBannerDismissed') === 'true';
-  setShowSampleBanner(!bannerDismissed);
+    const bannerDismissed = localStorage.getItem('sampleBannerDismissed') === 'true';
+    setShowSampleBanner(!bannerDismissed);
   }
 }, []);
   

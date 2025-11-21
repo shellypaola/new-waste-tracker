@@ -7,6 +7,8 @@ import OverLimitBanner from './OverLimitBanner';
 import TrialStatusBanner from './TrialStatusBanner';
 import TrialEndingModal from './TrialEndingModal';
 import PlanSelectionModal from './PlanSelectionModal';
+import PlanSelectionModal from './components/PlanSelectionModal';
+import TrialEndingModal from './components/TrialEndingModal';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign, X} from 'lucide-react';
 
 const colors = {
@@ -1435,7 +1437,7 @@ export default function WasteWarriorMVP() {
         <PlanSelectionModal
           practiceItemsCount={0}
           onSelectPlan={(planId) => {
-            setUserTier(planId);
+            console.log('User selected:', planId);
             setShowPlanSelectionModal(false);
           }}
         />

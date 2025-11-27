@@ -6,6 +6,7 @@ import FoodTipsDisplay from './FoodTipsDisplay';
 import OverLimitBanner from './OverLimitBanner';
 import TrialStatusBanner from './TrialStatusBanner';
 import TrialEndingModal from './TrialEndingModal';
+import ScanScreen from './ScanScreen';
 import PlanSelectionModal from './PlanSelectionModal';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign, X} from 'lucide-react';
 
@@ -442,18 +443,14 @@ export default function WasteWarriorMVP() {
       quantity: 1 
     });
   };  
-  const handleScanBarcode = () => {
-    const scannedItem = {
-      name: 'Organic Milk',
-      emoji: '🥛',
-      category: 'fridge',
-      cost: 4.99,
-      daysUntilExpiry: 7,
-      quantity: 1
-    };
-    setNewItem(scannedItem);
-    setDailyScans(dailyScans + 1);
-    alert('Barcode scanned! Product details loaded.');
+  
+  const handleScanComplete = () => {
+  setDailyScans(dailyScans + 1);
+  };
+  
+  const handleAddScannedItem = (item) => {
+    setInventory([...inventory, item]);
+    setAddMethod(null);
   };
 
   const filteredInventory = (activeCategory === 'all' 
@@ -1362,30 +1359,16 @@ export default function WasteWarriorMVP() {
     )}
 
       {addMethod === 'scan' && (
-        <div className="fixed inset-0 bg-white z-50 flex flex-col">
-          <div className="px-4 pt-6 pb-4 border-b" style={{ borderColor: colors.border }}>
-            <div className="flex items-center gap-3 mb-2">
-              <button onClick={() => setAddMethod(null)} className="p-2 -ml-2">
-                <span className="text-2xl">←</span>
-              </button>
-              <h2 className="text-xl font-bold" style={{ color: colors.text }}>Scan Barcode</h2>
-            </div>
-            <div className="text-sm" style={{ color: colors.textSecondary }}>Scans today: {dailyScans}/50</div>
-          </div>
-          <div className="flex-1 flex flex-col items-center justify-center p-4">
-            <div className="w-full max-w-sm">
-              <div className="aspect-square rounded-2xl mb-6 flex items-center justify-center" style={{ backgroundColor: colors.bgGray, border: `2px dashed ${colors.border}` }}>
-                <div className="text-center">
-                  <Camera size={64} style={{ color: colors.textLight, margin: '0 auto 16px' }} />
-                  <div className="font-semibold mb-2" style={{ color: colors.text }}>Camera View</div>
-                  <div className="text-sm" style={{ color: colors.textSecondary }}>Point camera at barcode</div>
-                </div>
-              </div>
-              <button onClick={handleScanBarcode} className="w-full py-3.5 rounded-xl font-semibold text-white text-base mb-3" style={{ backgroundColor: colors.fresh }}>Simulate Scan</button>
-              <button onClick={() => setAddMethod('manual')} className="w-full py-3.5 rounded-xl font-semibold text-base" style={{ backgroundColor: colors.bgGray, color: colors.text }}>Enter Manually Instead</button>
-            </div>
-          </div>
-        </div>
+        <ScanScreen
+          onAddItem={handleAddScannedItem}
+          onClose={() => setAddMethod(null)}
+          colors={colors}
+          dailyScans={dailyScans}
+          onScanComplete={handleScanComplete}
+          getDefaultExpiryDate={getDefaultExpiryDate}
+          getDaysUntilExpiry={getDaysUntilExpiry}
+          getEmojiForItem={getEmojiForItem}
+        />
       )}
 
       {addMethod === 'receipt' && (

@@ -448,17 +448,78 @@ export default function WasteWarriorMVP() {
   setDailyScans(dailyScans + 1);
   };
   
-  const handleAddScannedItem = (item, action) => {
-    if (action === 'update') {
-      // Update existing item (increase quantity)
-      setInventory(inventory.map(invItem => 
-        invItem.id === item.id ? item : invItem
-      ));
+  const handleAddNewItem = () => {
+    const daysUntilExpiry = getDaysUntilExpiry(newItem.expiryDate);
+    const autoEmoji = getEmojiForItem(newItem.name, newItem.category);
+    
+    // Check for duplicate by name and category (case-insensitive)
+    const existingItem = inventory.find(item => 
+      item.name.toLowerCase().trim() === newItem.name.toLowerCase().trim() &&
+      item.category === newItem.category
+    );
+    
+    if (existingItem) {
+      // Ask user if they want to combine or add separately
+      const shouldCombine = window.confirm(
+        `You already have "${existingItem.name}" in ${existingItem.category}.\n\n` +
+        `Current: ${existingItem.quantity}x at $${existingItem.cost.toFixed(2)}\n` +
+        `Adding: ${newItem.quantity}x at $${parseFloat(newItem.cost).toFixed(2)}\n\n` +
+        `Press OK to combine quantities, or Cancel to add as separate item.`
+      );
+      
+      if (shouldCombine) {
+        // Combine with existing item
+        setInventory(inventory.map(item =>
+          item.id === existingItem.id
+            ? {
+                ...item,
+                quantity: (item.quantity || 1) + parseInt(newItem.quantity || 1),
+                cost: item.cost + parseFloat(newItem.cost || 0),
+                // Update expiry to the later date
+                daysUntilExpiry: Math.max(item.daysUntilExpiry, daysUntilExpiry)
+              }
+            : item
+        ));
+      } else {
+        // Add as separate item
+        const item = {
+          id: Date.now(),
+          name: newItem.name,
+          emoji: autoEmoji,
+          category: newItem.category,
+          cost: parseFloat(newItem.cost) || 0,
+          daysUntilExpiry: daysUntilExpiry,
+          status: 'sealed',
+          quantity: parseInt(newItem.quantity) || 1,
+          barcode: null
+        };
+        setInventory([...inventory, item]);
+      }
     } else {
-      // Add new item
+      // New item - add normally
+      const item = {
+        id: Date.now(),
+        name: newItem.name,
+        emoji: autoEmoji,
+        category: newItem.category,
+        cost: parseFloat(newItem.cost) || 0,
+        daysUntilExpiry: daysUntilExpiry,
+        status: 'sealed',
+        quantity: parseInt(newItem.quantity) || 1,
+        barcode: null
+      };
       setInventory([...inventory, item]);
     }
+    
+    // Reset form
     setAddMethod(null);
+    setNewItem({ 
+      name: '', 
+      category: 'fridge', 
+      cost: '', 
+      expiryDate: getDefaultExpiryDate(7), 
+      quantity: 1 
+    });
   };
 
   const filteredInventory = (activeCategory === 'all' 

@@ -419,33 +419,20 @@ export default function WasteWarriorMVP() {
     setSelectedItem(null);
   };
   
-  const handleAddNewItem = () => {
-  const daysUntilExpiry = getDaysUntilExpiry(newItem.expiryDate);
-  const autoEmoji = getEmojiForItem(newItem.name, newItem.category);
-  
-  const item = {
-    id: Date.now(),
-    name: newItem.name,
-    emoji: autoEmoji,
-    category: newItem.category,
-    cost: parseFloat(newItem.cost) || 0,
-    daysUntilExpiry: daysUntilExpiry,
-    status: 'sealed',
-    quantity: parseInt(newItem.quantity) || 1
-    };
-    setInventory([...inventory, item]);
-    setAddMethod(null);
-    setNewItem({ 
-      name: '', 
-      category: 'fridge', 
-      cost: '', 
-      expiryDate: getDefaultExpiryDate(7), 
-      quantity: 1 
-    });
-  };  
   
   const handleScanComplete = () => {
   setDailyScans(dailyScans + 1);
+  };
+
+  const handleAddScannedItem = (item, action) => {
+    if (action === 'update') {
+      setInventory(inventory.map(invItem => 
+        invItem.barcode && invItem.barcode === item.barcode ? item : invItem
+      ));
+    } else {
+      setInventory([...inventory, item]);
+    }
+    setAddMethod(null);
   };
   
   const handleAddNewItem = () => {

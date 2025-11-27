@@ -14,7 +14,8 @@ const ScanScreen = ({
   onScanComplete,
   getDefaultExpiryDate,
   getDaysUntilExpiry,
-  getEmojiForItem
+  getEmojiForItem,
+  currentInventory // Add this to check for duplicates
 }) => {
   const [scanningState, setScanningState] = useState('ready'); // ready, scanning, loading, success, error, not_found
   const [scannedBarcode, setScannedBarcode] = useState(null);
@@ -46,8 +47,14 @@ const ScanScreen = ({
     }
 
     try {
-      // Look up product
-      const product = await ProductLookupService.searchByBarcode(barcode);
+      // Set 5 second timeout for product lookup
+      const lookupPromise = ProductLookupService.searchByBarcode(barcode);
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('TIMEOUT')), 5000)
+      );
+      
+      // Race between lookup and timeout
+      const product = await Promise.race([lookupPromise, timeoutPromise]);
       
       if (product && product.found) {
         // Product found!
@@ -75,8 +82,18 @@ const ScanScreen = ({
       }
     } catch (err) {
       console.error('Product lookup error:', err);
-      setError('Unable to look up product. Please enter details manually.');
-      setScanningState('error');
+      
+      // Check if it's a timeout
+      if (err.message === 'TIMEOUT') {
+        setScanningState('not_found');
+        setItemForm({
+          ...itemForm,
+          barcode: barcode
+        });
+      } else {
+        setError('Unable to look up product. Please enter details manually.');
+        setScanningState('error');
+      }
     }
   };
 
@@ -97,20 +114,40 @@ const ScanScreen = ({
     const daysUntilExpiry = getDaysUntilExpiry(itemForm.expiryDate);
     const autoEmoji = getEmojiForItem(itemForm.name, itemForm.category);
     
-    const newItem = {
-      id: Date.now(),
-      name: itemForm.name,
-      emoji: autoEmoji,
-      category: itemForm.category,
-      cost: parseFloat(itemForm.cost) || 0,
-      daysUntilExpiry: daysUntilExpiry,
-      status: 'sealed',
-      quantity: parseInt(itemForm.quantity) || 1,
-      barcode: itemForm.barcode || null
-    };
+    // Check if this barcode already exists in inventory
+    const existingItem = itemForm.barcode 
+      ? currentInventory.find(item => item.barcode === itemForm.barcode)
+      : null;
+    
+    if (existingItem) {
+      // Update existing item - increase quantity and add cost
+      const updatedItem = {
+        ...existingItem,
+        quantity: (existingItem.quantity || 1) + parseInt(itemForm.quantity || 1),
+        cost: existingItem.cost + parseFloat(itemForm.cost || 0),
+        // Keep the barcode
+        barcode: itemForm.barcode
+      };
+      
+      onAddItem(updatedItem, 'update');
+      onClose();
+    } else {
+      // Create new item
+      const newItem = {
+        id: Date.now(),
+        name: itemForm.name,
+        emoji: autoEmoji,
+        category: itemForm.category,
+        cost: parseFloat(itemForm.cost) || 0,
+        daysUntilExpiry: daysUntilExpiry,
+        status: 'sealed',
+        quantity: parseInt(itemForm.quantity) || 1,
+        barcode: itemForm.barcode || null
+      };
 
-    onAddItem(newItem);
-    onClose();
+      onAddItem(newItem, 'new');
+      onClose();
+    }
   };
 
   // Show barcode scanner

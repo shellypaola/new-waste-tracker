@@ -485,21 +485,6 @@ export default function WasteWarriorMVP() {
       });
     }
   };
-    } else {
-      // New item - add normally
-      const item = {
-        id: Date.now(),
-        name: newItem.name,
-        emoji: autoEmoji,
-        category: newItem.category,
-        cost: parseFloat(newItem.cost) || 0,
-        daysUntilExpiry: daysUntilExpiry,
-        status: 'sealed',
-        quantity: parseInt(newItem.quantity) || 1,
-        barcode: null
-      };
-      setInventory([...inventory, item]);
-    }
     
     // Reset form
     setAddMethod(null);

@@ -1376,6 +1376,7 @@ export default function WasteWarriorMVP() {
           getDefaultExpiryDate={getDefaultExpiryDate}
           getDaysUntilExpiry={getDaysUntilExpiry}
           getEmojiForItem={getEmojiForItem}
+          currentInventory={inventory}
         />
       )}
 

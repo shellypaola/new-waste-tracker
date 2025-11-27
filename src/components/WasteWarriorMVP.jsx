@@ -8,6 +8,7 @@ import TrialStatusBanner from './TrialStatusBanner';
 import TrialEndingModal from './TrialEndingModal';
 import ScanScreen from './ScanScreen';
 import PlanSelectionModal from './PlanSelectionModal';
+import DuplicateConfirmModal from './DuplicateConfirmModal';
 import { Search, Plus, Bell, Flame, Trophy, Edit2, TrendingDown, Package, Heart, TrendingUp, Home, BarChart3, Filter, Trash2, Award, Zap, Star, Camera, FileText, Lock, Share2, DollarSign, X} from 'lucide-react';
 
 const colors = {
@@ -145,6 +146,8 @@ export default function WasteWarriorMVP() {
   const [trialStartDate, setTrialStartDate] = useState(new Date());
   const [showTrialEndingModal, setShowTrialEndingModal] = useState(false);
   const [showPlanSelectionModal, setShowPlanSelectionModal] = useState(false);
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
+  const [duplicateItemData, setDuplicateItemData] = useState(null);
   const canAddNewItem = () => {
     if (userTier === 'free') {
       return inventory.length < 50;
@@ -446,42 +449,42 @@ export default function WasteWarriorMVP() {
     );
     
     if (existingItem) {
-      // Ask user if they want to combine or add separately
-      const shouldCombine = window.confirm(
-        `You already have "${existingItem.name}" in ${existingItem.category}.\n\n` +
-        `Current: ${existingItem.quantity}x at $${existingItem.cost.toFixed(2)}\n` +
-        `Adding: ${newItem.quantity}x at $${parseFloat(newItem.cost).toFixed(2)}\n\n` +
-        `Press OK to combine quantities, or Cancel to add as separate item.`
-      );
-      
-      if (shouldCombine) {
-        // Combine with existing item
-        setInventory(inventory.map(item =>
-          item.id === existingItem.id
-            ? {
-                ...item,
-                quantity: (item.quantity || 1) + parseInt(newItem.quantity || 1),
-                cost: item.cost + parseFloat(newItem.cost || 0),
-                // Update expiry to the later date
-                daysUntilExpiry: Math.max(item.daysUntilExpiry, daysUntilExpiry)
-              }
-            : item
-        ));
-      } else {
-        // Add as separate item
-        const item = {
-          id: Date.now(),
-          name: newItem.name,
+      // Show custom duplicate modal instead of window.confirm
+      setDuplicateItemData({
+        existingItem,
+        newItem: {
+          ...newItem,
           emoji: autoEmoji,
-          category: newItem.category,
-          cost: parseFloat(newItem.cost) || 0,
-          daysUntilExpiry: daysUntilExpiry,
-          status: 'sealed',
-          quantity: parseInt(newItem.quantity) || 1,
-          barcode: null
-        };
-        setInventory([...inventory, item]);
-      }
+          daysUntilExpiry
+        }
+      });
+      setShowDuplicateModal(true);
+    } else {
+      // New item - add normally
+      const item = {
+        id: Date.now(),
+        name: newItem.name,
+        emoji: autoEmoji,
+        category: newItem.category,
+        cost: parseFloat(newItem.cost) || 0,
+        daysUntilExpiry: daysUntilExpiry,
+        status: 'sealed',
+        quantity: parseInt(newItem.quantity) || 1,
+        barcode: null
+      };
+      setInventory([...inventory, item]);
+      
+      // Reset form
+      setAddMethod(null);
+      setNewItem({ 
+        name: '', 
+        category: 'fridge', 
+        cost: '', 
+        expiryDate: getDefaultExpiryDate(7), 
+        quantity: 1 
+      });
+    }
+  };
     } else {
       // New item - add normally
       const item = {
@@ -499,6 +502,65 @@ export default function WasteWarriorMVP() {
     }
     
     // Reset form
+    setAddMethod(null);
+    setNewItem({ 
+      name: '', 
+      category: 'fridge', 
+      cost: '', 
+      expiryDate: getDefaultExpiryDate(7), 
+      quantity: 1 
+    });
+  };
+
+ const handleCombineDuplicates = () => {
+  const { existingItem, newItem: newItemData } = duplicateItemData;
+  
+  // Combine with existing item
+  setInventory(inventory.map(item =>
+    item.id === existingItem.id
+      ? {
+          ...item,
+          quantity: (item.quantity || 1) + parseInt(newItemData.quantity || 1),
+          cost: item.cost + parseFloat(newItemData.cost || 0),
+          // Update expiry to the later date
+          daysUntilExpiry: Math.max(item.daysUntilExpiry, newItemData.daysUntilExpiry)
+        }
+      : item
+  ));
+  
+  // Reset and close
+  setShowDuplicateModal(false);
+  setDuplicateItemData(null);
+  setAddMethod(null);
+  setNewItem({ 
+    name: '', 
+    category: 'fridge', 
+    cost: '', 
+    expiryDate: getDefaultExpiryDate(7), 
+    quantity: 1 
+  });
+};
+
+  const handleAddSeparateDuplicate = () => {
+    const { newItem: newItemData } = duplicateItemData;
+    
+    // Add as separate item
+    const item = {
+      id: Date.now(),
+      name: newItemData.name,
+      emoji: newItemData.emoji,
+      category: newItemData.category,
+      cost: parseFloat(newItemData.cost) || 0,
+      daysUntilExpiry: newItemData.daysUntilExpiry,
+      status: 'sealed',
+      quantity: parseInt(newItemData.quantity) || 1,
+      barcode: null
+    };
+    setInventory([...inventory, item]);
+    
+    // Reset and close
+    setShowDuplicateModal(false);
+    setDuplicateItemData(null);
     setAddMethod(null);
     setNewItem({ 
       name: '', 
@@ -1480,6 +1542,20 @@ export default function WasteWarriorMVP() {
             console.log('User selected:', planId);
             setShowPlanSelectionModal(false);
           }}
+        />
+      )}
+      
+      {showDuplicateModal && duplicateItemData && (
+        <DuplicateConfirmModal
+          existingItem={duplicateItemData.existingItem}
+          newItem={duplicateItemData.newItem}
+          onCombine={handleCombineDuplicates}
+          onAddSeparate={handleAddSeparateDuplicate}
+          onCancel={() => {
+            setShowDuplicateModal(false);
+            setDuplicateItemData(null);
+          }}
+          colors={colors}
         />
       )}
       

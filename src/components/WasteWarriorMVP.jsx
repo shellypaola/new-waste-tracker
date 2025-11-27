@@ -448,8 +448,16 @@ export default function WasteWarriorMVP() {
   setDailyScans(dailyScans + 1);
   };
   
-  const handleAddScannedItem = (item) => {
-    setInventory([...inventory, item]);
+  const handleAddScannedItem = (item, action) => {
+    if (action === 'update') {
+      // Update existing item (increase quantity)
+      setInventory(inventory.map(invItem => 
+        invItem.id === item.id ? item : invItem
+      ));
+    } else {
+      // Add new item
+      setInventory([...inventory, item]);
+    }
     setAddMethod(null);
   };
 

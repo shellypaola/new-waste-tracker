@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { Camera, Loader, AlertCircle, CheckCircle } from 'lucide-react';
 import BarcodeScanner from './BarcodeScanner';
-import ProductLookupService, { getDefaultExpiryDays } from './ProductLookupService.jsx';
+import ProductLookupService, { getDefaultExpiryDays } from './ProductLookupService';
 
 const ScanScreen = ({ 
   onAddItem, 

@@ -486,16 +486,6 @@ export default function WasteWarriorMVP() {
     }
   };
     
-    // Reset form
-    setAddMethod(null);
-    setNewItem({ 
-      name: '', 
-      category: 'fridge', 
-      cost: '', 
-      expiryDate: getDefaultExpiryDate(7), 
-      quantity: 1 
-    });
-  };
 
  const handleCombineDuplicates = () => {
   const { existingItem, newItem: newItemData } = duplicateItemData;

@@ -513,18 +513,18 @@ export default function WasteWarriorMVP() {
       : item
   ));
   
-  // Reset and close
-  setShowDuplicateModal(false);
-  setDuplicateItemData(null);
-  setAddMethod(null);
-  setNewItem({ 
-    name: '', 
-    category: 'fridge', 
-    cost: '', 
-    expiryDate: getDefaultExpiryDate(7), 
-    quantity: 1 
-  });
-};
+    // Reset and close
+    setShowDuplicateModal(false);
+    setDuplicateItemData(null);
+    setAddMethod(null);
+    setNewItem({ 
+      name: '', 
+      category: 'fridge', 
+      cost: '', 
+      expiryDate: getDefaultExpiryDate(7), 
+      quantity: 1 
+    });
+  };
 
   const handleAddSeparateDuplicate = () => {
     const { newItem: newItemData } = duplicateItemData;

@@ -202,6 +202,7 @@ export default function WasteWarriorMVP() {
     name: '',
     category: 'fridge',
     cost: '',
+    costType: 'total',
     expiryDate: getDefaultExpiryDate(7),
     quantity: 1
   });
@@ -439,46 +440,29 @@ export default function WasteWarriorMVP() {
     const daysUntilExpiry = getDaysUntilExpiry(newItem.expiryDate);
     const autoEmoji = getEmojiForItem(newItem.name, newItem.category);
     
-    // Check for duplicate by name and category (case-insensitive)
-    const existingItem = inventory.find(item => 
-      item.name.toLowerCase().trim() === newItem.name.toLowerCase().trim() &&
-      item.category === newItem.category
-    );
+    // Calculate total cost based on type
+    const enteredCost = parseFloat(newItem.cost) || 0;
+    const totalCost = newItem.costType === 'per-unit' 
+      ? enteredCost * newItem.quantity 
+      : enteredCost;
     
-    if (existingItem) {
-      // Auto-combine without asking (same as scanning)
-      setInventory(inventory.map(item =>
-        item.id === existingItem.id
-          ? {
-              ...item,
-              quantity: (item.quantity || 1) + parseInt(newItem.quantity || 1),
-              cost: item.cost + parseFloat(newItem.cost || 0),
-              daysUntilExpiry: Math.max(item.daysUntilExpiry, daysUntilExpiry)
-            }
-          : item
-      ));
-    } else {
-      // New item - add normally
-      const item = {
-        id: Date.now(),
-        name: newItem.name,
-        emoji: autoEmoji,
-        category: newItem.category,
-        cost: parseFloat(newItem.cost) || 0,
-        daysUntilExpiry: daysUntilExpiry,
-        status: 'sealed',
-        quantity: parseInt(newItem.quantity) || 1,
-        barcode: null
-      };
-      setInventory([...inventory, item]);
-    }
-    
-    // Reset form
+    const item = {
+      id: Date.now(),
+      name: newItem.name,
+      emoji: autoEmoji,
+      category: newItem.category,
+      cost: totalCost,
+      daysUntilExpiry: daysUntilExpiry,
+      status: 'sealed',
+      quantity: parseInt(newItem.quantity) || 1
+    };
+    setInventory([...inventory, item]);
     setAddMethod(null);
     setNewItem({ 
       name: '', 
       category: 'fridge', 
       cost: '', 
+      costType: 'total',
       expiryDate: getDefaultExpiryDate(7), 
       quantity: 1 
     });
@@ -1263,7 +1247,36 @@ export default function WasteWarriorMVP() {
         />
       </div>
     </div>
-
+    {/* Cost Type Toggle */}
+    <div>
+      <label className="block text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>
+        Cost Type
+      </label>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setNewItem({ ...newItem, costType: 'total' })}
+          className="flex-1 py-2.5 px-3 rounded-lg text-sm font-medium transition-all"
+          style={{
+            backgroundColor: (!newItem.costType || newItem.costType === 'total') ? colors.primary : colors.bgGray,
+            color: (!newItem.costType || newItem.costType === 'total') ? 'white' : colors.textSecondary
+          }}
+        >
+          Total cost
+        </button>
+        <button
+          type="button"
+          onClick={() => setNewItem({ ...newItem, costType: 'per-unit' })}
+          className="flex-1 py-2.5 px-3 rounded-lg text-sm font-medium transition-all"
+          style={{
+            backgroundColor: newItem.costType === 'per-unit' ? colors.primary : colors.bgGray,
+            color: newItem.costType === 'per-unit' ? 'white' : colors.textSecondary
+          }}
+        >
+          Per item
+        </button>
+      </div>
+    </div>
     {/* Quantity */}
     <div>
       <label className="block text-sm font-medium mb-2" style={{ color: colors.textSecondary }}>

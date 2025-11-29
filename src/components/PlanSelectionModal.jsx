@@ -60,9 +60,9 @@ const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan, onClose, isInTri
       className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 overflow-y-auto"
       onClick={onClose}
     >
-      <div className="min-h-full flex items-center justify-center p-4">
+      <div className="min-h-full flex items-center justify-center p-4 py-12">
         <div 
-          className="w-full max-w-4xl my-8"
+          className="w-full max-w-3xl"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden relative">
@@ -78,9 +78,9 @@ const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan, onClose, isInTri
             </button>
             
             {/* Header */}
-            <div className="bg-gradient-to-br from-[#3B82F6] to-[#1D4ED8] text-white p-6 text-center">
-              <h2 className="text-2xl font-bold mb-2">Choose Your Plan</h2>
-              <p className="text-blue-100">Start reducing waste today</p>
+            <div className="bg-gradient-to-br from-[#3B82F6] to-[#1D4ED8] text-white p-5 text-center">
+              <h2 className="text-xl font-bold mb-1">Choose Your Plan</h2>
+              <p className="text-blue-100 text-sm">Start reducing waste today</p>
               {practiceItemsCount > 0 && (
                 <div className="mt-4 bg-white/20 backdrop-blur-sm rounded-xl p-3 inline-block">
                   <p className="text-sm">
@@ -91,14 +91,14 @@ const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan, onClose, isInTri
             </div>
 
             {/* Plans Grid */}
-            <div className="p-6">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="p-5">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {plans.map((plan) => {
                   const Icon = plan.icon;
                   return (
                     <div
                       key={plan.id}
-                      className={`relative bg-white rounded-2xl border-2 p-6 transition-all duration-200 hover:shadow-xl ${
+                      className={`relative bg-white rounded-2xl border-2 p-5 transition-all duration-200 hover:shadow-xl ${
                         plan.recommended ? 'border-blue-500 shadow-lg' : 'border-gray-200'
                       }`}
                     >
@@ -132,7 +132,7 @@ const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan, onClose, isInTri
                       </div>
 
                       {/* Features */}
-                      <ul className="space-y-3 mb-6">
+                      <ul className="space-y-2 mb-5">
                         {plan.features.map((feature, idx) => (
                           <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
                             <span className="text-green-600 mt-0.5">✓</span>
@@ -154,7 +154,7 @@ const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan, onClose, isInTri
               </div>
 
               {/* Footer Note */}
-              <div className="text-center mt-6 text-sm text-gray-500">
+              <div className="text-center mt-4 text-sm text-gray-500">
                 💡 Cancel anytime • Change plans in Settings
               </div>
             </div>

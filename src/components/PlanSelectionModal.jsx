@@ -1,7 +1,7 @@
 import React from 'react';
 import { Star, Zap, TrendingUp } from 'lucide-react';
 
-const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan }) => {
+const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan, onClose, isInTrial = false }) => {
   const plans = [
     {
       id: 'free',
@@ -16,7 +16,7 @@ const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan }) => {
         'Weekly stats only'
       ],
       cta: 'Start Free',
-      buttonColor: 'bg-gray-600 hover:bg-gray-700',
+      buttonColor: 'bg-gray-500 hover:bg-gray-600',
       icon: Star
     },
     {
@@ -31,8 +31,8 @@ const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan }) => {
         'Advanced Analytics: Weekly, monthly & yearly trends, spending vs waste analysis, consumption patterns',
         'Full Rewards Access: Weekly challenges & budget goals'
       ],
-      cta: 'Start 30-Day Free Trial',
-      buttonColor: 'bg-blue-600 hover:bg-blue-700',
+      cta: isInTrial ? 'Continue with Premium' : 'Start 30-Day Free Trial',
+      buttonColor: 'bg-blue-500 hover:bg-blue-600',
       icon: Zap,
       recommended: true
     },
@@ -49,21 +49,38 @@ const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan }) => {
         'Advanced Analytics: Weekly, monthly & yearly trends, spending vs waste analysis, consumption patterns',
         'Full Rewards Access: Weekly challenges & budget goals'
       ],
-      cta: 'Start 30-Day Free Trial',
-      buttonColor: 'bg-amber-600 hover:bg-amber-700',
+      cta: isInTrial ? 'Continue with Premium' : 'Start 30-Day Free Trial',
+      buttonColor: 'bg-amber-500 hover:bg-amber-600',
       icon: TrendingUp
     }
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 overflow-y-auto">
+    <div 
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 overflow-y-auto"
+      onClick={onClose}
+    >
       <div className="min-h-full flex items-center justify-center p-4">
-        <div className="w-full max-w-5xl my-8">
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div 
+          className="w-full max-w-4xl my-8"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden relative">
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white text-gray-900 shadow-lg hover:bg-gray-100 transition-colors"
+              aria-label="Close"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
             {/* Header */}
-            <div className="bg-gradient-to-br from-blue-600 to-cyan-600 text-white p-8 text-center">
-              <h2 className="text-3xl font-bold mb-2">Choose Your Plan</h2>
-              <p className="text-blue-100 text-lg">Start reducing waste today</p>
+            <div className="bg-gradient-to-br from-[#3B82F6] to-[#1D4ED8] text-white p-6 text-center">
+              <h2 className="text-2xl font-bold mb-2">Choose Your Plan</h2>
+              <p className="text-blue-100">Start reducing waste today</p>
               {practiceItemsCount > 0 && (
                 <div className="mt-4 bg-white/20 backdrop-blur-sm rounded-xl p-3 inline-block">
                   <p className="text-sm">
@@ -74,7 +91,7 @@ const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan }) => {
             </div>
 
             {/* Plans Grid */}
-            <div className="p-8">
+            <div className="p-6">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {plans.map((plan) => {
                   const Icon = plan.icon;
@@ -138,7 +155,7 @@ const PlanSelectionModal = ({ practiceItemsCount, onSelectPlan }) => {
 
               {/* Footer Note */}
               <div className="text-center mt-6 text-sm text-gray-500">
-                💡 30-day free trial on Premium • Cancel anytime • Change plans in Settings
+                💡 Cancel anytime • Change plans in Settings
               </div>
             </div>
           </div>

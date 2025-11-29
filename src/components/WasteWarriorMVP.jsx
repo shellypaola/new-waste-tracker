@@ -1452,10 +1452,12 @@ export default function WasteWarriorMVP() {
       {showPlanSelectionModal && (
         <PlanSelectionModal
           practiceItemsCount={0}
+          isInTrial={userTier === 'premium-trial'}  // ← ADD THIS LINE
           onSelectPlan={(planId) => {
             console.log('User selected:', planId);
             setShowPlanSelectionModal(false);
           }}
+          onClose={() => setShowPlanSelectionModal(false)}  // ← ADD THIS LINE
         />
       )}
     </div>

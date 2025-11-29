@@ -723,7 +723,7 @@ export default function WasteWarriorMVP() {
           onChoosePlan={() => setShowPlanSelectionModal(true)}
         />
       )}
-      {showSampleBanner && usingSampleData && (
+      {!showPlanSelectionModal && showSampleBanner && usingSampleData && (
         <div style={{
           backgroundColor: '#FFFBEB',
           borderBottom: `1px solid ${colors.warning}`,

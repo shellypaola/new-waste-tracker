@@ -16,7 +16,7 @@ const TrialEndingModal = ({ itemsTracked, totalValue, wastedValue, consumedValue
         'Weekly stats only'
       ],
       cta: 'Switch to Free',
-      buttonColor: 'bg-gray-600 hover:bg-gray-700',
+      buttonColor: 'bg-gray-500 hover:bg-gray-600',
       icon: Star
     },
     {
@@ -32,7 +32,7 @@ const TrialEndingModal = ({ itemsTracked, totalValue, wastedValue, consumedValue
         'Full Rewards Access: Weekly challenges & budget goals'
       ],
       cta: 'Continue with Premium',
-      buttonColor: 'bg-blue-600 hover:bg-blue-700',
+      buttonColor: 'bg-blue-500 hover:bg-blue-600',
       icon: Zap,
       recommended: true
     },
@@ -50,7 +50,7 @@ const TrialEndingModal = ({ itemsTracked, totalValue, wastedValue, consumedValue
         'Full Rewards Access: Weekly challenges & budget goals'
       ],
       cta: 'Continue with Premium',
-      buttonColor: 'bg-amber-600 hover:bg-amber-700',
+      buttonColor: 'bg-amber-500 hover:bg-amber-600',
       icon: TrendingUp
     }
   ];
@@ -61,7 +61,7 @@ const TrialEndingModal = ({ itemsTracked, totalValue, wastedValue, consumedValue
         <div className="w-full max-w-5xl my-8">
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
             {/* Header */}
-            <div className="bg-gradient-to-br from-blue-600 to-cyan-600 text-white p-8 text-center">
+            <div className="bg-gradient-to-br from-[#3B82F6] to-[#1D4ED8] text-white p-8 text-center">
               <div className="text-5xl mb-4">🎉</div>
               <h2 className="text-3xl font-bold mb-2">Your 30-Day Trial Has Ended</h2>
               <p className="text-blue-100 text-lg mb-6">You've been doing amazing!</p>
